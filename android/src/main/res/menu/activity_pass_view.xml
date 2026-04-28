@@ -9,7 +9,7 @@
 
     <item
             android:id="@+id/menu_light"
-            android:title="light"
+            android:title="@string/menu_light"
             android:icon="@drawable/ic_device_brightness_high"
             custom:showAsAction="ifRoom" />
 

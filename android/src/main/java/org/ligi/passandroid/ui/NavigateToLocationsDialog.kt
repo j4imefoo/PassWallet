@@ -54,7 +54,7 @@ private fun startIntentForLocation(activity: Activity, location: PassLocation, p
     try {
         activity.startActivity(i)
     } catch (e: ActivityNotFoundException) {
-        i.data = "http://maps.google.com/?q=$description@$latAndLonStr".toUri()
+        i.data = "https://www.openstreetmap.org/?mlat=${location.lat}&mlon=${location.lon}#map=16/${location.lat}/${location.lon}".toUri()
         activity.startActivity(i)
         // TODO also the browser could not be found -> handle
     }
@@ -67,4 +67,3 @@ private fun getEncodedDescription(location: PassLocation, pass: Pass) = try {
     // OK - no description
     ""
 }
-

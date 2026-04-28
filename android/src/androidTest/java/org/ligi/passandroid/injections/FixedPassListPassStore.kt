@@ -1,7 +1,8 @@
 package org.ligi.passandroid.injections
 
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import org.ligi.passandroid.model.PassClassifier
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.PassStoreUpdateEvent
@@ -51,7 +52,11 @@ class FixedPassListPassStore(private var passes: List<Pass>) : PassStore {
         return File("")
     }
 
-    override val updateChannel: BroadcastChannel<PassStoreUpdateEvent> = ConflatedBroadcastChannel()
+    override val updateChannel: SharedFlow<PassStoreUpdateEvent> = MutableSharedFlow(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
 
     override fun save(pass: Pass) {
         // no effect in this impl

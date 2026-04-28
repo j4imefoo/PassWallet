@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android.support.v7.cardview="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pass_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="12dp"
     android:orientation="vertical"
-    android.support.v7.cardview:cardMaxElevation="@dimen/card_longclick_elevation_half">
+    app:cardBackgroundColor="@color/card_view_background"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/outline_variant"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_view_background"
         android:orientation="vertical">
 
         <LinearLayout
@@ -34,8 +39,9 @@
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="?android:textColorSecondary"
+                    android:textStyle="bold"
                     tools:text="12.10.2013 17:00" />
 
                 <TextView
@@ -43,9 +49,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="4dp"
-
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
                     tools:text="Title" />
 
             </LinearLayout>
@@ -62,13 +69,13 @@
         <View
             android:id="@+id/actionsSeparator"
             android:layout_width="match_parent"
-            android:layout_height="2dip"
+            android:layout_height="1dp"
 
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:background="#dfdfdf"
+            android:background="@color/outline_variant"
             android:padding="7dp" />
 
         <org.ligi.passandroid.ui.views.TimeAndNavBar
@@ -83,6 +90,4 @@
             android:orientation="vertical" />
 
     </LinearLayout>
-
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

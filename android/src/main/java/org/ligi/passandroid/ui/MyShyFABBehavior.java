@@ -6,7 +6,6 @@ import com.google.android.material.appbar.AppBarLayout;
 
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
 import android.util.AttributeSet;
 import android.view.View;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
@@ -25,14 +24,14 @@ public class MyShyFABBehavior extends CoordinatorLayout.Behavior<FloatingActions
     public boolean layoutDependsOn(@NonNull CoordinatorLayout parent,
                                    @NonNull FloatingActionsMenu child,
                                    @NonNull View dependency) {
-        return dependency instanceof Snackbar.SnackbarLayout || dependency instanceof AppBarLayout;
+        return isSnackbarLayout(dependency) || dependency instanceof AppBarLayout;
     }
 
     @Override
     public boolean onDependentViewChanged(@NonNull CoordinatorLayout parent,
                                           @NonNull FloatingActionsMenu child,
                                           @NonNull View dependency) {
-        if (dependency instanceof Snackbar.SnackbarLayout) {
+        if (isSnackbarLayout(dependency)) {
             updateFabTranslationForSnackbar(child, dependency);
         }
         if (dependency instanceof AppBarLayout) {
@@ -62,6 +61,10 @@ public class MyShyFABBehavior extends CoordinatorLayout.Behavior<FloatingActions
     private void updateFabTranslationForSnackbar(FloatingActionsMenu child, View dependency) {
         final float translationY = dependency.getTranslationY() - dependency.getHeight();
         child.setTranslationY(Math.min(0, translationY));
+    }
+
+    private boolean isSnackbarLayout(View dependency) {
+        return "com.google.android.material.snackbar.Snackbar$SnackbarLayout".equals(dependency.getClass().getName());
     }
 
     private int getToolbarHeight(Context context) {

@@ -1,27 +1,25 @@
 package org.ligi.passandroid.ui
 
-import android.Manifest
-import android.annotation.TargetApi
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxt.startActivityFromURL
@@ -30,61 +28,30 @@ import org.ligi.passandroid.databinding.PassListBinding
 import org.ligi.passandroid.functions.createAndAddEmptyPass
 import org.ligi.passandroid.model.PassStoreProjection
 import org.ligi.passandroid.model.State
-import org.ligi.passandroid.scan.PassScanActivity
-import org.ligi.snackengage.SnackEngage
-import org.ligi.snackengage.snacks.BaseSnack
-import org.ligi.snackengage.snacks.DefaultRateSnack
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.sendTraceDroidStackTracesIfExist
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnNeverAskAgain
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.RuntimePermissions
-import permissions.dispatcher.ktx.constructPermissionsRequest
-
-private const val OPEN_FILE_READ_REQUEST_CODE = 1000
-private const val VERSION_STARTING_TO_SUPPORT_STORAGE_FRAMEWORK = 19
 
 class PassListActivity : PassAndroidActivity() {
 
     private lateinit var binding: PassListBinding
     private val drawerToggle by lazy { ActionBarDrawerToggle(this, binding.drawerLayout, R.string.drawer_open, R.string.drawer_close) }
-
-    private val adapter by lazy { PassTopicFragmentPagerAdapter(passStore.classifier, supportFragmentManager) }
-
-
-    @TargetApi(16)
-    private fun showDeniedFor() {
-        Snackbar.make(binding.fam, "no permission to scan", Snackbar.LENGTH_INDEFINITE).show()
+    private var tabLayoutMediator: TabLayoutMediator? = null
+    private val openFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let {
+            startActivity(Intent(this, PassImportActivity::class.java).setData(it))
+        }
     }
 
-    @TargetApi(16)
-    fun scan() = constructPermissionsRequest(Manifest.permission.READ_EXTERNAL_STORAGE, onPermissionDenied = ::showDeniedFor, onNeverAskAgain = ::showDeniedFor) {
-        startActivity(Intent(this, PassScanActivity::class.java))
-    }.launch()
+    private val adapter by lazy { PassTopicFragmentPagerAdapter(passStore.classifier, this) }
 
-    @TargetApi(VERSION_STARTING_TO_SUPPORT_STORAGE_FRAMEWORK)
+
     internal fun onAddOpenFileClick() {
         try {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "*/*" // tried with octet stream - no use
-            startActivityForResult(intent, OPEN_FILE_READ_REQUEST_CODE)
+            openFileLauncher.launch(arrayOf("*/*"))
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.fam, "Unavailable", Snackbar.LENGTH_LONG).show()
         }
 
-    }
-
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-        if (requestCode == OPEN_FILE_READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
-                val targetIntent = Intent(this, PassImportActivity::class.java)
-                targetIntent.data = resultData.data
-                startActivity(targetIntent)
-            }
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,6 +61,13 @@ class PassListActivity : PassAndroidActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        applyMaterialInsets(
+            root = binding.drawerLayout,
+            appBar = binding.appbar,
+            drawerContent = binding.navigationView,
+            content = binding.viewPager,
+            floatingView = binding.fam,
+        )
 
 
         // don't want too many windows in worst case - so check for errors first
@@ -103,34 +77,38 @@ class PassListActivity : PassAndroidActivity() {
             if (settings.doTraceDroidEmailSend()) {
                 sendTraceDroidStackTracesIfExist("ligi+passandroid@ligi.de", this)
             }
-        } else { // if no error - check if there is a new version of the app
+        } else {
             tracker.trackEvent("ui_event", "processFile", "updatenotice", null)
-
-            SnackEngage.from(binding.fam).withSnack(DefaultRateSnack().withDuration(BaseSnack.DURATION_INDEFINITE))
-                    .build().engageWhenAppropriate()
         }
 
         binding.drawerLayout.addDrawerListener(drawerToggle)
+
+        onBackPressedDispatcher.addCallback(this) {
+            when {
+                binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> binding.drawerLayout.closeDrawer(GravityCompat.START)
+                binding.fam.isExpanded -> binding.fam.collapse()
+                else -> isEnabled = false
+            }
+
+            if (!isEnabled) {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.viewPager.adapter = adapter
 
-        if (adapter.count > 0) {
-            binding.viewPager.currentItem = State.lastSelectedTab
+        if (adapter.itemCount > 0) {
+            binding.viewPager.currentItem = State.lastSelectedTab.coerceIn(0, adapter.itemCount - 1)
         }
+        syncTabs()
 
-        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
                 State.lastSelectedTab = position
                 invalidateOptionsMenu()
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
             }
         })
         passStore.syncPassStoreWithClassifier(getString(R.string.topic_new))
@@ -152,38 +130,37 @@ class PassListActivity : PassAndroidActivity() {
             passStore.classifier.moveToTopic(pass, newTitle)
         }
 
-        binding.fabActionScan.setOnClickListener {
-            scan()
-            binding.fam.collapse()
-        }
-
         binding.fabActionDemoPass.setOnClickListener {
             startActivityFromURL("http://espass.it/examples")
             binding.fam.collapse()
         }
 
-        if (Build.VERSION.SDK_INT >= VERSION_STARTING_TO_SUPPORT_STORAGE_FRAMEWORK) {
-            binding.fabActionOpenFile.setOnClickListener {
-                onAddOpenFileClick()
-            }
-            binding.fabActionOpenFile.visibility = VISIBLE
+        binding.fabActionOpenFile.setOnClickListener {
+            onAddOpenFileClick()
         }
+        binding.fabActionOpenFile.visibility = VISIBLE
 
         lifecycleScope.launch {
-            for (update in passStore.updateChannel.openSubscription()) {
-                binding.navigationView.passStoreUpdate()
-
-               refresh()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                passStore.updateChannel.collect {
+                    binding.navigationView.passStoreUpdate()
+                    refresh()
+                }
             }
-
-
         }
     }
 
     fun refresh() {
-        adapter.notifyDataSetChanged()
+        val selectedTopic = adapter.getTopicAt(binding.viewPager.currentItem)
+        adapter.refresh()
+        syncTabs()
 
-        setupWithViewPagerIfNeeded()
+        if (adapter.itemCount > 0) {
+            val selectedPosition = adapter.getTopicPosition(selectedTopic)
+                .takeIf { it >= 0 }
+                ?: State.lastSelectedTab.coerceIn(0, adapter.itemCount - 1)
+            binding.viewPager.setCurrentItem(selectedPosition, false)
+        }
 
         invalidateOptionsMenu()
         val empty = passStore.classifier.topicByIdMap.isEmpty()
@@ -219,12 +196,12 @@ class PassListActivity : PassAndroidActivity() {
     override fun onResume() {
         super.onResume()
 
-        adapter.notifyDataSetChanged()
+        adapter.refresh()
         refresh()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_emptytrash).isVisible = adapter.count > 0 && adapter.getPageTitle(binding.viewPager.currentItem) == getString(R.string.topic_trash)
+        menu.findItem(R.id.menu_emptytrash).isVisible = adapter.itemCount > 0 && adapter.getPageTitle(binding.viewPager.currentItem) == getString(R.string.topic_trash)
         return true
     }
 
@@ -243,31 +220,11 @@ class PassListActivity : PassAndroidActivity() {
         drawerToggle.onConfigurationChanged(newConfig)
     }
 
-    private fun setupWithViewPagerIfNeeded() {
-        if (!areTabLayoutAndViewPagerInSync()) {
-            binding.tabLayout.setupWithViewPager(binding.viewPager)
-        }
+    private fun syncTabs() {
+        tabLayoutMediator?.detach()
+        tabLayoutMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = adapter.getPageTitle(position)
+        }.apply { attach() }
     }
 
-    private fun areTabLayoutAndViewPagerInSync(): Boolean {
-        if (adapter.count != binding.tabLayout.tabCount) {
-            return false
-        }
-
-        for (i in 0 until adapter.count) {
-            val tabAt = binding.tabLayout.getTabAt(i)
-            if (tabAt == null || adapter.getPageTitle(i) != tabAt.text) {
-                return false
-            }
-        }
-        return true
-    }
-
-    override fun onBackPressed() {
-        when {
-            binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> binding.drawerLayout.closeDrawer(GravityCompat.START)
-            binding.fam.isExpanded -> binding.fam.collapse()
-            else -> super.onBackPressed()
-        }
-    }
 }

@@ -1,99 +1,69 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.trevjonez.composer'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'de.mobilej.unmock'
 
-repositories {
-    mavenCentral()
-    google()
-    maven { url 'https://www.jitpack.io' }
+def signingPropertiesFile = new File(System.getProperty("user.home"), ".config/passandroid/signing.properties")
+def signingProperties = new Properties()
+if (signingPropertiesFile.exists()) {
+    signingPropertiesFile.withInputStream { signingProperties.load(it) }
 }
 
 android {
 
-    compileSdkVersion 35
+    compileSdk 36
 
     defaultConfig {
         versionCode 373
         versionName "3.7.3"
-        minSdkVersion 23
-        targetSdkVersion 33
-        applicationId "org.ligi.passandroid"
-        namespace "org.ligi.passandroid"
+        minSdk 23
+        targetSdk 36
+        applicationId "org.jaime.passandroid"
         testInstrumentationRunner "org.ligi.passandroid.AppReplacingRunner"
         archivesBaseName = "PassAndroid-$versionName"
         vectorDrawables.useSupportLibrary = true
     }
 
-    flavorDimensions "maps", "analytics", "distribution"
-
-    productFlavors {
-
-        withMaps {
-            dimension "maps"
+    packaging {
+        resources {
+            excludes += [
+                    'asm-license.txt',
+                    'LICENSE',
+                    'NOTICE',
+                    'LICENSE.txt',
+                    'META-INF/maven/com.google.guava/guava/pom.properties',
+                    'META-INF/maven/com.google.guava/guava/pom.xml',
+                    'META-INF/lib_release.kotlin_module'
+            ]
         }
-
-        noMaps {
-            dimension "maps"
-        }
-
-        withAnalytics {
-            dimension "analytics"
-        }
-
-        noAnalytics {
-            dimension "analytics"
-        }
-
-        forFDroid {
-            dimension "distribution"
-        }
-
-        forPlay {
-            dimension "distribution"
-        }
-        forAmazon {
-            dimension "distribution"
-        }
-
     }
 
-    android.variantFilter { variant ->
-        def maps = variant.getFlavors().get(0).name
-        def analytics = variant.getFlavors().get(1).name
-        def distribution = variant.getFlavors().get(2).name
-
-        variant.setIgnore((project.hasProperty("singleFlavor") && (distribution != 'forPlay'))
-                || ((distribution == 'forAmazon' || distribution == 'forPlay') && analytics == 'noAnalytics')
-                || ((distribution == 'forAmazon' || distribution == 'forPlay') && maps == 'noMaps')
-                || (distribution == 'forFDroid' && analytics == 'withAnalytics')
-                || (distribution == 'forFDroid' && maps == 'withMaps'))
-    }
-
-    packagingOptions {
-        // needed for assertJ
-        exclude 'asm-license.txt'
-        exclude 'LICENSE'
-        exclude 'NOTICE'
-
-        // hack for instrumentation testing :-(
-        exclude 'LICENSE.txt'
-
-        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
-        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
-        exclude 'META-INF/lib_release.kotlin_module'
-    }
-
-    lintOptions {
+    lint {
         warning 'MissingTranslation'
         warning 'InvalidPackage'
         disable "NullSafeMutableLiveData"
-	baseline file("lint-baseline.xml")
+        baseline = file("lint-baseline.xml")
+    }
+
+    signingConfigs {
+        if (!signingProperties.isEmpty()) {
+            release {
+                storeFile file(signingProperties['storeFile'])
+                storePassword signingProperties['storePassword']
+                keyAlias signingProperties['keyAlias']
+                keyPassword signingProperties['keyPassword']
+                if (signingProperties['storeType']) {
+                    storeType signingProperties['storeType']
+                }
+            }
+        }
     }
 
     buildTypes {
         release {
+            if (!signingProperties.isEmpty()) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
@@ -116,17 +86,16 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+
     namespace 'org.ligi.passandroid'
 }
 
 dependencies {
-    implementation 'com.github.permissions-dispatcher:permissionsdispatcher-ktx:4.8.0'
-
     implementation "io.insert-koin:koin-android:3.4.2"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-service:2.8.7'
 
     androidTestImplementation 'com.github.ligi:trulesk:4.3'
     androidTestImplementation 'com.jraska:falcon:2.2.0'
@@ -146,33 +115,26 @@ dependencies {
     androidTestImplementation 'com.android.support:multidex:1.0.3'
 
 
-    implementation 'com.github.ligi:TouchImageView:2.1'
     implementation 'com.github.ligi:ExtraCompats:1.0'
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.4.6'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.fragment:fragment-ktx:1.6.0'
-    implementation 'androidx.webkit:webkit:1.12.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'androidx.fragment:fragment-ktx:1.8.8'
+    implementation 'androidx.webkit:webkit:1.14.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'net.i2p.android.ext:floatingactionbutton:1.10.1'
 
     implementation 'com.github.ligi:KAXT:1.0'
     implementation 'com.github.ligi:KAXTUI:1.0'
-    implementation 'com.github.ligi:loadtoast:1.10.11'
 
     implementation 'com.github.ligi:tracedroid:4.1'
     implementation 'com.jakewharton.timber:timber:5.0.1'
-
-    forPlayImplementation 'com.github.ligi.snackengage:snackengage-playrate:0.30'
-    forFDroidImplementation 'com.github.ligi.snackengage:snackengage-playrate:0.30'
-    forAmazonImplementation 'com.github.ligi.snackengage:snackengage-amazonrate:0.30'
 
     // https://medium.com/square-corner-blog/okhttp-3-13-requires-android-5-818bb78d07ce
     // Don't update to >=3.13 before minSDK 21 + Java 8
@@ -185,7 +147,7 @@ dependencies {
     implementation 'com.squareup.okio:okio:3.6.0'
 
     implementation 'com.squareup.moshi:moshi:1.15.0'
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
 
     implementation "com.chibatching.kotpref:kotpref:$kotpref_version"
     implementation "com.chibatching.kotpref:initializer:$kotpref_version"
@@ -201,7 +163,4 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
-    // requires minSDK 16 according to docs, not sure if it causes an issue
-    withAnalyticsImplementation 'com.google.android.gms:play-services-analytics:18.0.2'
-    withMapsImplementation 'com.google.android.gms:play-services-maps:17.0.0'
 }

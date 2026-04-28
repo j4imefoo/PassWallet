@@ -3,9 +3,9 @@ package org.ligi.passandroid.ui
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.ortiz.touch.TouchImageView
 import org.koin.android.ext.android.inject
 import org.ligi.passandroid.model.PassStore
+import org.ligi.passandroid.ui.views.ZoomImageView
 
 class TouchImageActivity : AppCompatActivity() {
 
@@ -14,7 +14,7 @@ class TouchImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val touchImageView = TouchImageView(this)
+        val touchImageView = ZoomImageView(this)
 
         setContentView(touchImageView)
 

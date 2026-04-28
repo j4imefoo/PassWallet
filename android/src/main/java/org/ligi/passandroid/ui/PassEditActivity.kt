@@ -1,6 +1,5 @@
 package org.ligi.passandroid.ui
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.IdRes
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
@@ -15,18 +15,19 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.passandroid.R
 import org.ligi.passandroid.databinding.EditBinding
+import org.ligi.passandroid.model.PassBitmapDefinitions
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.BarCode
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassBarCodeFormat
 import org.ligi.passandroid.model.pass.PassImpl
+import org.ligi.passandroid.ui.edit.BarCodeIntentIntegrator
 import org.ligi.passandroid.ui.edit.FieldsEditFragment
 import org.ligi.passandroid.ui.edit.ImageEditHelper
 import org.ligi.passandroid.ui.edit.dialogs.showBarcodeEditDialog
 import org.ligi.passandroid.ui.edit.dialogs.showCategoryPickDialog
 import org.ligi.passandroid.ui.edit.dialogs.showColorPickDialog
 import org.ligi.passandroid.ui.pass_view_holder.EditViewHolder
-import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.util.*
 
 class PassEditActivity : AppCompatActivity() {
@@ -34,6 +35,27 @@ class PassEditActivity : AppCompatActivity() {
     private lateinit var binding: EditBinding
     private lateinit var currentPass: PassImpl
     private val imageEditHelper by lazy { ImageEditHelper(this, passStore) }
+    private var pendingImageName: String? = null
+    private var pendingScanCallback: ((String, String) -> Unit)? = null
+
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        val imageName = pendingImageName
+        if (uri != null && imageName != null) {
+            imageEditHelper.importImage(uri, imageName)
+            refresh(currentPass)
+        }
+        pendingImageName = null
+    }
+
+    private val barcodeScanLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val data = result.data
+        val scanResultFormat = data?.getStringExtra("SCAN_RESULT_FORMAT")
+        val scanResult = data?.getStringExtra("SCAN_RESULT")
+        if (scanResultFormat != null && scanResult != null) {
+            pendingScanCallback?.invoke(scanResultFormat, scanResult)
+        }
+        pendingScanCallback = null
+    }
 
     internal val passStore: PassStore by inject()
 
@@ -50,7 +72,7 @@ class PassEditActivity : AppCompatActivity() {
                 when (i) {
                     0 -> showCategoryPickDialog(this@PassEditActivity, currentPass, refreshCallback)
                     1 -> showColorPickDialog(this@PassEditActivity, currentPass, refreshCallback)
-                    2 -> pickWithPermissionCheck(ImageEditHelper.REQ_CODE_PICK_ICON)
+                    2 -> pickWithPermissionCheck(PassBitmapDefinitions.BITMAP_ICON)
                 }
             }.show()
         }
@@ -76,49 +98,55 @@ class PassEditActivity : AppCompatActivity() {
             showBarcodeEditDialog(this@PassEditActivity,
                     refreshCallback,
                     this@PassEditActivity.currentPass,
-                    BarCode(PassBarCodeFormat.QR_CODE, UUID.randomUUID().toString().uppercase(Locale.ROOT)))
+                    BarCode(PassBarCodeFormat.QR_CODE, UUID.randomUUID().toString().uppercase(Locale.ROOT)),
+                    ::launchBarcodeScan)
         }
     }
 
-    private fun pickWithPermissionCheck(requestCode: Int) {
-        constructPermissionsRequest(Manifest.permission.READ_EXTERNAL_STORAGE) {
-            imageEditHelper.startPick(requestCode)
-        }.launch()
+    private fun pickWithPermissionCheck(@Pass.PassBitmap imageName: String) {
+        pendingImageName = imageName
+        imagePickerLauncher.launch("image/*")
+    }
+
+    private fun launchBarcodeScan(onScanResult: (String, String) -> Unit) {
+        val barCodeIntentIntegrator = BarCodeIntentIntegrator(this)
+        val intent = barCodeIntentIntegrator.createScanIntent(PassBarCodeFormat.values().map { it.name })
+        if (intent == null) {
+            barCodeIntentIntegrator.showDownloadDialog()
+            return
+        }
+
+        pendingScanCallback = onScanResult
+        barcodeScanLauncher.launch(intent)
     }
 
     val refreshCallback = { refresh(currentPass) }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        imageEditHelper.onActivityResult(requestCode, resultCode, data)
-    }
 
     private fun refresh(pass: Pass) {
         val passViewHolder = EditViewHolder(binding.passCard)
 
         passViewHolder.apply(pass, passStore, this)
 
-        prepareImageUI(R.id.logo_img, R.id.add_logo, ImageEditHelper.REQ_CODE_PICK_LOGO)
-        prepareImageUI(R.id.strip_img, R.id.add_strip, ImageEditHelper.REQ_CODE_PICK_STRIP)
-        prepareImageUI(R.id.footer_img, R.id.add_footer, ImageEditHelper.REQ_CODE_PICK_FOOTER)
+        prepareImageUI(R.id.logo_img, R.id.add_logo, PassBitmapDefinitions.BITMAP_LOGO)
+        prepareImageUI(R.id.strip_img, R.id.add_strip, PassBitmapDefinitions.BITMAP_STRIP)
+        prepareImageUI(R.id.footer_img, R.id.add_footer, PassBitmapDefinitions.BITMAP_FOOTER)
 
         binding.addBarcodeButton.visibility = if (pass.barCode == null) View.VISIBLE else View.GONE
         val barcodeUIController = BarcodeUIController(window.decorView, pass.barCode, this, passViewHelper)
-        barcodeUIController.getBarcodeView().setOnClickListener { showBarcodeEditDialog(this@PassEditActivity, refreshCallback, currentPass, currentPass.barCode!!) }
+        barcodeUIController.getBarcodeView().setOnClickListener {
+            showBarcodeEditDialog(this@PassEditActivity, refreshCallback, currentPass, currentPass.barCode!!, ::launchBarcodeScan)
+        }
     }
 
     @Pass.PassBitmap
-    private fun prepareImageUI(@IdRes logo_img: Int, @IdRes add_logo: Int, requestCode: Int) {
-        val imageString = ImageEditHelper.getImageStringByRequestCode(requestCode)!!
-
+    private fun prepareImageUI(@IdRes logo_img: Int, @IdRes add_logo: Int, imageString: String) {
         val bitmap = currentPass.getBitmap(passStore, imageString)
 
         val addButton = findViewById<Button>(add_logo)!!
         addButton.visibility = if (bitmap == null) View.VISIBLE else View.GONE
 
         val listener = View.OnClickListener {
-            pickWithPermissionCheck(requestCode)
+            pickWithPermissionCheck(imageString)
         }
 
         val logoImage = findViewById<ImageView>(logo_img)

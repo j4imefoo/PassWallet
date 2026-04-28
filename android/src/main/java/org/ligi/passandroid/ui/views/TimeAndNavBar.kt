@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.widget.TextViewCompat
 import org.ligi.passandroid.R
 
 @SuppressLint("RestrictedApi") // FIXME: temporary workaround for false-positive
@@ -19,10 +18,10 @@ class TimeAndNavBar constructor(context: Context, attrs: AttributeSet) : FrameLa
 
             val timeDrawable = getDrawable(context, R.drawable.ic_action_today)
 
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(findViewById(R.id.timeButton), null, null, timeDrawable, null)
+            findViewById<TextView>(R.id.timeButton).setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, timeDrawable, null)
 
             val navDrawable = getDrawable(context, R.drawable.ic_maps_place)
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(findViewById(R.id.locationButton), navDrawable, null, null, null)
+            findViewById<TextView>(R.id.locationButton).setCompoundDrawablesRelativeWithIntrinsicBounds(navDrawable, null, null, null)
         }
     }
 

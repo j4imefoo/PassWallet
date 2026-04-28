@@ -9,10 +9,11 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_width="0dip"
-        android:gravity="right"
-        android:paddingRight="4dp"
-        android:fontFamily="sans-serif"
-        android:textSize="18sp"
+        android:gravity="end"
+        android:paddingEnd="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="14sp"
+        android:textColor="?android:textColorSecondary"
         tools:text="Key"
         android:id="@+id/key" />
 
@@ -20,9 +21,10 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_width="0dip"
-        android:fontFamily="sans-serif-light"
-        android:paddingLeft="4dp"
-        android:textSize="18sp"
+        android:fontFamily="sans-serif"
+        android:paddingStart="8dp"
+        android:textSize="16sp"
+        android:textColor="?android:textColorPrimary"
         tools:text="Value"
         android:id="@+id/value" />
 </LinearLayout>

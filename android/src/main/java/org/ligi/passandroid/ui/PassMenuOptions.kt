@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.NavUtils
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.ligi.kaxt.startActivityFromClass
@@ -56,10 +55,12 @@ class PassMenuOptions(val activity: Activity, val pass: Pass) : KoinComponent {
                     passStore.deletePassWithId(pass.id)
                     if (activity is PassViewActivityBase) {
                         val passListIntent = Intent(activity, PassListActivity::class.java)
-                        NavUtils.navigateUpTo(activity, passListIntent)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        activity.startActivity(passListIntent)
+                        activity.finish()
                     }
                 }
-                builder.setNegativeButton(android.R.string.no, null)
+                builder.setNegativeButton(android.R.string.cancel, null)
 
                 builder.show()
 

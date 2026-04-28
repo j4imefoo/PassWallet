@@ -5,5 +5,5 @@
     <string name="preference_key_autolight" translatable="false">AUTOLIGHT</string>
     <string name="preference_key_condensed" translatable="false">CONDENSED</string>
 
-    <string name="authority_fileprovider" translatable="false">org.ligi.passandroid.fileprovider</string>
+    <string name="authority_fileprovider" translatable="false">org.jaime.passandroid.fileprovider</string>
 </resources>

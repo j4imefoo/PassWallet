@@ -113,35 +113,33 @@ object UnzipPassController : KoinComponent {
                     return
                 }
 
-                if (Build.VERSION.SDK_INT >= 21) {
-                    try {
-                        val file = File(spec.zipFileString)
-                        val readUtf8 = file.source().buffer().readUtf8(4)
-                        if (readUtf8 == "%PDF") {
-                            val open = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-                            val pdfRenderer = PdfRenderer(open)
+                try {
+                    val file = File(spec.zipFileString)
+                    val readUtf8 = file.source().buffer().readUtf8(4)
+                    if (readUtf8 == "%PDF") {
+                        val open = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+                        val pdfRenderer = PdfRenderer(open)
 
-                            val page = pdfRenderer.openPage(0)
-                            val ratio = page.height.toFloat() / page.width
+                        val page = pdfRenderer.openPage(0)
+                        val ratio = page.height.toFloat() / page.width
 
-                            val widthPixels = resources.displayMetrics.widthPixels
-                            val createBitmap = Bitmap.createBitmap(widthPixels, (widthPixels * ratio).toInt(), Bitmap.Config.ARGB_8888)
-                            page.render(createBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                        val widthPixels = resources.displayMetrics.widthPixels
+                        val createBitmap = Bitmap.createBitmap(widthPixels, (widthPixels * ratio).toInt(), Bitmap.Config.ARGB_8888)
+                        page.render(createBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-                            val imagePass = createPassForPDFImport(resources)
-                            val pathForID = spec.passStore.getPathForID(imagePass.id)
-                            pathForID.mkdirs()
+                        val imagePass = createPassForPDFImport(resources)
+                        val pathForID = spec.passStore.getPathForID(imagePass.id)
+                        pathForID.mkdirs()
 
-                            createBitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(File(pathForID, "strip.png")))
+                        createBitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(File(pathForID, "strip.png")))
 
-                            spec.passStore.save(imagePass)
-                            spec.passStore.classifier.moveToTopic(imagePass, "new")
-                            spec.onSuccessCallback?.call(imagePass.id)
-                            return
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                        spec.passStore.save(imagePass)
+                        spec.passStore.classifier.moveToTopic(imagePass, "new")
+                        spec.onSuccessCallback?.call(imagePass.id)
+                        return
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
                 spec.failCallback?.fail("Pass is not espass or pkpass format :-(")

@@ -1,12 +1,9 @@
 package org.ligi.passandroid.ui
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -27,9 +24,6 @@ import org.ligi.passandroid.model.PassBitmapDefinitions.BITMAP_ICON
 import org.ligi.passandroid.model.State
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.ui.UnzipPassController.InputStreamUnzipControllerSpec
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.RuntimePermissions
-import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.io.IOException
 
 @SuppressLint("Registered")
@@ -109,7 +103,7 @@ open class PassViewActivityBase : PassAndroidActivity() {
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val res = super.onPrepareOptionsMenu(menu)
         menu.findItem(R.id.menu_light).isVisible = !fullBrightnessSet
-        menu.findItem(R.id.menu_print).isVisible = Build.VERSION.SDK_INT >= 19
+        menu.findItem(R.id.menu_print).isVisible = true
         return res
     }
 
@@ -145,34 +139,31 @@ open class PassViewActivityBase : PassAndroidActivity() {
     }
 
     private fun createShortcut() {
-        constructPermissionsRequest(Manifest.permission.INSTALL_SHORTCUT) {
-            val passBitmap = currentPass.getBitmap(passStore, BITMAP_ICON)
-            val shortcutIcon = passBitmap?.scale(128, 128, filter = true) ?: BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
-            val name: CharSequence = currentPass.description.let {
-                if (it.isNullOrEmpty()) "pass" else it
-            }
+        val passBitmap = currentPass.getBitmap(passStore, BITMAP_ICON)
+        val shortcutIcon = passBitmap?.scale(128, 128, filter = true) ?: BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
+        val name: CharSequence = currentPass.description.let {
+            if (it.isNullOrEmpty()) "pass" else it
+        }
 
-            val targetIntent = Intent(this, PassViewActivity::class.java)
-                .setAction(Intent.ACTION_MAIN)
-                .putExtra(EXTRA_KEY_UUID, currentPass.id)
-            val shortcutInfo = ShortcutInfoCompat.Builder(this, "shortcut$name")
-                .setIntent(targetIntent)
-                .setShortLabel(name)
-                .setIcon(IconCompat.createWithBitmap(shortcutIcon))
-                .build()
-            ShortcutManagerCompat.requestPinShortcut(this, shortcutInfo, null)
-        }.launch()
+        val targetIntent = Intent(this, PassViewActivity::class.java)
+            .setAction(Intent.ACTION_MAIN)
+            .putExtra(EXTRA_KEY_UUID, currentPass.id)
+        val shortcutInfo = ShortcutInfoCompat.Builder(this, "shortcut$name")
+            .setIntent(targetIntent)
+            .setShortLabel(name)
+            .setIcon(IconCompat.createWithBitmap(shortcutIcon))
+            .build()
+        ShortcutManagerCompat.requestPinShortcut(this, shortcutInfo, null)
     }
 
     inner class UpdateAsync : Runnable {
 
-        private lateinit var dlg: ProgressDialog
+        private lateinit var dlg: Dialog
 
         override fun run() {
             val pass = currentPass
             runOnUiThread {
-                dlg = ProgressDialog(this@PassViewActivityBase)
-                dlg.setMessage(getString(R.string.downloading_new_pass_version))
+                dlg = createProgressDialog(getString(R.string.downloading_new_pass_version))
                 dlg.show()
             }
 
@@ -208,7 +199,7 @@ open class PassViewActivityBase : PassAndroidActivity() {
         override fun fail(reason: String) {
             runOnUiThread {
                 if (!isFinishing) {
-                    dlg.dismiss()
+                    dlg.dismissSafely()
                     AlertDialog.Builder(this@PassViewActivityBase).setMessage("Could not update pass :( $reason)")
                             .setPositiveButton(android.R.string.ok, null)
                             .show()
@@ -225,7 +216,7 @@ open class PassViewActivityBase : PassAndroidActivity() {
                 if (isFinishing) {
                     return@Runnable
                 }
-                dlg.dismiss()
+                dlg.dismissSafely()
                 if (currentPass.id != uuid) {
                     passStore.deletePassWithId(currentPass.id)
                 }

@@ -1,27 +1,35 @@
 package org.ligi.passandroid.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.commit
 import org.ligi.passandroid.R
+import org.ligi.passandroid.databinding.PreferencesBinding
 
 class PreferenceActivity : AppCompatActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.preferences)
+        val binding = PreferencesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        supportActionBar?.setDisplayShowTitleEnabled(true)
+        setSupportActionBar(binding.toolbar)
+        applyMaterialInsets(
+            root = binding.preferencesRoot,
+            appBar = binding.appbar,
+            content = binding.container,
+        )
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.commit {
+                replace(R.id.container, PrefsFragment())
+            }
+        }
+
+        supportActionBar?.title = getString(R.string.nav_settings)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -35,5 +43,3 @@ class PreferenceActivity : AppCompatActivity() {
     }
 
 }
-
-

@@ -174,10 +174,10 @@ object AppleStylePassReader {
             }
         }
 
+        val type = PassDefinitions.TYPE_TO_NAME[pass.type]
         try {
-            val type = PassDefinitions.TYPE_TO_NAME[pass.type]
-            val typeJSON = passJSON.getJSONObject(type)
-            if (typeJSON != null) {
+            if (type != null) {
+                val typeJSON = passJSON.getJSONObject(type)
                 val fieldList: ArrayList<PassField> = ArrayList()
 
                 addFields(fieldList, typeJSON, "primaryFields", translation)
@@ -189,7 +189,6 @@ object AppleStylePassReader {
                 fieldList.add(PassField("", context.getString(R.string.type), context.getString(getHumanCategoryString(pass.type)), false))
                 pass.fields = fieldList
             }
-
         } catch (ignored: JSONException) {
         }
 

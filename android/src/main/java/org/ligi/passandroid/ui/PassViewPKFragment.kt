@@ -14,16 +14,16 @@ import android.widget.LinearLayout
 import androidx.core.text.parseAsHtml
 import androidx.core.text.util.LinkifyCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
-import org.ligi.passandroid.maps.PassbookMapsFacade
 import org.ligi.passandroid.model.PassBitmapDefinitions
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.ui.pass_view_holder.VerbosePassViewHolder
 import android.util.Log
+
+private const val LINKIFY_MASK = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
 
 class PassViewPKFragment : Fragment() {
 
@@ -83,14 +83,6 @@ class PassViewPKFragment : Fragment() {
         processImage(requireActivity().findViewById(R.id.thumbnail_img_view), PassBitmapDefinitions.BITMAP_THUMBNAIL, pass)
         processImage(requireActivity().findViewById(R.id.strip_img_view), PassBitmapDefinitions.BITMAP_STRIP, pass)
 
-        val mapContainer = requireActivity().findViewById<View>(R.id.map_container)
-        if (mapContainer != null) {
-            if (!(pass.locations.isNotEmpty() && PassbookMapsFacade.init(activity as FragmentActivity))) {
-                @Suppress("PLUGIN_WARNING")
-                mapContainer.visibility = View.GONE
-            }
-        }
-
         val backStrBuilder = StringBuilder()
 
         fieldMap.forEach {
@@ -129,8 +121,8 @@ class PassViewPKFragment : Fragment() {
                     }
                 }
                 fieldMap[hint]!!.addView(v)
-                key?.let { LinkifyCompat.addLinks(it, Linkify.ALL) }
-                value?.let { LinkifyCompat.addLinks(it, Linkify.ALL) }
+                key?.let { LinkifyCompat.addLinks(it, LINKIFY_MASK) }
+                value?.let { LinkifyCompat.addLinks(it, LINKIFY_MASK) }
                 fieldCount[hint] = 1 + fieldCount[hint]!!
                     
             } 
@@ -143,7 +135,7 @@ class PassViewPKFragment : Fragment() {
             moreTextView.visibility = View.GONE
         }
 
-        LinkifyCompat.addLinks(backFields, Linkify.ALL)
+        LinkifyCompat.addLinks(backFields, LINKIFY_MASK)
 
         val passViewHolder = VerbosePassViewHolder(requireActivity().findViewById(R.id.pass_card))
         passViewHolder.apply(pass, passStore, requireActivity())

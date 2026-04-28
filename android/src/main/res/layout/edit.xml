@@ -53,6 +53,7 @@
                                 android:id="@+id/passTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:hint="@string/pass_title_hint"
                                 android:paddingTop="4dp"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:text="Title"

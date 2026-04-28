@@ -1,11 +1,12 @@
 package org.ligi.passandroid.model
 
 import android.content.Context
+import androidx.core.os.ConfigurationCompat
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import okio.buffer
 import okio.sink
 import okio.source
@@ -18,7 +19,7 @@ import org.ligi.passandroid.model.pass.PassImpl
 import org.ligi.passandroid.reader.AppleStylePassReader
 import org.ligi.passandroid.reader.PassReader
 import java.io.File
-import java.util.*
+import java.util.Locale
 
 object PassStoreUpdateEvent
 
@@ -28,7 +29,12 @@ class AndroidFileSystemPassStore(
         private val moshi: Moshi
 ) : PassStore, KoinComponent {
 
-    override val updateChannel = ConflatedBroadcastChannel<PassStoreUpdateEvent>()
+    private val mutableUpdateChannel = MutableSharedFlow<PassStoreUpdateEvent>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    override val updateChannel = mutableUpdateChannel.asSharedFlow()
 
     private val path: File = settings.getPassesDir()
 
@@ -70,7 +76,8 @@ class AndroidFileSystemPassStore(
 
     private fun readPass(id: String): Pass? {
         val pathForID = getPathForID(id)
-        val language = context.resources.configuration.locale.language
+        val language = ConfigurationCompat.getLocales(context.resources.configuration)[0]?.language
+            ?: Locale.getDefault().language
 
         if (!pathForID.exists() || !pathForID.isDirectory) {
             return null
@@ -128,9 +135,7 @@ class AndroidFileSystemPassStore(
     }
 
     override fun notifyChange() {
-        GlobalScope.launch {
-            updateChannel.send(PassStoreUpdateEvent)
-        }
+        mutableUpdateChannel.tryEmit(PassStoreUpdateEvent)
     }
 
     override fun syncPassStoreWithClassifier(defaultTopic: String) {

@@ -1,7 +1,7 @@
 package org.ligi.passandroid.ui
 
 import android.app.Activity
-import android.app.ProgressDialog
+import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.InputStreamWithSource
@@ -28,10 +28,11 @@ object UnzipPassDialog {
             return  // no need to act any more ..
         }
 
-        val dialog = ProgressDialog.show(activity,
-                activity.getString(R.string.unzip_pass_dialog_title),
-                activity.getString(R.string.unzip_pass_dialog_message),
-                true)
+        val dialog = activity.createProgressDialog(
+            activity.getString(R.string.unzip_pass_dialog_message),
+            R.string.unzip_pass_dialog_title,
+        )
+        dialog.show()
         dialog.setCancelable(false)
 
         class AlertDialogUpdater(private val call_after_finish: (path: String) -> Unit) : Runnable {
@@ -68,19 +69,14 @@ object UnzipPassDialog {
 
     }
 
-    private fun prepareResult(activity: Activity, dialog: ProgressDialog): Boolean {
+    private fun prepareResult(activity: Activity, dialog: Dialog): Boolean {
         if (activity.isFinishing) {
             return false
         }
 
         if (dialog.isShowing) {
-            try {
-                dialog.dismiss()
-                return true
-            } catch (ignored: IllegalArgumentException) {
-                // Would love a better option - searched a long time - found nothing - and this is better than a crash
-            }
-
+            dialog.dismissSafely()
+            return true
         }
         return false
     }

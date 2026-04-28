@@ -1,11 +1,9 @@
 package org.ligi.passandroid.printing
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
@@ -18,7 +16,6 @@ import org.ligi.passandroid.model.pass.Pass
 import java.io.FileOutputStream
 import java.io.IOException
 
-@TargetApi(Build.VERSION_CODES.KITKAT)
 class PassPrintDocumentAdapter(private val context: Context, private val pass: Pass, private val jobName: String) : PrintDocumentAdapter() {
 
     private var mPdfDocument: PrintedPdfDocument? = null

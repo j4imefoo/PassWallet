@@ -1,9 +1,9 @@
 package org.ligi.passandroid.ui
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.core.content.FileProvider
@@ -23,17 +23,18 @@ internal open class PassExportTaskAndShare(
     fun execute() {
         val file = File(activity.filesDir, "share/share.espass") // important - the FileProvider must be configured for this path
         val passExporter = PassExporter(inputPath, file)
-        val progressDialog = ProgressDialog(activity)
-        progressDialog.setTitle(R.string.preparing_pass)
-        progressDialog.setMessage(activity.getString(R.string.please_wait))
+        val progressDialog = activity.createProgressDialog(
+            activity.getString(R.string.please_wait),
+            R.string.preparing_pass,
+        )
         progressDialog.show()
 
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         Thread {
             passExporter.export()
             handler.post {
                 if (!activity.isFinishing && progressDialog.isShowing) {
-                    progressDialog.dismiss()
+                    progressDialog.dismissSafely()
                 }
 
                 if (passExporter.exception != null) {

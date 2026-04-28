@@ -8,7 +8,9 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,20 +49,27 @@ class PassListFragment : Fragment() {
                     = false
 
             override fun onSwiped(viewHolder: ViewHolder, swipeDir: Int) {
-                this@PassListFragment.onSwiped(viewHolder.adapterPosition, swipeDir)
+                this@PassListFragment.onSwiped(viewHolder.bindingAdapterPosition, swipeDir)
             }
         }
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(inflate.passRecyclerview)
 
-        lifecycleScope.launch {
-            for (update in passStore.updateChannel.openSubscription()) {
-                passStoreProjection.refresh()
-                adapter.notifyDataSetChanged()
+        return inflate.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                passStore.updateChannel.collect {
+                    passStoreProjection.refresh()
+                    adapter.notifyDataSetChanged()
+                }
             }
         }
-        return inflate.root
     }
 
     @VisibleForTesting

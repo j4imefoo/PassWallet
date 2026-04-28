@@ -29,14 +29,14 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_image_photo_camera"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="scan"/>
+                android:contentDescription="@string/barcode_edit_scan"/>
 
         <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/randomButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_places_casino"
-                android:contentDescription="random"
+                android:contentDescription="@string/barcode_edit_random"
                 android:layout_gravity="center_vertical"
         />
 

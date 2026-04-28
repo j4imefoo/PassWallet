@@ -15,7 +15,6 @@ import org.ligi.passandroid.model.AndroidFileSystemPassStore
 import org.ligi.passandroid.model.AndroidSettings
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.Settings
-import org.ligi.passandroid.scan.events.PassScanEventChannelProvider
 import org.ligi.tracedroid.TraceDroid
 
 open class App : Application() {
@@ -33,7 +32,6 @@ open class App : Application() {
             single { AndroidFileSystemPassStore(this@App, get(), moshi) as PassStore }
             single { settings as Settings }
             single { createTracker(this@App) }
-            single { PassScanEventChannelProvider() }
         }
     }
 

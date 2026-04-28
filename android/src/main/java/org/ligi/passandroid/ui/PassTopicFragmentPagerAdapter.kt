@@ -1,30 +1,29 @@
 package org.ligi.passandroid.ui
 
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.ligi.passandroid.model.PassClassifier
 
-class PassTopicFragmentPagerAdapter(private val passClassifier: PassClassifier, fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+class PassTopicFragmentPagerAdapter(private val passClassifier: PassClassifier, activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
-    private lateinit var topics: Array<String>
+    private var topics: List<String> = passClassifier.getTopics().toList()
 
-    init {
+    override fun createFragment(position: Int) = PassListFragment.newInstance(topics[position])
+
+    override fun getItemCount() = topics.size
+
+    fun getPageTitle(position: Int) = topics[position]
+
+    override fun getItemId(position: Int) = topics[position].hashCode().toLong()
+
+    override fun containsItem(itemId: Long) = topics.any { it.hashCode().toLong() == itemId }
+
+    fun refresh() {
+        topics = passClassifier.getTopics().toList()
         notifyDataSetChanged()
     }
 
-    override fun notifyDataSetChanged() {
-        val topics = passClassifier.getTopics()
-        this.topics = topics.toTypedArray()
-        super.notifyDataSetChanged()
-    }
+    fun getTopicPosition(topic: String?) = topics.indexOf(topic)
 
-    override fun getItem(position: Int) = PassListFragment.newInstance(topics[position])
-
-    // TODO - return POSITION_UNCHANGED in some cases
-    override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
-
-    override fun getCount() = topics.size
-
-    override fun getPageTitle(position: Int) = topics[position]
+    fun getTopicAt(position: Int) = topics.getOrNull(position)
 }

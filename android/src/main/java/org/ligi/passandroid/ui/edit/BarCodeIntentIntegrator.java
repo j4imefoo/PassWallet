@@ -89,7 +89,7 @@ import timber.log.Timber;
  * @author Brad Drehmer
  * @author gcstang
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "deprecation"})
 public class BarCodeIntentIntegrator {
 
     public static final int REQUEST_CODE = 0x0000c0de; // Only use bottom 16 bits
@@ -279,12 +279,23 @@ public class BarCodeIntentIntegrator {
      * if a prompt was needed, or null otherwise
      */
     public final AlertDialog initiateScan(Collection<String> desiredBarcodeFormats, int cameraId) {
+        Intent intentScan = createScanIntent(desiredBarcodeFormats, cameraId);
+        if (intentScan == null) {
+            return showDownloadDialog();
+        }
+        startActivityForResult(intentScan, REQUEST_CODE);
+        return null;
+    }
+
+    public final Intent createScanIntent(Collection<String> desiredBarcodeFormats) {
+        return createScanIntent(desiredBarcodeFormats, -1);
+    }
+
+    public final Intent createScanIntent(Collection<String> desiredBarcodeFormats, int cameraId) {
         Intent intentScan = new Intent(BS_PACKAGE + ".SCAN");
         intentScan.addCategory(Intent.CATEGORY_DEFAULT);
 
-        // check which types of codes to scan for
         if (desiredBarcodeFormats != null) {
-            // set the desired barcode types
             StringBuilder joinedByComma = new StringBuilder();
             for (String format : desiredBarcodeFormats) {
                 if (joinedByComma.length() > 0) {
@@ -295,21 +306,20 @@ public class BarCodeIntentIntegrator {
             intentScan.putExtra("SCAN_FORMATS", joinedByComma.toString());
         }
 
-        // check requested camera ID
         if (cameraId >= 0) {
             intentScan.putExtra("SCAN_CAMERA_ID", cameraId);
         }
 
         String targetAppPackage = findTargetAppPackage(intentScan);
         if (targetAppPackage == null) {
-            return showDownloadDialog();
+            return null;
         }
+
         intentScan.setPackage(targetAppPackage);
         intentScan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentScan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         attachMoreExtras(intentScan);
-        startActivityForResult(intentScan, REQUEST_CODE);
-        return null;
+        return intentScan;
     }
 
     /**
@@ -352,31 +362,12 @@ public class BarCodeIntentIntegrator {
         return false;
     }
 
-    private AlertDialog showDownloadDialog() {
+    public AlertDialog showDownloadDialog() {
         AlertDialog.Builder downloadDialog = new AlertDialog.Builder(activity);
         downloadDialog.setTitle(title);
         downloadDialog.setMessage(message);
         downloadDialog.setPositiveButton(buttonYes, (dialogInterface, i) -> {
-            String packageName;
-            if (targetApplications.contains(BS_PACKAGE)) {
-                // Prefer to suggest download of BS if it's anywhere in the list
-                packageName = BS_PACKAGE;
-            } else {
-                // Otherwise, first option:
-                packageName = targetApplications.get(0);
-            }
-            Uri uri = Uri.parse("market://details?id=" + packageName);
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            try {
-                if (fragment == null) {
-                    activity.startActivity(intent);
-                } else {
-                    fragment.startActivity(intent);
-                }
-            } catch (ActivityNotFoundException anfe) {
-                // Hmm, market is not installed
-                Timber.w("Google Play is not installed; cannot install " + packageName);
-            }
+            Timber.i("No compatible barcode scanner app is installed");
         });
         downloadDialog.setNegativeButton(buttonNo, null);
         downloadDialog.setCancelable(true);

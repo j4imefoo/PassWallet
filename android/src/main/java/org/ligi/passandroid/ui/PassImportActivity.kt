@@ -1,6 +1,5 @@
 package org.ligi.passandroid.ui
 
-import android.Manifest
 import android.os.Bundle
 import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +15,6 @@ import org.ligi.passandroid.Tracker
 import org.ligi.passandroid.databinding.ActivityImportBinding
 import org.ligi.passandroid.functions.fromURI
 import org.ligi.passandroid.model.PassStore
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.RuntimePermissions
-import permissions.dispatcher.ktx.constructPermissionsRequest
 
 class PassImportActivity : AppCompatActivity() {
 
@@ -27,19 +22,7 @@ class PassImportActivity : AppCompatActivity() {
     val tracker: Tracker by inject()
     val passStore: PassStore by inject()
 
-    private fun doImportWithPermissionCheck(withPermission: Boolean) {
-        if (!withPermission) {
-            doImport(false)
-        } else {
-            (constructPermissionsRequest(
-                Manifest.permission.READ_MEDIA_IMAGES, onPermissionDenied = ::onExternalStorageDenied, onNeverAskAgain = ::onExternalStorageDenied
-            ) {
-                doImport(true)
-            }).launch()
-        }
-    }
-
-    private fun doImport(withPermission: Boolean) {
+    private fun doImport() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val fromURI = fromURI(this@PassImportActivity, intent!!.data!!, tracker)
@@ -75,8 +58,10 @@ class PassImportActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                if (e.message?.contains("Permission") == true && !withPermission) {
-                    doImportWithPermissionCheck(true)
+                if (e.message?.contains("Permission") == true) {
+                    withContext(Dispatchers.Main) {
+                        onExternalStorageDenied()
+                    }
                 } else {
                     tracker.trackException("Error in import", e, false)
                 }
@@ -96,7 +81,7 @@ class PassImportActivity : AppCompatActivity() {
         binding = ActivityImportBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        doImportWithPermissionCheck(false)
+        doImport()
     }
 
     private fun onExternalStorageDenied() {

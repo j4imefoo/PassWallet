@@ -1,66 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">"PassAndroid"</string>
-    <string name="logo">"logo"</string>
     <string name="menu_map">Show on map</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_share">Share</string>
     <string name="menu_print">Print</string>
     <string name="menu_edit">Edit</string>
+    <string name="menu_light">Brightness</string>
     <string name="barcode">"barcode"</string>
     <string name="help_label">"Help"</string>
+    <string name="app_tagline">Offline travel passes</string>
 <string name="help_content"><![CDATA[
-<h1>What is it?</h1>
+<h1>PassAndroid</h1>
 
-This app is a viewer for passbooks - a passbook could be a e.g. <b>boarding-pass</b> for your next flight,
-a coupon for a nice hot beverage on the destination, a movie ticket, a membership card - there are a lot of possibilities.
-Basically it is a replacement for a piece of paper or plastic you would normally have to carry with you - so lets save some trees and <b>reduce waste!</b>
+Keep boarding passes, train tickets, event tickets, coupons and loyalty cards in one place.
+Once a pass is imported, it stays available <b>offline</b>.
 
-<h1>Example passes</h1>
-
-Do you need some passes to play around and see things in action? <a href=\'http://espass.it/examples/\'>Here are some</a> for you!
-
-<h1>How does it work?</h1>
-
-There are so called pkpass files - you can open them with this app - e.g. when you receive them via email or get an Download-option.
-The most important content is the BarCode ( QR , AZTEC & PDF417which authorizes you most of the time - but it also has other interesting content like a description - often a time (hat you now can add to your calendar  - often also locations (o give you directions) - just try It out!
-The app is offline usable once you downloaded the pass!
-
-<h1>FAQ</h1>
-
-<h2>How can I transfer passbooks from iPhone to PassAndroid?</h2>
+<h1>How to use it</h1>
 <ol>
-<li>Open the passbook on the iPhone</li>
-<li>Click on the share icon in the bottom left corner.</li>
-<li>Send you a mail with the passbook which your Android device can receive.</li>
-<li>Open the new mail on your Android device and save the attachment.</li>
-<li>Let PassAndroid scan for passbooks.</li>
-<li>The new passbook is visible in PassAndroid.</li>
+<li>Open a <b>.pkpass</b> or <b>.espass</b> file from your browser, email or file manager.</li>
+<li>Import the pass once.</li>
+<li>Use the barcode, details and attachments later without a network connection.</li>
 </ol>
 
-<H1>Credits</H1>
-Big thanks to <a href=\'http://ltorrecilla.com/\'>Luis Torrecilla</a> for the Design
-and <a href=\'https://github.com/cketti\'>cketti</a>,
-<a href=\'https://github.com/simontb\'>Simon Tenbeitel</a>
-and <a href=\'https://github.com/irgendwr\'>Jonas Bögle</a>
-for pull-requests!
+<h1>Useful while travelling</h1>
+<ul>
+<li>Fast offline access to the barcode</li>
+<li>Readable trip details and times</li>
+<li>Quick links to maps and calendar when the pass provides them</li>
+<li>No account required</li>
+</ul>
+
+<h1>Sample passes</h1>
+Need something to test with? <a href=\'http://espass.it/examples/\'>Open example passes</a>.
 
 <h1>Feedback</h1>
-Give feedback via email <a href=\'mailto:ligi@ligi.de\'> to the author.</a>
-If you like the app rate it on <a href=\'https://play.google.com/store/apps/details?id=org.ligi.ticketviewer\'>Google Play</a>.
-I also would love to hear stories about where you used this app.
-
-<h1>History</h1>
-
-I stumbled upon Passbook files when i received my ticket for the 29c3 - I liked the Idea - but there was no Android App which was working for me.
-I saw that the implementation is quite easy ( just a zip container with json and images ) - The first version was build very quick & was working for me ( got entry to 29C3 ) - In the following year I have not worked on this app much as I had no real use-cases but there where a lot of users downloading the app ( nearly 100k now ) and I fixed processing of some passes that where send to me ( some passes contain really broken json .. )
-One year later - just before the 30C3 - I came to work a bit on this app again - for 2 reasons:
- - a friend of mine is very into this whole BTLE thing and location beacon / context aware thing could be interesting for Passbook - but nothing ready yet
- - I got a mail from a nice designer who did a nice redesign
-This all was leading to PassAndroid - a completely new version - with a new look and new functions (sorting and adding to calendar alongside pull to refresh a navigation drawer and contextual ActionBar menu
-
-<h1>More</h1>
-This app ist best launched with <a href=\'https://play.google.com/store/apps/details?id=org.ligi.fast&referrer=utm_source%3Dticketview%26utm_medium%3Dapp\'>FAST App Search Tool</a> which is available for free and needs not a single permission!
+Send feedback by email <a href=\'mailto:ligi@ligi.de\'>to the author</a> or visit the project page on GitHub.
 
 <h1>Legal</h1>
 <p>This app is not affiliated with Apple - Passbook might be trademarked by Apple, but it\'s introduced like a standard so this should be okay.</p>
@@ -75,9 +50,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     ]]></string>
     <string name="drawer_open">"open"</string>
     <string name="drawer_close">"close"</string>
-    <string name="pass_problem">"Sorry, but there was a problem processing this Passbook. If you want you can send me this passbook so I can check what the problem is and improve the software."</string>
-    <string name="problem">"Problem"</string>
-    <string name="send">"Send"</string>
     <string name="delete">"Delete!"</string>
     <string name="choose_location">"Choose Location"</string>
     <string name="boarding_pass">"Boarding Pass"</string>
@@ -85,13 +57,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="category_coupon">"Coupon"</string>
     <string name="category_storecard">"Store Card"</string>
     <string name="category_generic">"generic"</string>
-    <string name="category_none">"no Category"</string>
-    <string name="nav_more">"MORE"</string>
-    <string name="nav_sort">"SORT"</string>
-    <string name="nav_sort_category">"Category"</string>
-    <string name="nav_sort_date">"Date"</string>
-    <string name="nav_categories">"CATEGORIES"</string>
-    <string name="nav_share">"Share"</string>
     <string name="pass_directions">"Navigate"</string>
     <string name="pass_to_calendar">"to Calendar"</string>
     <string name="invalid_passbook_title">Invalid Passbook</string>
@@ -104,16 +69,13 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="dialog_delete_confirm_delete_source_checkbox">also delete source?</string>
     <string name="more">MORE</string>
     <string name="less">LESS</string>
-    <string name="scanning_for_passes">Scanning for Passes</string>
-    <string name="fab_choice_scan_pkpass_files">Scan for pkpass files</string>
-    <string name="fab_choice_add_demo_pass">Add Demo-Pass</string>
-    <string name="fab_choice_create_pass">Create Pass</string>
-    <string name="empty_text_view"><big><b>No pass yet</b></big>
-    \n\n\n You can search your phone for passes
-    \n\n or create your own
-    \n\n or try a demo pass
-    \n\n just press + down below
-    </string>
+    <string name="fab_choice_add_demo_pass">Open sample pass</string>
+    <string name="fab_choice_create_pass">Create pass</string>
+    <string name="empty_text_view"><![CDATA[<big><b>Your travel passes live here</b></big>
+
+Import a pass from a file or open a sample pass to try the app.
+
+Everything you import stays available offline.]]></string>
     <string name="downloading_new_pass_version">downloading new pass version</string>
     <string name="unzip_pass_dialog_title">Opening Passbook</string>
     <string name="unzip_pass_dialog_message">Please wait…</string>
@@ -128,19 +90,11 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="move_to_new_topic">Move to new Topic</string>
     <string name="categories_nav">%d Categories</string>
     <string name="passes_nav">%d Passes</string>
-    <string name="found_pass">found: %s</string>
-    <string name="found__pass">And %d more</string>
-    <string name="scan_finished_dialog_title">Scan finished.</string>
-    <string name="scan_finished_dialog_text">found %d passes</string>
     <string name="emtytrash_label">empty trash</string>
     <string name="barcode_edit_hint_alternative_message">alternative Message</string>
     <string name="barcode_edit_random">random</string>
     <string name="barcode_edit_scan">scan</string>
     <string name="barcode_edit_message">Message</string>
-    <string name="barcode_edit_aztec">AZTEC</string>
-    <string name="barcode_edit_pdf417">PDF417</string>
-    <string name="barcode_edit_qr">QR</string>
-    <string name="barcode_edit_button_add_barcode">Add Barcode</string>
     <string name="categories_voucher">voucher</string>
     <string name="edit_time">edit time</string>
     <string name="edit_location">edit location</string>
@@ -148,8 +102,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="add_back_fields">Add back field</string>
     <string name="change_color_dialog_title">Select color</string>
     <string name="select_category_dialog_title">Select category</string>
-    <string name="barcode_edit_code128">code 128</string>
-    <string name="barcode_edit_code39">code 39</string>
     <string name="add_footer_image">add footer image</string>
     <string name="add_logo_image">add logo image</string>
     <string name="add_header_image">add header image</string>
@@ -161,6 +113,9 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="new_topic_suggestions">Suggestions:</string>
     <string name="cannot_be_empty">cannot be empty</string>
     <string name="please_use_the_swipe_feature">Please use the swipe feature</string>
+    <string name="pass_title_hint">Pass title</string>
+    <string name="edit_field_label_hint">Label</string>
+    <string name="edit_field_value_hint">Value</string>
     <string name="type">Type</string>
     <string name="undo">undo</string>
 
@@ -208,15 +163,11 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="field_source_pdf">PDF</string>
     <string name="field_note_pdf">This is imported from a PDF - not a real pass</string>
     <string name="nav_settings">Settings</string>
-    <string name="nav_github">GitHub</string>
-    <string name="nav_betatest_opt_in_out">Betatest opt-in/out</string>
-    <string name="nav_improve_translation">Improve translation</string>
     <string name="launcher_shortcut">Launcher shortcut</string>
     <string name="open_file">Open File</string>
 
     <string name="error_no_permission_msg">Need permission to import pass</string>
     <string name="error_no_permission_title">Permission Error</string>
-    <string name="scan_pass_message">Scanning for passes. Please wait.</string>
 
 
 </resources>

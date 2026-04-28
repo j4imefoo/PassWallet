@@ -1,12 +1,11 @@
 package org.ligi.passandroid.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
-import androidx.core.app.NavUtils
-import androidx.core.app.TaskStackBuilder
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -15,6 +14,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.ligi.kaxt.disableRotation
 import org.ligi.passandroid.R
+import org.ligi.passandroid.maps.PassbookMapsFacade
 import org.ligi.passandroid.model.PassStoreProjection
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassType
@@ -30,11 +30,17 @@ class PassViewActivity : PassViewActivityBase() {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
         } else {
+            @Suppress("DEPRECATION")
             this.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         }
 
         disableRotation()
         setContentView(R.layout.activity_pass_view_base)
+        applyMaterialInsets(
+            root = findViewById(R.id.pass_view_root),
+            appBar = findViewById(R.id.appbar),
+            content = findViewById(R.id.pager),
+        )
 
         pagerAdapter = CollectionPagerAdapter(this, PassStoreProjection(passStore,
                 passStore.classifier.getTopic(currentPass, ""),
@@ -100,7 +106,7 @@ class PassViewActivity : PassViewActivityBase() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_map).isVisible = currentPass.locations.isNotEmpty()
+        menu.findItem(R.id.menu_map).isVisible = currentPass.locations.isNotEmpty() && PassbookMapsFacade.hasSupport()
         menu.findItem(R.id.menu_update).isVisible = mightPassBeAbleToUpdate(currentPass)
         menu.findItem(R.id.install_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
         return super.onPrepareOptionsMenu(menu)
@@ -115,16 +121,9 @@ class PassViewActivity : PassViewActivityBase() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
-            val upIntent = NavUtils.getParentActivityIntent(this)
-            if (upIntent != null) {
-                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-                    TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities()
-                    finish()
-                } else {
-                    NavUtils.navigateUpTo(this, upIntent)
-                }
-                true
-            } else false
+            startActivity(Intent(this, PassListActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP))
+            finish()
+            true
         }
 
         else -> super.onOptionsItemSelected(item)

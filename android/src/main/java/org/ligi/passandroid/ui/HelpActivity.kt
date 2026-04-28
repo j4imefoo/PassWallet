@@ -1,16 +1,18 @@
 package org.ligi.passandroid.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import org.ligi.compat.HtmlCompat
 import org.ligi.passandroid.BuildConfig
 import org.ligi.passandroid.R
 import org.ligi.passandroid.databinding.ActivityHelpBinding
 import org.xml.sax.XMLReader
+import java.util.Locale
 
 class HelpActivity : AppCompatActivity() {
 
@@ -18,8 +20,16 @@ class HelpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityHelpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        applyMaterialInsets(
+            root = binding.helpRoot,
+            appBar = binding.appbar,
+            content = binding.helpScroll,
+        )
 
-        val html = HtmlCompat.fromHtml(getString(R.string.help_content), null, ListTagHandler())
+        val englishResources = createConfigurationContext(Configuration(resources.configuration).apply {
+            setLocale(Locale.ENGLISH)
+        }).resources
+        val html = HtmlCompat.fromHtml(englishResources.getString(R.string.help_content), null, ListTagHandler())
 
         binding.helpText.text = html
         binding.helpText.movementMethod = LinkMovementMethod()

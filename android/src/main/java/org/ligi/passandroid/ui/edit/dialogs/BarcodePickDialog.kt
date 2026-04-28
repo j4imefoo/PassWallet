@@ -8,10 +8,16 @@ import org.ligi.passandroid.model.pass.BarCode
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.ui.edit.BarcodeEditController
 
-fun showBarcodeEditDialog(context: AppCompatActivity, refreshCallback: () -> Unit, pass: Pass, barCode: BarCode) {
+fun showBarcodeEditDialog(
+    context: AppCompatActivity,
+    refreshCallback: () -> Unit,
+    pass: Pass,
+    barCode: BarCode,
+    launchScan: (onScanResult: (String, String) -> Unit) -> Unit,
+) {
     val view = context.inflate(R.layout.barcode_edit)
 
-    val barcodeEditController = BarcodeEditController(view, context, barCode)
+    val barcodeEditController = BarcodeEditController(view, context, barCode, launchScan)
 
     AlertDialog.Builder(context).setView(view)
             .setTitle(R.string.edit_barcode_dialog_title)
