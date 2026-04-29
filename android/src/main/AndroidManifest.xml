@@ -198,6 +198,30 @@
                     android:pathPattern="/.*\.pdf"
                     android:scheme="file" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="application/vnd.espass-espass" />
+                <data android:mimeType="application/vnd.espass-espass+zip" />
+                <data android:mimeType="application/vnd.apple.pkpass" />
+                <data android:mimeType="application/vnd.apple.pkpasses" />
+                <data android:mimeType="application/pkpass" />
+                <data android:mimeType="application/pkpasses" />
+                <data android:mimeType="application/vndapplepkpass" />
+                <data android:mimeType="application/vnd-com.apple.pkpass" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/zip" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".ui.TouchImageActivity" />

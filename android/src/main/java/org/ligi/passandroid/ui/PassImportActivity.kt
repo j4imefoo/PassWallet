@@ -1,5 +1,7 @@
 package org.ligi.passandroid.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
@@ -22,10 +24,26 @@ class PassImportActivity : AppCompatActivity() {
     val tracker: Tracker by inject()
     val passStore: PassStore by inject()
 
+    private fun importUri(): Uri? {
+        intent.data?.let { return it }
+
+        return when (intent.action) {
+            Intent.ACTION_SEND -> intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            else -> null
+        }
+    }
+
     private fun doImport() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val fromURI = fromURI(this@PassImportActivity, intent!!.data!!, tracker)
+                val uri = importUri()
+                if (uri == null) {
+                    tracker.trackException("invalid_import_uri", false)
+                    withContext(Dispatchers.Main) { finish() }
+                    return@launch
+                }
+
+                val fromURI = fromURI(this@PassImportActivity, uri, tracker)
 
                 withContext(Dispatchers.Main) {
 
@@ -76,7 +94,7 @@ class PassImportActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent.data?.scheme == null) {
+        if (importUri()?.scheme == null) {
             tracker.trackException("invalid_import_uri", false)
             finish()
             return

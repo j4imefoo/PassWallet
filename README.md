@@ -5,13 +5,8 @@ Android app to view passes (e.g. event tickets, coupons, loyalty cards, boarding
 
 This is Jaime's PassWallet fork of PassAndroid, with a cleaner UI, integrated barcode scanning, `.pkpass`/`.pkpasses` import support, and package id `org.baumweg.passwallet`.
 
-![Screenshots](https://ligi.de/img/passandroid_screenshots.png)
-
 Displays [esPass](https://espass.it) (`*.esPass`) and Passbook (`*.pkpass`, `*.pkpasses`) files, shows barcodes (QR, PDF417, AZTEC, Code 39 and Code 128 format), and is also usable offline.
 
-When preparing for the Chaos Communication Congress 2012 #29c3 I stumbled upon a passbook file for the first time.
-I really like the idea of paperless tickets as it saves time and trees which are both very valuable to me.
-The problem was that I was unable to find an app to open and use the downloaded passbook files with, that's why I wrote my own one.
 
 ## Legal
 
