@@ -29,7 +29,8 @@ fun loadPassFromAsset(asset: String, callback: (pass: Pass?) -> Unit) {
         val spec = InputStreamUnzipControllerSpec(inputStreamWithSource, instrumentation.targetContext, mock(
                 PassStore::class.java),
                 object : UnzipPassController.SuccessCallback {
-                    override fun call(uuid: String) {
+                    override fun call(uuids: List<String>) {
+                        val uuid = uuids.first()
                         callback.invoke(AppleStylePassReader.read(File(getTestTargetPath(instrumentation.targetContext), uuid), "en",
                                 instrumentation.targetContext,TestApp.tracker))
                     }

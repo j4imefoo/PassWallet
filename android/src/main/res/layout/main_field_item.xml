@@ -3,28 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <TextView
-        android:layout_weight="1"
+        android:id="@+id/key"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="0dip"
-        android:gravity="end"
-        android:paddingEnd="8dp"
         android:fontFamily="sans-serif-medium"
-        android:textSize="14sp"
+        android:letterSpacing="0.06"
+        android:textAllCaps="true"
         android:textColor="?android:textColorSecondary"
-        tools:text="Key"
-        android:id="@+id/key" />
+        android:textSize="12sp"
+        tools:text="Key" />
 
     <TextView
-        android:layout_weight="1"
+        android:id="@+id/value"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="0dip"
         android:fontFamily="sans-serif"
-        android:paddingStart="8dp"
-        android:textSize="16sp"
-        android:textColor="?android:textColorPrimary"
-        tools:text="Value"
-        android:id="@+id/value" />
+        android:paddingTop="3dp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="18sp"
+        tools:text="Value" />
 </LinearLayout>

@@ -42,16 +42,20 @@ class PassImportActivity : AppCompatActivity() {
                             val spec = UnzipPassController.InputStreamUnzipControllerSpec(fromURI, application, passStore, null, null)
                             UnzipPassController.processInputStream(spec)
                         } else {
-                            UnzipPassDialog.show(fromURI, this@PassImportActivity, passStore) { path ->
-                                // TODO this is kind of a hack - there should be a better way
-                                val id = path.split("/".toRegex()).dropLastWhile(String::isEmpty).toTypedArray().last()
+                            UnzipPassDialog.show(fromURI, this@PassImportActivity, passStore) { importedIds ->
+                                importedIds.forEach { id ->
+                                    passStore.getPassbookForId(id)?.let { pass ->
+                                        passStore.classifier.moveToTopic(pass, TopicNames.NEW)
+                                    }
+                                }
 
-                                val passbookForId = passStore.getPassbookForId(id)
-                                passStore.currentPass = passbookForId
-
-                                passStore.classifier.moveToTopic(passbookForId!!, getString(R.string.topic_new))
-
-                                startActivityFromClass(PassViewActivity::class.java)
+                                if (importedIds.size == 1) {
+                                    val passbookForId = passStore.getPassbookForId(importedIds.first())
+                                    passStore.currentPass = passbookForId
+                                    startActivityFromClass(PassViewActivity::class.java)
+                                } else {
+                                    startActivityFromClass(PassListActivity::class.java)
+                                }
                                 finish()
                             }
                         }

@@ -5,7 +5,6 @@ import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate.*
 import org.ligi.passandroid.R
 import org.ligi.passandroid.R.string.preference_key_autolight
-import org.ligi.passandroid.R.string.preference_key_condensed
 import org.ligi.passandroid.model.comparator.PassSortOrder
 import java.io.File
 
@@ -26,8 +25,6 @@ class AndroidSettings(val context: Context) : Settings {
     override fun getPassesDir() = File(context.filesDir.absolutePath, "passes")
 
     override fun getStateDir() = File(context.filesDir, "state")
-
-    override fun isCondensedModeEnabled() = sharedPreferences.getBoolean(context.getString(preference_key_condensed), false)
 
     override fun isAutomaticLightEnabled() = sharedPreferences.getBoolean(context.getString(preference_key_autolight), true)
 

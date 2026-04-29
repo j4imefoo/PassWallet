@@ -53,6 +53,7 @@ abstract class PassViewHolder(val view: CardView) : RecyclerView.ViewHolder(view
         timeAndNavBar.findViewById<TextView>(R.id.timeButton).visibility = getVisibilityForGlobalAndLocal(noButtons, dateOrExtraText != null)
 
         val iconBitmap = pass.getBitmap(passStore, PassBitmapDefinitions.BITMAP_ICON)
+            ?: pass.getBitmap(passStore, PassBitmapDefinitions.BITMAP_LOGO)
 
         val categoryView = view.findViewById<CategoryIndicatorViewWithIcon>(R.id.categoryView)
         iconBitmap?.let { categoryView.setIcon(it) }

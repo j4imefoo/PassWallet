@@ -13,7 +13,6 @@ import androidx.core.text.parseAsHtml
 import androidx.core.text.util.LinkifyCompat
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
-import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
 import org.ligi.passandroid.databinding.ActivityPassViewPageBinding
 import org.ligi.passandroid.model.PassBitmapDefinitions
@@ -48,8 +47,9 @@ class PassViewFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val moreTextView = requireActivity().findViewById<TextView>(R.id.moreTextView)
-        val back_fields = requireActivity().findViewById<TextView>(R.id.back_fields)
+        val root = requireView()
+        val moreTextView = root.findViewById<TextView>(R.id.moreTextView)
+        val back_fields = root.findViewById<TextView>(R.id.back_fields)
         moreTextView.setOnClickListener {
 
             if (back_fields.visibility == View.VISIBLE) {
@@ -61,20 +61,25 @@ class PassViewFragment : Fragment() {
             }
         }
 
-        requireActivity().findViewById<View>(R.id.barcode_img).setOnClickListener {
-            activity?.startActivityFromClass(FullscreenBarcodeActivity::class.java)
+        val openFullscreenBarcode = View.OnClickListener { view ->
+            passStore.currentPass = pass
+            val intent = Intent(view.context, FullscreenBarcodeActivity::class.java)
+            intent.putExtra(PassViewActivityBase.EXTRA_KEY_UUID, pass.id)
+            startActivity(intent)
         }
+        root.findViewById<View>(R.id.barcode_img).setOnClickListener(openFullscreenBarcode)
+        root.findViewById<View>(R.id.barcode_panel).setOnClickListener(openFullscreenBarcode)
 
         BarcodeUIController(requireView(), pass.barCode, requireActivity(), passViewHelper)
 
-        processImage(requireActivity().findViewById(R.id.logo_img_view), PassBitmapDefinitions.BITMAP_LOGO, pass)
-        processImage(requireActivity().findViewById(R.id.footer_img_view), PassBitmapDefinitions.BITMAP_FOOTER, pass)
-        processImage(requireActivity().findViewById(R.id.thumbnail_img_view), PassBitmapDefinitions.BITMAP_THUMBNAIL, pass)
-        processImage(requireActivity().findViewById(R.id.strip_img_view), PassBitmapDefinitions.BITMAP_STRIP, pass)
+        processImage(root.findViewById(R.id.logo_img_view), PassBitmapDefinitions.BITMAP_LOGO, pass)
+        processImage(root.findViewById(R.id.footer_img_view), PassBitmapDefinitions.BITMAP_FOOTER, pass)
+        processImage(root.findViewById(R.id.thumbnail_img_view), PassBitmapDefinitions.BITMAP_THUMBNAIL, pass)
+        processImage(root.findViewById(R.id.strip_img_view), PassBitmapDefinitions.BITMAP_STRIP, pass)
 
         val backStrBuilder = StringBuilder()
 
-        val front_field_container = requireActivity().findViewById<LinearLayout>(R.id.front_field_container)
+        val front_field_container = root.findViewById<LinearLayout>(R.id.front_field_container)
         front_field_container.removeAllViews()
 
         for (field in pass.fields) {
@@ -102,7 +107,7 @@ class PassViewFragment : Fragment() {
 
         LinkifyCompat.addLinks(back_fields, LINKIFY_MASK)
 
-        val passViewHolder = VerbosePassViewHolder(requireActivity().findViewById(R.id.pass_card))
+        val passViewHolder = VerbosePassViewHolder(root.findViewById(R.id.pass_card))
         passViewHolder.apply(pass, passStore, requireActivity())
     }
 

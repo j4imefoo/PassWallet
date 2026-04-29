@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dividing_color">#ff0099cc</color>
-    <color name="primary">#1F5FD1</color>
-    <color name="accent">#F59E0B</color>
-    <color name="secondary">#33548F</color>
-    <color name="status_bar">#163A77</color>
+    <color name="primary">#B88235</color>
+    <color name="accent">#B88235</color>
+    <color name="secondary">#8F6428</color>
+    <color name="status_bar">#0F141A</color>
+    <color name="top_app_bar">#0F141A</color>
     <color name="surface">#F7F9FC</color>
     <color name="surface_container">#FFFFFFFF</color>
     <color name="outline_variant">#D6DFEB</color>
     <color name="tab_text">#6B7280</color>
     <color name="tab_text_selected">#1F5FD1</color>
+    <color name="ic_launcher_background">#18233A</color>
 
     <color name="card_view_background">#FFFFFFFF</color>
 

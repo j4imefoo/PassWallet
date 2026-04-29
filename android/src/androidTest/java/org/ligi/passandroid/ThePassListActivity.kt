@@ -4,13 +4,11 @@ import android.annotation.TargetApi
 import android.os.Build
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.passandroid.R.id.pass_recyclerview
-import org.ligi.passandroid.functions.checkThatHelpIsThere
 import org.ligi.passandroid.functions.expand
 import org.ligi.passandroid.functions.isCollapsed
 import org.ligi.passandroid.ui.PassListActivity
@@ -29,13 +27,6 @@ class ThePassListActivity {
 
         onView(withId(pass_recyclerview)).check(matches(isDisplayed()))
         rule.screenShot("list")
-    }
-
-    @Test
-    fun testHelpMenuBringsUsToHelp() {
-        onView(withId(R.id.menu_help)).perform(click())
-
-        checkThatHelpIsThere()
     }
 
     @Test

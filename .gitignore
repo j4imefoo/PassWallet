@@ -24,6 +24,12 @@ captures/
 *.ap_
 *.aab
 
+# Generated icon previews/intermediate renders
+assets/*preview*.png
+assets/*render*.png
+assets/*.zip
+assets/passwallet-icon.*
+
 *.jks
 *.keystore
 *.p12

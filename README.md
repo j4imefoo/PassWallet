@@ -1,14 +1,13 @@
-[![on Google Play](https://ligi.de/img/play_badge.png)](https://play.google.com/store/apps/details?id=org.ligi.passandroid)
-[![on FDroid](https://ligi.de/img/fdroid_badge.png)](https://f-droid.org/repository/browse/?fdid=org.ligi.passandroid)
-[![on Amazon](https://ligi.de/img/amazon_badge.png)](https://www.amazon.com/ligi-Passandroid/dp/B01LX9DMSQ)
 
-# PassAndroid
+# PassWallet
 
-Android App to view Passes (e.g. event tickets, coupons, loyalty cards, boarding passes, ...)
+Android app to view passes (e.g. event tickets, coupons, loyalty cards, boarding passes, ...).
+
+This is Jaime's PassWallet fork of PassAndroid, with a cleaner UI, integrated barcode scanning, `.pkpass`/`.pkpasses` import support, and package id `org.baumweg.passwallet`.
 
 ![Screenshots](https://ligi.de/img/passandroid_screenshots.png)
 
-Displays [esPass](https://espass.it) (`*.esPass`) & Passbook (`*.pkpass`) files, shows the Barcode (QR, PDF417, AZTEC, Code 39 and Code 128 format) and is also usable offline.
+Displays [esPass](https://espass.it) (`*.esPass`) and Passbook (`*.pkpass`, `*.pkpasses`) files, shows barcodes (QR, PDF417, AZTEC, Code 39 and Code 128 format), and is also usable offline.
 
 When preparing for the Chaos Communication Congress 2012 #29c3 I stumbled upon a passbook file for the first time.
 I really like the idea of paperless tickets as it saves time and trees which are both very valuable to me.

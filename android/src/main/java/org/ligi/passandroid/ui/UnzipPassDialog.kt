@@ -23,7 +23,7 @@ object UnzipPassDialog {
     fun show(ins: InputStreamWithSource,
              activity: Activity,
              passStore: PassStore,
-             callAfterFinishOnUIThread: (path: String) -> Unit) {
+             callAfterFinishOnUIThread: (uuids: List<String>) -> Unit) {
         if (activity.isFinishing) {
             return  // no need to act any more ..
         }
@@ -35,18 +35,18 @@ object UnzipPassDialog {
         dialog.show()
         dialog.setCancelable(false)
 
-        class AlertDialogUpdater(private val call_after_finish: (path: String) -> Unit) : Runnable {
+        class AlertDialogUpdater(private val call_after_finish: (uuids: List<String>) -> Unit) : Runnable {
 
             override fun run() {
                 val spec = InputStreamUnzipControllerSpec(ins, activity, passStore, object : SuccessCallback {
 
-                    override fun call(uuid: String) {
+                    override fun call(uuids: List<String>) {
                         activity.runOnUiThread(Runnable {
                             if (!prepareResult(activity, dialog)) {
                                 return@Runnable
                             }
 
-                            call_after_finish.invoke(uuid)
+                            call_after_finish.invoke(uuids)
                         })
                     }
                 }, object : FailCallback {

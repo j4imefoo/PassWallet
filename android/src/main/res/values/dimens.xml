@@ -5,4 +5,5 @@
     <dimen name="finger">48dp</dimen>
     <dimen name="rhythm">8dp</dimen>
     <dimen name="rhythm2">16dp</dimen>
+    <dimen name="move_topic_row_height">52dp</dimen>
 </resources>

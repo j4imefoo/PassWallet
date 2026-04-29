@@ -10,10 +10,9 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.pass.BarCode
 import org.ligi.passandroid.model.pass.PassBarCodeFormat
-import org.ligi.passandroid.model.pass.PassBarCodeFormat.*
 import org.ligi.passandroid.ui.BarcodeUIController
 import org.ligi.passandroid.ui.PassViewHelper
-import java.util.*
+import java.util.EnumMap
 
 class BarcodeEditController(
     private val rootView: View,
@@ -52,16 +51,6 @@ class BarcodeEditController(
         messageInput =rootView.findViewById(R.id.messageInput)
         alternativeMessageInput =rootView.findViewById(R.id.alternativeMessageInput)
 
-        rootView.findViewById<AppCompatImageButton>(R.id.randomButton).setOnClickListener {
-            messageInput.setText(when (barcodeFormat) {
-                EAN_8 -> getRandomEAN8()
-                EAN_13 -> getRandomEAN13()
-                ITF -> getRandomITF()
-                else -> UUID.randomUUID().toString().uppercase(Locale.ROOT)
-            })
-            refresh()
-        }
-
         rootView.findViewById<View>(R.id.scanButton).setOnClickListener {
             launchScan(::applyScanResult)
         }
@@ -79,8 +68,11 @@ class BarcodeEditController(
     }
 
     fun applyScanResult(newFormat: String, newMessage: String) {
+        val format = runCatching { PassBarCodeFormat.valueOf(newFormat) }.getOrDefault(PassBarCodeFormat.QR_CODE)
         messageInput.setText(newMessage)
-        rootView.findViewById<RadioGroup>(R.id.barcodeRadioGroup).check(passFormatRadioButtons[PassBarCodeFormat.valueOf(newFormat)]!!.id)
+        passFormatRadioButtons[format]?.let {
+            rootView.findViewById<RadioGroup>(R.id.barcodeRadioGroup).check(it.id)
+        }
         refresh()
     }
 
@@ -88,10 +80,11 @@ class BarcodeEditController(
         val barcodeUIController = BarcodeUIController(rootView, getBarCode(), context, PassViewHelper(context))
         val isBarcodeShown = barcodeUIController.getBarcodeView().visibility == View.VISIBLE
 
-        if (!isBarcodeShown) {
-            messageInput.error = "Invalid message"
-        } else {
+        val message = messageInput.text?.toString().orEmpty()
+        if (message.isBlank() || isBarcodeShown) {
             messageInput.error = null
+        } else {
+            messageInput.error = context.getString(R.string.invalid_barcode_message)
         }
     }
 

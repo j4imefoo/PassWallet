@@ -45,22 +45,6 @@ class ThePreferenceActivity {
     }
 
     @Test
-    fun condensedToggles() {
-
-        val condensedModeEnabled = androidSettings.isCondensedModeEnabled()
-
-        onView(withText(R.string.preference_condensed_title)).perform(click())
-
-        assertThat(condensedModeEnabled).isEqualTo(!androidSettings.isCondensedModeEnabled())
-
-        onView(withText(R.string.preference_condensed_title)).perform(click())
-
-        assertThat(condensedModeEnabled).isEqualTo(androidSettings.isCondensedModeEnabled())
-
-    }
-
-
-    @Test
     fun weCanSetAllSortOrders() {
 
         val resources = rule.activity.resources

@@ -15,7 +15,6 @@ import androidx.core.text.parseAsHtml
 import androidx.core.text.util.LinkifyCompat
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
-import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.PassBitmapDefinitions
 import org.ligi.passandroid.model.PassStore
@@ -46,10 +45,11 @@ class PassViewPKFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val backFields = requireActivity().findViewById<TextView>(R.id.back_fields)
-        val moreTextView = requireActivity().findViewById<TextView>(R.id.moreTextView)
+        val root = requireView()
+        val backFields = root.findViewById<TextView>(R.id.back_fields)
+        val moreTextView = root.findViewById<TextView>(R.id.moreTextView)
 
-        requireActivity().findViewById<View>(R.id.moreTextView).setOnClickListener {
+        moreTextView.setOnClickListener {
             if (backFields.visibility == View.VISIBLE) {
                 backFields.visibility = View.GONE
                 moreTextView.setText(R.string.more)
@@ -60,10 +60,10 @@ class PassViewPKFragment : Fragment() {
         }
 
         val fieldMap : Map<String, ViewGroup> = mapOf(
-            "primaryFields" to requireActivity().findViewById(R.id.primary_field_container),
-            "auxiliaryFields" to requireActivity().findViewById(R.id.auxiliary_field_container),
-            "headerFields" to requireActivity().findViewById(R.id.header_field_container),
-            "secondaryFields" to requireActivity().findViewById(R.id.secondary_field_container)
+            "primaryFields" to root.findViewById(R.id.primary_field_container),
+            "auxiliaryFields" to root.findViewById(R.id.auxiliary_field_container),
+            "headerFields" to root.findViewById(R.id.header_field_container),
+            "secondaryFields" to root.findViewById(R.id.secondary_field_container)
         )
 
         val fieldCount = mutableMapOf<String, Int>()
@@ -72,16 +72,21 @@ class PassViewPKFragment : Fragment() {
             fieldCount[it.key] = 0
         }
 
-        requireActivity().findViewById<View>(R.id.barcode_img).setOnClickListener {
-            activity?.startActivityFromClass(FullscreenBarcodeActivity::class.java)
+        val openFullscreenBarcode = View.OnClickListener { view ->
+            passStore.currentPass = pass
+            val intent = Intent(view.context, FullscreenBarcodeActivity::class.java)
+            intent.putExtra(PassViewActivityBase.EXTRA_KEY_UUID, pass.id)
+            startActivity(intent)
         }
+        root.findViewById<View>(R.id.barcode_img).setOnClickListener(openFullscreenBarcode)
+        root.findViewById<View>(R.id.barcode_panel).setOnClickListener(openFullscreenBarcode)
 
         BarcodeUIController(requireView(), pass.barCode, requireActivity(), passViewHelper)
 
-        processImage(requireActivity().findViewById(R.id.logo_img_view), PassBitmapDefinitions.BITMAP_LOGO, pass)
-        processImage(requireActivity().findViewById(R.id.footer_img_view), PassBitmapDefinitions.BITMAP_FOOTER, pass)
-        processImage(requireActivity().findViewById(R.id.thumbnail_img_view), PassBitmapDefinitions.BITMAP_THUMBNAIL, pass)
-        processImage(requireActivity().findViewById(R.id.strip_img_view), PassBitmapDefinitions.BITMAP_STRIP, pass)
+        processImage(root.findViewById(R.id.logo_img_view), PassBitmapDefinitions.BITMAP_LOGO, pass)
+        processImage(root.findViewById(R.id.footer_img_view), PassBitmapDefinitions.BITMAP_FOOTER, pass)
+        processImage(root.findViewById(R.id.thumbnail_img_view), PassBitmapDefinitions.BITMAP_THUMBNAIL, pass)
+        processImage(root.findViewById(R.id.strip_img_view), PassBitmapDefinitions.BITMAP_STRIP, pass)
 
         val backStrBuilder = StringBuilder()
 
@@ -94,12 +99,12 @@ class PassViewPKFragment : Fragment() {
             if (field.hide) {
                 backStrBuilder.append(field.toHtmlSnippet())
             } else if (hint != null) {
-                val v = requireActivity().layoutInflater.inflate(R.layout.vertical_field_item, requireActivity().findViewById(R.id.header_field_container), false)
+                val v = requireActivity().layoutInflater.inflate(R.layout.vertical_field_item, root.findViewById(R.id.header_field_container), false)
                 val key = v?.findViewById<TextView>(R.id.key)
                 key?.text = field.label
                 val value = v?.findViewById<TextView>(R.id.value)
                 value?.text = field.value
-                Log.i("PassAndroid", "creating header with tag = " + field.label + " value = " + field.value)
+                Log.i("PassWallet", "creating header with tag = " + field.label + " value = " + field.value)
 
                 if (hint.equals("primaryFields")) {
                     value?.textSize = 40f
@@ -137,7 +142,7 @@ class PassViewPKFragment : Fragment() {
 
         LinkifyCompat.addLinks(backFields, LINKIFY_MASK)
 
-        val passViewHolder = VerbosePassViewHolder(requireActivity().findViewById(R.id.pass_card))
+        val passViewHolder = VerbosePassViewHolder(root.findViewById(R.id.pass_card))
         passViewHolder.apply(pass, passStore, requireActivity())
     }
 

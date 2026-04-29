@@ -1,15 +1,16 @@
 package org.ligi.passandroid.ui
 
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.WindowManager
-import org.ligi.kaxt.lockOrientation
-import org.ligi.passandroid.R
 import org.ligi.passandroid.databinding.FullscreenImageBinding
 import timber.log.Timber
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 
 class FullscreenBarcodeActivity : PassViewActivityBase() {
 
@@ -17,8 +18,10 @@ class FullscreenBarcodeActivity : PassViewActivityBase() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         binding = FullscreenImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.fullscreenBarcodeRoot.setOnClickListener { finish() }
 
         if (Build.VERSION.SDK_INT >= 27) {
             setShowWhenLocked(true)
@@ -31,56 +34,52 @@ class FullscreenBarcodeActivity : PassViewActivityBase() {
 
     override fun onResume() {
         super.onResume()
+        supportActionBar?.hide()
 
-        if (currentPass.barCode == null) {
+        val barcode = currentPass.barCode
+        if (barcode == null) {
             Timber.w("FullscreenBarcodeActivity in bad state")
             finish() // this should never happen, but better safe than sorry
             return
         }
-        setBestFittingOrientationForBarCode()
 
-        binding.fullscreenBarcode.setImageDrawable(currentPass.barCode!!.getBitmap(resources))
+        val barcodeDrawable = barcode.getBitmap(resources) ?: run {
+            Timber.w("FullscreenBarcodeActivity could not render barcode")
+            finish()
+            return
+        }
+        binding.fullscreenBarcode.setImageDrawable(barcodeDrawable)
+        sizeBarcodeForScreen(barcodeDrawable)
 
-        if (currentPass.barCode!!.alternativeText != null) {
+        if (barcode.alternativeText != null) {
             binding.alternativeBarcodeText.visibility = View.VISIBLE
-            binding.alternativeBarcodeText.text = currentPass.barCode!!.alternativeText
+            binding.alternativeBarcodeText.text = barcode.alternativeText
         } else {
             binding.alternativeBarcodeText.visibility = View.GONE
         }
-
     }
 
-    /**
-     * QR and AZTEC are best fit in Portrait
-     * PDF417 is best viewed in Landscape
-     *
-     *
-     * main work is to avoid changing if we are already optimal
-     * ( reverse orientation / sensor is the problem here ..)
-     */
-    private fun setBestFittingOrientationForBarCode() {
-        if (currentPass.barCode!!.format!!.isQuadratic()) {
-            when (requestedOrientation) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean = false
 
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT -> return  // do nothing
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean = false
 
-                else -> lockOrientation(Configuration.ORIENTATION_PORTRAIT)
-            }
+    private fun sizeBarcodeForScreen(barcodeDrawable: BitmapDrawable) {
+        val metrics = resources.displayMetrics
+        val outerPadding = (40 * metrics.density).toInt()
+        val panelPadding = (36 * metrics.density).toInt()
+        val maxWidth = metrics.widthPixels - outerPadding - panelPadding
+        val maxHeight = metrics.heightPixels - outerPadding - panelPadding
+        val bitmap = barcodeDrawable.bitmap
 
-        } else {
-            when (requestedOrientation) {
+        // Upscale only by whole pixels; downscale when needed so the right end is never clipped.
+        val fitScale = min(maxWidth.toFloat() / bitmap.width, maxHeight.toFloat() / bitmap.height)
+        val scale = if (fitScale >= 1f) floor(fitScale) else fitScale
+        val width = max(1, (bitmap.width * scale).toInt())
+        val height = max(1, (bitmap.height * scale).toInt())
 
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE -> return  // do nothing
-
-                else -> lockOrientation(Configuration.ORIENTATION_LANDSCAPE)
-            }
-
+        binding.fullscreenBarcode.layoutParams = binding.fullscreenBarcode.layoutParams.apply {
+            this.width = width
+            this.height = height
         }
     }
 }

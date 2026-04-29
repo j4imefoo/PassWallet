@@ -7,12 +7,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:resizeableActivity="true"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
@@ -43,10 +45,8 @@
             android:theme="@style/AppThemeNoActionbar" />
 
         <activity
-            android:name=".ui.HelpActivity"
+            android:name=".ui.PassEditActivity"
             android:theme="@style/AppThemeNoActionbar" />
-
-        <activity android:name=".ui.PassEditActivity" />
 
         <activity
             android:name=".ui.PassImportActivity"
@@ -77,6 +77,14 @@
                     android:scheme="https" />
                 <data
                     android:host="*"
+                    android:pathPattern="/.*\.pkpasses"
+                    android:scheme="http" />
+                <data
+                    android:host="*"
+                    android:pathPattern="/.*\.pkpasses"
+                    android:scheme="https" />
+                <data
+                    android:host="*"
                     android:pathPattern="/.*\.pdf"
                     android:scheme="http" />
                 <data
@@ -109,10 +117,22 @@
                     android:mimeType="application/vnd.apple.pkpass"
                     android:scheme="file" />
                 <data
+                    android:mimeType="application/vnd.apple.pkpasses"
+                    android:scheme="content" />
+                <data
+                    android:mimeType="application/vnd.apple.pkpasses"
+                    android:scheme="file" />
+                <data
                     android:mimeType="application/pkpass"
                     android:scheme="content" />
                 <data
                     android:mimeType="application/pkpass"
+                    android:scheme="file" />
+                <data
+                    android:mimeType="application/pkpasses"
+                    android:scheme="content" />
+                <data
+                    android:mimeType="application/pkpasses"
                     android:scheme="file" />
                 <data
                     android:mimeType="application/vndapplepkpass"
@@ -163,6 +183,14 @@
                     android:scheme="file" />
                 <data
                     android:mimeType="*/*"
+                    android:pathPattern="/.*\.pkpasses"
+                    android:scheme="content" />
+                <data
+                    android:mimeType="*/*"
+                    android:pathPattern="/.*\.pkpasses"
+                    android:scheme="file" />
+                <data
+                    android:mimeType="*/*"
                     android:pathPattern="/.*\.pdf"
                     android:scheme="content" />
                 <data
@@ -184,7 +212,13 @@
                 android:value=".ui.PassListActivity" />
         </activity>
 
-        <activity android:name=".ui.FullscreenBarcodeActivity" />
+        <activity
+            android:name=".ui.ScanBarcodeActivity"
+            android:theme="@style/AppThemeNoActionbar" />
+
+        <activity
+            android:name=".ui.FullscreenBarcodeActivity"
+            android:theme="@style/AppThemeNoActionbar" />
     </application>
 
 </manifest>

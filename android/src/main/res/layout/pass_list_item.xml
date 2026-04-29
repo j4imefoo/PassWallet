@@ -5,13 +5,13 @@
     android:id="@+id/pass_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="12dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="14dp"
+    android:layout_marginEnd="16dp"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/card_view_background"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
     app:strokeColor="@color/outline_variant"
     app:strokeWidth="1dp">
 
@@ -33,7 +33,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:paddingStart="18dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="18dp">
 
                 <TextView
                     android:id="@+id/date"
@@ -41,14 +44,15 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="?android:textColorSecondary"
-                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.04"
                     tools:text="12.10.2013 17:00" />
 
                 <TextView
                     android:id="@+id/passTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="4dp"
+                    android:paddingTop="6dp"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="20sp"
@@ -62,7 +66,7 @@
                 android:layout_width="48dp"
                 android:layout_height="74dp"
                 android:layout_gravity="center"
-                android:layout_margin="8dp" />
+                android:layout_margin="12dp" />
         </LinearLayout>
 
 

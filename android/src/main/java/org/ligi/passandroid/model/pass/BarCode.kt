@@ -8,10 +8,10 @@ import org.koin.core.component.inject
 import org.ligi.passandroid.Tracker
 import org.ligi.passandroid.functions.generateBitmapDrawable
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 @JsonClass(generateAdapter = true)
-class BarCode(val format: PassBarCodeFormat?, val message: String? = UUID.randomUUID().toString().uppercase(Locale.ROOT)) : KoinComponent {
+class BarCode(val format: PassBarCodeFormat?, val message: String? = "") : KoinComponent {
 
     val tracker: Tracker by inject ()
     var alternativeText: String? = null

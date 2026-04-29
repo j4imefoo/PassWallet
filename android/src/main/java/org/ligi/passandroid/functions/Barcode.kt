@@ -9,8 +9,10 @@ import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
 import org.ligi.passandroid.model.pass.PassBarCodeFormat
 import timber.log.Timber
-import java.util.*
 
+private const val MAX_WIDTH_1D = 1500
+private const val MAX_WIDTH_2D = 500
+private const val DEFAULT_1D_HEIGHT = 300
 
 fun generateBitmapDrawable(resources: Resources, data: String, type: PassBarCodeFormat): BitmapDrawable? {
     val bitmap = generateBarCodeBitmap(data, type) ?: return null
@@ -30,27 +32,20 @@ fun generateBarCodeBitmap(data: String, type: PassBarCodeFormat): Bitmap? {
 
     try {
         val matrix = getBitMatrix(data, type)
-        val is1D = matrix.height == 1
 
-        // generate an image from the byte matrix
         val width = matrix.width
-        val height = if (is1D) width / 5 else matrix.height
+        val height = matrix.height
+        val barcodeImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-        // create buffered image to draw to
-        // NTFS Bitmap.Config.ALPHA_8 sounds like an awesome idea - been there - done that ..
-        val barcodeImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-
-        // iterate through the matrix and draw the pixels to the image
         for (y in 0 until height) {
             for (x in 0 until width) {
-                barcodeImage.setPixel(x, y, if (matrix.get(x, if (is1D) 0 else y)) 0 else 0xFFFFFF)
+                barcodeImage.setPixel(x, y, if (matrix.get(x, y)) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
             }
         }
 
         return barcodeImage
     } catch (e: com.google.zxing.WriterException) {
         Timber.w(e, "could not write image")
-        // TODO check if we should better return some rescue Image here
         return null
     } catch (e: IllegalArgumentException) {
         Timber.w("could not write image: $e")
@@ -64,5 +59,14 @@ fun generateBarCodeBitmap(data: String, type: PassBarCodeFormat): Bitmap? {
 }
 
 @VisibleForTesting
-fun getBitMatrix(data: String, type: PassBarCodeFormat) = MultiFormatWriter().encode(data, type.zxingBarCodeFormat(), 0, 0)!!
+fun getBitMatrix(data: String, type: PassBarCodeFormat): BitMatrix {
+    val (width, height) = when (type) {
+        PassBarCodeFormat.AZTEC,
+        PassBarCodeFormat.PDF_417,
+        PassBarCodeFormat.QR_CODE -> MAX_WIDTH_2D to MAX_WIDTH_2D
+        PassBarCodeFormat.DATA_MATRIX -> MAX_WIDTH_1D to DEFAULT_1D_HEIGHT
+        else -> MAX_WIDTH_1D to DEFAULT_1D_HEIGHT
+    }
 
+    return MultiFormatWriter().encode(data, type.zxingBarCodeFormat(), width, height, emptyMap<EncodeHintType, Any>())!!
+}

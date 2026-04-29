@@ -211,7 +211,8 @@ open class PassViewActivityBase : PassAndroidActivity() {
 
     inner class MyUnzipSuccessCallback constructor(private val dlg: Dialog) : UnzipPassController.SuccessCallback {
 
-        override fun call(uuid: String) {
+        override fun call(uuids: List<String>) {
+            val uuid = uuids.firstOrNull() ?: return
             runOnUiThread(Runnable {
                 if (isFinishing) {
                     return@Runnable

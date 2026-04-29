@@ -21,14 +21,12 @@ import org.ligi.passandroid.model.pass.BarCode
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassBarCodeFormat
 import org.ligi.passandroid.model.pass.PassImpl
-import org.ligi.passandroid.ui.edit.BarCodeIntentIntegrator
 import org.ligi.passandroid.ui.edit.FieldsEditFragment
 import org.ligi.passandroid.ui.edit.ImageEditHelper
 import org.ligi.passandroid.ui.edit.dialogs.showBarcodeEditDialog
 import org.ligi.passandroid.ui.edit.dialogs.showCategoryPickDialog
 import org.ligi.passandroid.ui.edit.dialogs.showColorPickDialog
 import org.ligi.passandroid.ui.pass_view_holder.EditViewHolder
-import java.util.*
 
 class PassEditActivity : AppCompatActivity() {
 
@@ -66,6 +64,12 @@ class PassEditActivity : AppCompatActivity() {
 
         binding = EditBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        applyMaterialInsets(
+            root = binding.editRoot,
+            appBar = binding.appbar,
+            content = binding.editScroll,
+        )
 
         binding.categoryView.setOnClickListener {
             AlertDialog.Builder(this).setItems(R.array.category_edit_options) { _, i ->
@@ -98,7 +102,7 @@ class PassEditActivity : AppCompatActivity() {
             showBarcodeEditDialog(this@PassEditActivity,
                     refreshCallback,
                     this@PassEditActivity.currentPass,
-                    BarCode(PassBarCodeFormat.QR_CODE, UUID.randomUUID().toString().uppercase(Locale.ROOT)),
+                    BarCode(PassBarCodeFormat.QR_CODE, ""),
                     ::launchBarcodeScan)
         }
     }
@@ -109,15 +113,8 @@ class PassEditActivity : AppCompatActivity() {
     }
 
     private fun launchBarcodeScan(onScanResult: (String, String) -> Unit) {
-        val barCodeIntentIntegrator = BarCodeIntentIntegrator(this)
-        val intent = barCodeIntentIntegrator.createScanIntent(PassBarCodeFormat.values().map { it.name })
-        if (intent == null) {
-            barCodeIntentIntegrator.showDownloadDialog()
-            return
-        }
-
         pendingScanCallback = onScanResult
-        barcodeScanLauncher.launch(intent)
+        barcodeScanLauncher.launch(Intent(this, ScanBarcodeActivity::class.java))
     }
 
     val refreshCallback = { refresh(currentPass) }

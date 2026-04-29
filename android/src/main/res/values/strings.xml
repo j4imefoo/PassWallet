@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">"PassAndroid"</string>
+    <string name="app_name">"PassWallet"</string>
     <string name="menu_map">Show on map</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_share">Share</string>
@@ -8,48 +8,6 @@
     <string name="menu_edit">Edit</string>
     <string name="menu_light">Brightness</string>
     <string name="barcode">"barcode"</string>
-    <string name="help_label">"Help"</string>
-    <string name="app_tagline">Offline travel passes</string>
-<string name="help_content"><![CDATA[
-<h1>PassAndroid</h1>
-
-Keep boarding passes, train tickets, event tickets, coupons and loyalty cards in one place.
-Once a pass is imported, it stays available <b>offline</b>.
-
-<h1>How to use it</h1>
-<ol>
-<li>Open a <b>.pkpass</b> or <b>.espass</b> file from your browser, email or file manager.</li>
-<li>Import the pass once.</li>
-<li>Use the barcode, details and attachments later without a network connection.</li>
-</ol>
-
-<h1>Useful while travelling</h1>
-<ul>
-<li>Fast offline access to the barcode</li>
-<li>Readable trip details and times</li>
-<li>Quick links to maps and calendar when the pass provides them</li>
-<li>No account required</li>
-</ul>
-
-<h1>Sample passes</h1>
-Need something to test with? <a href=\'http://espass.it/examples/\'>Open example passes</a>.
-
-<h1>Feedback</h1>
-Send feedback by email <a href=\'mailto:ligi@ligi.de\'>to the author</a> or visit the project page on GitHub.
-
-<h1>Legal</h1>
-<p>This app is not affiliated with Apple - Passbook might be trademarked by Apple, but it\'s introduced like a standard so this should be okay.</p>
-<p>
-THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-</p>
-
-    ]]></string>
-    <string name="drawer_open">"open"</string>
-    <string name="drawer_close">"close"</string>
     <string name="delete">"Delete!"</string>
     <string name="choose_location">"Choose Location"</string>
     <string name="boarding_pass">"Boarding Pass"</string>
@@ -69,32 +27,30 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
     <string name="dialog_delete_confirm_delete_source_checkbox">also delete source?</string>
     <string name="more">MORE</string>
     <string name="less">LESS</string>
-    <string name="fab_choice_add_demo_pass">Open sample pass</string>
     <string name="fab_choice_create_pass">Create pass</string>
-    <string name="empty_text_view"><![CDATA[<big><b>Your travel passes live here</b></big>
-
-Import a pass from a file or open a sample pass to try the app.
-
-Everything you import stays available offline.]]></string>
+    <string name="empty_text_title">Your travel passes live here</string>
+    <string name="empty_text_body">Import a pass from a file. Everything you import stays available offline.</string>
     <string name="downloading_new_pass_version">downloading new pass version</string>
     <string name="unzip_pass_dialog_title">Opening Passbook</string>
     <string name="unzip_pass_dialog_message">Please wait…</string>
     <string name="action_update">update</string>
     <string name="no_calendar_app_found">No Calendar-App found</string>
     <string name="pass_updated">Pass Updated</string>
-    <string name="expiration_date_to_calendar_warning_message">You are about to add the expiration-date to the calendar - If you think there is a better date in this pass - please send it to me - PassAndroid needs to know where this</string>
+    <string name="expiration_date_to_calendar_warning_message">You are about to add the expiration-date to the calendar - If you think there is a better date in this pass - please send it to me - PassWallet needs to know where this</string>
     <string name="expiration_date_to_calendar_warning_title">Add Expiration-Date</string>
-    <string name="topic_trash">trash</string>
-    <string name="topic_new">new</string>
-    <string name="topic_archive">archive</string>
-    <string name="move_to_new_topic">Move to new Topic</string>
+    <string name="topic_trash">Trash</string>
+    <string name="topic_new">New</string>
+    <string name="move_to_new_topic">Move to topic</string>
     <string name="categories_nav">%d Categories</string>
     <string name="passes_nav">%d Passes</string>
-    <string name="emtytrash_label">empty trash</string>
+    <string name="emtytrash_label">Empty trash</string>
     <string name="barcode_edit_hint_alternative_message">alternative Message</string>
-    <string name="barcode_edit_random">random</string>
     <string name="barcode_edit_scan">scan</string>
     <string name="barcode_edit_message">Message</string>
+    <string name="invalid_barcode_message">Invalid message</string>
+    <string name="scan_flash">Flash</string>
+    <string name="scan_switch_camera">Switch</string>
+    <string name="camera_permission_required">Camera permission is required to scan barcodes.</string>
     <string name="categories_voucher">voucher</string>
     <string name="edit_time">edit time</string>
     <string name="edit_location">edit location</string>
@@ -102,6 +58,7 @@ Everything you import stays available offline.]]></string>
     <string name="add_back_fields">Add back field</string>
     <string name="change_color_dialog_title">Select color</string>
     <string name="select_category_dialog_title">Select category</string>
+    <string name="select_icon">Select icon</string>
     <string name="add_footer_image">add footer image</string>
     <string name="add_logo_image">add logo image</string>
     <string name="add_header_image">add header image</string>
@@ -111,8 +68,8 @@ Everything you import stays available offline.]]></string>
     <string name="empty_trash_dialog_title">warning</string>
     <string name="new_topic_input_hint">Title for new topic</string>
     <string name="new_topic_suggestions">Suggestions:</string>
+    <string name="create_new_topic">Create new category</string>
     <string name="cannot_be_empty">cannot be empty</string>
-    <string name="please_use_the_swipe_feature">Please use the swipe feature</string>
     <string name="pass_title_hint">Pass title</string>
     <string name="edit_field_label_hint">Label</string>
     <string name="edit_field_value_hint">Value</string>
@@ -128,7 +85,7 @@ Everything you import stays available offline.]]></string>
     <string-array name="category_edit_options">
         <item>@string/select_category_dialog_title</item>
         <item>@string/change_color_dialog_title</item>
-        <item>Select Icon</item>
+        <item>@string/select_icon</item>
     </string-array>
 
     <string name="night_mode_night">Night</string>
@@ -137,10 +94,6 @@ Everything you import stays available offline.]]></string>
 
     <string name="preference_autolight_title">Automatic light</string>
     <string name="preference_autolight_summary">Should I increase brightness when showing barcode?</string>
-
-    <string name="preference_condensed_title">Condensed mode</string>
-    <string name="preference_condensed_summary">Should I show more detail and less clutter?</string>
-
 
     <string name="preference_sort_title">Sort order</string>
     <string name="preference_sort_summary">How should I sort the passes?</string>

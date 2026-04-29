@@ -40,6 +40,7 @@ class TheBarCodeEditing {
 
         TestButler.grantPermission(ApplicationProvider.getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
         TestButler.grantPermission(ApplicationProvider.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        TestButler.grantPermission(ApplicationProvider.getApplicationContext(), Manifest.permission.CAMERA)
 
         rule.launchActivity(null)
         closeSoftKeyboard()
@@ -47,7 +48,6 @@ class TheBarCodeEditing {
 
     @Test
     fun testNullBarcodeShowButtonAppears() {
-
         start {
             it.barCode = null
         }
@@ -58,21 +58,20 @@ class TheBarCodeEditing {
         onView(withId(R.id.add_barcode_button)).check(matches(isDisplayed()))
     }
 
-
     @Test
-    fun testCreateBarcodeDefaultsToQR() {
-
+    fun testCreateBarcodeDefaultsToEmptyQR() {
         start {
             it.barCode = null
         }
 
         onView(withId(R.id.add_barcode_button)).perform(scrollTo(), click())
-
         closeSoftKeyboard()
 
+        onView(withId(R.id.messageInput)).check(matches(withText("")))
         onView(withText(android.R.string.ok)).perform(click())
 
         assertThat(currentPass.barCode!!.format).isEqualTo(PassBarCodeFormat.QR_CODE)
+        assertThat(currentPass.barCode!!.message).isEqualTo("")
     }
 
     @SdkSuppress(minSdkVersion = 14)
@@ -83,8 +82,7 @@ class TheBarCodeEditing {
             onView(withId(R.id.barcode_img)).perform(scrollTo(), click())
 
             onView(withText(passBarCodeFormat.name)).perform(scrollTo(), click())
-
-            onView(withId(R.id.randomButton)).perform(click())
+            onView(withId(R.id.messageInput)).perform(clearText(), replaceText(validMessageFor(passBarCodeFormat)))
             closeSoftKeyboard()
 
             onView(withText(android.R.string.ok)).perform(click())
@@ -93,7 +91,6 @@ class TheBarCodeEditing {
             rule.screenShot("edit_set_" + passBarCodeFormat.name)
         }
     }
-
 
     @Test
     fun testCanSetMessage() {
@@ -114,7 +111,6 @@ class TheBarCodeEditing {
         rule.screenShot("edit_set_msg")
     }
 
-
     @Test
     fun testCanSetAltMessage() {
         start()
@@ -134,20 +130,10 @@ class TheBarCodeEditing {
         rule.screenShot("edit_set_altmsg")
     }
 
-    @Test
-    fun testThatRandomChangesMessage() {
-        start()
-
-        onView(withId(R.id.barcode_img)).perform(click())
-
-        val oldMessage = passStore.currentPass!!.barCode!!.message
-        onView(withId(R.id.randomButton)).perform(click())
-
-        closeSoftKeyboard()
-
-        onView(withText(android.R.string.ok)).perform(click())
-
-        assertThat(oldMessage).isNotEqualTo(passStore.currentPass!!.barCode!!.message)
+    private fun validMessageFor(format: PassBarCodeFormat) = when (format) {
+        PassBarCodeFormat.EAN_8 -> "55123457"
+        PassBarCodeFormat.EAN_13 -> "6416016588755"
+        PassBarCodeFormat.ITF -> "123456"
+        else -> "PASSANDROID-12345"
     }
-
 }

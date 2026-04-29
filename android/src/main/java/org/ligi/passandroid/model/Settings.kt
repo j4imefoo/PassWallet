@@ -13,8 +13,6 @@ interface Settings {
 
     fun getStateDir(): File
 
-    fun isCondensedModeEnabled(): Boolean
-
     fun isAutomaticLightEnabled(): Boolean
 
     fun getNightMode(): Int

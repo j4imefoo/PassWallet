@@ -6,44 +6,39 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import org.ligi.kaxt.getSmallestSide
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.pass.BarCode
+import kotlin.math.min
 
 internal class BarcodeUIController(private val rootView: View, private val barCode: BarCode?, activity: Activity, private val passViewHelper: PassViewHelper) {
 
     fun getBarcodeView(): ImageView = rootView.findViewById(R.id.barcode_img)
 
-    private var currentBarcodeWidth: Int = 0
-
     private val zoomIn = rootView.findViewById<AppCompatImageView>(R.id.zoomIn)
     private val zoomOut = rootView.findViewById<AppCompatImageView>(R.id.zoomOut)
     private val barcodeImage = rootView.findViewById<ImageView>(R.id.barcode_img)
     private val barcodeAltText = rootView.findViewById<TextView>(R.id.barcode_alt_text)
+    private val barcodePanel = rootView.findViewById<View>(R.id.barcode_panel)
 
     init {
-
-        zoomIn.setOnClickListener {
-            setBarCodeSize(currentBarcodeWidth + passViewHelper.fingerSize)
-        }
-
-        zoomOut.setOnClickListener {
-            setBarCodeSize(currentBarcodeWidth - passViewHelper.fingerSize)
-        }
+        zoomIn.visibility = GONE
+        zoomOut.visibility = GONE
 
         if (barCode != null) {
             val smallestSide = activity.windowManager.getSmallestSide()
 
             val bitmapDrawable = barCode.getBitmap(activity.resources)
-
             if (bitmapDrawable != null) {
                 barcodeImage.setImageDrawable(bitmapDrawable)
                 barcodeImage.visibility = VISIBLE
+                barcodePanel.visibility = VISIBLE
+                setBarCodeSize(smallestSide)
             } else {
                 barcodeImage.visibility = GONE
+                barcodePanel.visibility = GONE
             }
 
             if (barCode.alternativeText != null) {
@@ -53,29 +48,21 @@ internal class BarcodeUIController(private val rootView: View, private val barCo
                 barcodeAltText.visibility = GONE
             }
 
-            setBarCodeSize(smallestSide / 2)
         } else {
             passViewHelper.setBitmapSafe(barcodeImage, null)
-            zoomIn.visibility = GONE
-            zoomOut.visibility = GONE
+            barcodePanel.visibility = GONE
+            barcodeAltText.visibility = GONE
         }
     }
 
-
-    private fun setBarCodeSize(width: Int) {
-
-        zoomOut.visibility = if (width < passViewHelper.fingerSize * 2) INVISIBLE else VISIBLE
-
-        if (width > passViewHelper.windowWidth - passViewHelper.fingerSize * 2) {
-            zoomIn.visibility = INVISIBLE
-        } else {
-            zoomIn.visibility = VISIBLE
-        }
-
-        currentBarcodeWidth = width
+    private fun setBarCodeSize(smallestSide: Int) {
         val quadratic = barCode!!.format!!.isQuadratic()
+        val maxBarcodeWidth = passViewHelper.windowWidth - passViewHelper.fingerSize * 2
+        val width = if (quadratic) {
+            min((smallestSide * 0.72f).toInt(), maxBarcodeWidth)
+        } else {
+            maxBarcodeWidth
+        }
         barcodeImage.layoutParams = FrameLayout.LayoutParams(width, if (quadratic) width else ViewGroup.LayoutParams.WRAP_CONTENT)
     }
-
-
 }

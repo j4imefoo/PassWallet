@@ -5,22 +5,26 @@ apply plugin: 'de.mobilej.unmock'
 
 def signingPropertiesFile = new File(System.getProperty("user.home"), ".config/passandroid/signing.properties")
 def signingProperties = new Properties()
+def appVersionName = "3.7.5"
 if (signingPropertiesFile.exists()) {
     signingPropertiesFile.withInputStream { signingProperties.load(it) }
 }
 
+base {
+    archivesName = "PassWallet-$appVersionName"
+}
+
 android {
 
-    compileSdk 36
+    compileSdk = 36
 
     defaultConfig {
-        versionCode 373
-        versionName "3.7.3"
-        minSdk 23
-        targetSdk 36
-        applicationId "org.jaime.passandroid"
-        testInstrumentationRunner "org.ligi.passandroid.AppReplacingRunner"
-        archivesBaseName = "PassAndroid-$versionName"
+        versionCode = 375
+        versionName = appVersionName
+        minSdk = 23
+        targetSdk = 36
+        applicationId = "org.baumweg.passwallet"
+        testInstrumentationRunner = "org.ligi.passandroid.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -64,19 +68,19 @@ android {
             if (!signingProperties.isEmpty()) {
                 signingConfig signingConfigs.release
             }
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
 
         debug {
-            multiDexEnabled true
+            multiDexEnabled = true
         }
     }
 
     buildFeatures {
-        viewBinding true
-        buildConfig true
+        viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -87,7 +91,7 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    namespace 'org.ligi.passandroid'
+    namespace = 'org.ligi.passandroid'
 }
 
 dependencies {
@@ -156,10 +160,14 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockito_version"
     testImplementation "org.threeten:threetenbp:$threetenbp_version"
 
-    // https://github.com/ligi/PassAndroid/issues/181
-    // Don't upgrade before minSDK 19 - or replace zxing
-    //noinspection GradleDependency
-    implementation 'com.google.zxing:core:3.3.0'
+    // Catima uses ZXing 3.5.4; keep generation behavior aligned with it.
+    implementation 'com.google.zxing:core:3.5.4'
+
+    // CameraX scanner with ZXing decoding: FossWallet-like flow without external scanner apps.
+    implementation 'androidx.camera:camera-core:1.5.0'
+    implementation 'androidx.camera:camera-camera2:1.5.0'
+    implementation 'androidx.camera:camera-lifecycle:1.5.0'
+    implementation 'androidx.camera:camera-view:1.5.0'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
