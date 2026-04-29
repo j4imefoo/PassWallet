@@ -1,5 +1,6 @@
 package org.ligi.passandroid.ui
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,6 +36,10 @@ class PrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPref
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
+        findPreference<androidx.preference.Preference>(getString(R.string.preference_key_backup))?.setOnPreferenceClickListener {
+            startActivity(Intent(requireContext(), BackupActivity::class.java))
+            true
+        }
     }
 
 

@@ -45,6 +45,10 @@
             android:theme="@style/AppThemeNoActionbar" />
 
         <activity
+            android:name=".ui.BackupActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".ui.PassEditActivity"
             android:theme="@style/AppThemeNoActionbar" />
 
