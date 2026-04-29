@@ -5,7 +5,7 @@ apply plugin: 'de.mobilej.unmock'
 
 def signingPropertiesFile = new File(System.getProperty("user.home"), ".config/passandroid/signing.properties")
 def signingProperties = new Properties()
-def appVersionName = "3.7.5"
+def appVersionName = "26.4.29"
 if (signingPropertiesFile.exists()) {
     signingPropertiesFile.withInputStream { signingProperties.load(it) }
 }
@@ -19,7 +19,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        versionCode = 375
+        versionCode = 202604290
         versionName = appVersionName
         minSdk = 23
         targetSdk = 36
