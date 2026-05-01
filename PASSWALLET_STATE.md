@@ -8,10 +8,10 @@ Identidad de app:
 - Para probar cambios en el móvil, generar APK release firmado con `versionCode` superior.
 
 Release más reciente verificada:
-- APK: `android/build/outputs/apk/release/PassWallet-26.05.01-release.apk`
-- `versionName`: `26.05.01`
+- APK: `android/build/outputs/apk/release/PassWallet-26.5.1-release.apk`
+- `versionName`: `26.5.1`
 - `versionCode`: `202605010`
-- Verificado: `compileDebugKotlin`, `compileDebugAndroidTestKotlin`, `assembleRelease`, `git diff --check`, `apksigner verify`, `aapt dump badging`.
+- Verificado: `compileDebugKotlin`, `compileDebugAndroidTestKotlin`, `testDebugUnitTest`, `assembleRelease`, `git diff --check`, `apksigner verify`, `aapt dump badging`.
 
 Preferencias de trabajo:
 - Cambios pequeños, uno por sesión si es posible.
