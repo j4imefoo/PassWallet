@@ -4,5 +4,5 @@
         android:id="@+id/menu_update"
         yourapp:showAsAction="ifRoom"
         android:title="@string/action_update"
-        android:icon="@android:drawable/ic_popup_sync" />
+        android:icon="@drawable/ic_update_24" />
 </menu>

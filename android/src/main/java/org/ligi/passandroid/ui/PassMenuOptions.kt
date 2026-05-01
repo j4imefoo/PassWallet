@@ -2,10 +2,8 @@ package org.ligi.passandroid.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.widget.CheckBox
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.ligi.kaxt.startActivityFromClass
@@ -16,7 +14,6 @@ import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.Settings
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.printing.doPrint
-import java.io.File
 
 class PassMenuOptions(val activity: Activity, val pass: Pass) : KoinComponent {
 
@@ -28,41 +25,17 @@ class PassMenuOptions(val activity: Activity, val pass: Pass) : KoinComponent {
         when (item.itemId) {
 
             R.id.menu_delete -> {
-                tracker.trackEvent("ui_action", "delete", "delete", null)
+                tracker.trackEvent("ui_action", "move_to_trash", "move_to_trash", null)
 
-                val builder = AlertDialog.Builder(activity)
-                builder.setMessage(activity.getString(R.string.dialog_delete_confirm_text))
-                builder.setTitle(activity.getString(R.string.dialog_delete_title))
-                builder.setIcon(R.drawable.ic_alert_warning)
+                passStore.classifier.moveToTopic(pass, TopicNames.TRASH)
+                Toast.makeText(activity, R.string.pass_moved_to_trash, Toast.LENGTH_SHORT).show()
 
-                val sourceDeleteCheckBoxView = LayoutInflater.from(activity).inflate(R.layout.delete_dialog_layout, null)
-
-                val source = pass.getSource(passStore)
-
-                val checkBox = sourceDeleteCheckBoxView.findViewById<CheckBox>(R.id.sourceDeleteCheckbox)
-                if (source != null && source.startsWith("file://")) {
-
-
-                    checkBox.text = activity.getString(R.string.dialog_delete_confirm_delete_source_checkbox)
-                    builder.setView(sourceDeleteCheckBoxView)
+                if (activity is PassViewActivityBase) {
+                    val passListIntent = Intent(activity, PassListActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    activity.startActivity(passListIntent)
+                    activity.finish()
                 }
-
-                builder.setPositiveButton(activity.getString(R.string.delete)) { _, _ ->
-                    if (checkBox.isChecked) {
-
-                        File(source!!.replace("file://", "")).delete()
-                    }
-                    passStore.deletePassWithId(pass.id)
-                    if (activity is PassViewActivityBase) {
-                        val passListIntent = Intent(activity, PassListActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        activity.startActivity(passListIntent)
-                        activity.finish()
-                    }
-                }
-                builder.setNegativeButton(android.R.string.cancel, null)
-
-                builder.show()
 
                 return true
             }

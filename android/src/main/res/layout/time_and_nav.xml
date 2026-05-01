@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-       tools:showIn="@layout/pass_view_extra_data">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/pass_view_extra_data">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="8dp">
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/locationButton"
+            style="@style/PassWallet.CardActionButton"
             android:layout_width="wrap_content"
-            android:padding="@dimen/rhythm"
-            android:drawablePadding="4dp"
-            android:fontFamily="sans-serif"
-            android:background="?attr/selectableItemBackground"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp" />
 
-    <TextView
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/timeButton"
+            style="@style/PassWallet.CardActionButton"
             android:layout_width="wrap_content"
-            android:padding="@dimen/rhythm"
-            android:drawablePadding="4dp"
-            android:layout_gravity="end"
-            android:fontFamily="sans-serif"
-            android:background="?attr/selectableItemBackground"
-            android:layout_height="wrap_content"/>
-
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 </merge>

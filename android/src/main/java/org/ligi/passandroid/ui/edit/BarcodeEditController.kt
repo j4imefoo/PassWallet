@@ -1,18 +1,16 @@
 package org.ligi.passandroid.ui.edit
 
 import android.view.View
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatImageButton
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.pass.BarCode
 import org.ligi.passandroid.model.pass.PassBarCodeFormat
 import org.ligi.passandroid.ui.BarcodeUIController
 import org.ligi.passandroid.ui.PassViewHelper
-import java.util.EnumMap
 
 class BarcodeEditController(
     private val rootView: View,
@@ -22,40 +20,46 @@ class BarcodeEditController(
 ) {
     private var alternativeMessageInput: AppCompatEditText
     private var messageInput: AppCompatEditText
+    private lateinit var barcodeFormatInput: MaterialAutoCompleteTextView
     private var barcodeFormat: PassBarCodeFormat?
-    private val passFormatRadioButtons: MutableMap<PassBarCodeFormat, RadioButton> = EnumMap(PassBarCodeFormat::class.java)
+    private val supportedFormats = PassBarCodeFormat.values()
+    private val supportedFormatLabels = supportedFormats.map { it.displayName() }
 
-    private fun bindRadio(formats: Array<PassBarCodeFormat>) {
-        formats.forEach {
-            val radioButton = RadioButton(context)
-            rootView.findViewById<RadioGroup>(R.id.barcodeRadioGroup).addView(radioButton)
-            passFormatRadioButtons[it] = radioButton
-
-            radioButton.text = it.name
-            radioButton.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    barcodeFormat = it
-                    refresh()
-                }
-            }
-
-            radioButton.isChecked = barcodeFormat == it
+    private fun bindFormatDropdown() {
+        barcodeFormatInput = rootView.findViewById(R.id.barcodeFormatInput)
+        barcodeFormatInput.setAdapter(
+            ArrayAdapter(
+                context,
+                android.R.layout.simple_list_item_1,
+                supportedFormatLabels,
+            ),
+        )
+        barcodeFormatInput.setOnItemClickListener { _, _, position, _ ->
+            barcodeFormat = supportedFormats[position]
+            refresh()
         }
+        barcodeFormatInput.setOnClickListener {
+            barcodeFormatInput.showDropDown()
+        }
+        setSelectedFormat(barcodeFormat ?: PassBarCodeFormat.QR_CODE)
+    }
 
+    private fun setSelectedFormat(format: PassBarCodeFormat) {
+        barcodeFormat = format
+        barcodeFormatInput.setText(format.displayName(), false)
     }
 
     init {
         barcodeFormat = barCode.format
 
-
-        messageInput =rootView.findViewById(R.id.messageInput)
-        alternativeMessageInput =rootView.findViewById(R.id.alternativeMessageInput)
+        messageInput = rootView.findViewById(R.id.messageInput)
+        alternativeMessageInput = rootView.findViewById(R.id.alternativeMessageInput)
 
         rootView.findViewById<View>(R.id.scanButton).setOnClickListener {
             launchScan(::applyScanResult)
         }
 
-        bindRadio(PassBarCodeFormat.values())
+        bindFormatDropdown()
 
         messageInput.setText(barCode.message)
         messageInput.doAfterEdit {
@@ -70,9 +74,7 @@ class BarcodeEditController(
     fun applyScanResult(newFormat: String, newMessage: String) {
         val format = runCatching { PassBarCodeFormat.valueOf(newFormat) }.getOrDefault(PassBarCodeFormat.QR_CODE)
         messageInput.setText(newMessage)
-        passFormatRadioButtons[format]?.let {
-            rootView.findViewById<RadioGroup>(R.id.barcodeRadioGroup).check(it.id)
-        }
+        setSelectedFormat(format)
         refresh()
     }
 
@@ -94,4 +96,6 @@ class BarcodeEditController(
             alternativeText = newAlternativeText
         }
     }
+
+    private fun PassBarCodeFormat.displayName() = name.replace('_', ' ')
 }

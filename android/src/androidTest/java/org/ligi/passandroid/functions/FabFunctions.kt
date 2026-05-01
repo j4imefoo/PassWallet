@@ -1,37 +1,36 @@
 package org.ligi.passandroid.functions
 
+import android.view.View
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import android.view.View
-import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.ligi.passandroid.R
 
 fun expand(): ViewAction = ExpandFabAction()
 
 class ExpandFabAction : ViewAction {
 
-    override fun getConstraints(): Matcher<View> = isAssignableFrom(FloatingActionsMenu::class.java)
+    override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
 
     override fun getDescription() = "expands the floating action menu"
 
     override fun perform(uiController: UiController?, view: View?) {
-        val fam = view as FloatingActionsMenu
-        fam.expand()
+        view?.findViewById<View>(R.id.fab_menu_toggle)?.performClick()
+        uiController?.loopMainThreadUntilIdle()
     }
-
 }
 
-class CollapsedCheck : TypeSafeMatcher<FloatingActionsMenu>(FloatingActionsMenu::class.java) {
+class CollapsedCheck : TypeSafeMatcher<View>(View::class.java) {
 
     override fun describeTo(description: Description?) {
         description?.appendText("is in collapsed state")
     }
 
-    override fun matchesSafely(fam: FloatingActionsMenu?): Boolean {
-        return !fam?.isExpanded!!
+    override fun matchesSafely(view: View?): Boolean {
+        return view?.findViewById<View>(R.id.fab_action_import)?.visibility == View.GONE &&
+            view.findViewById<View>(R.id.fab_action_create_pass)?.visibility == View.GONE
     }
-
 }

@@ -1,7 +1,5 @@
 package org.ligi.passandroid
 
-import android.annotation.TargetApi
-import android.os.Build
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,7 +12,6 @@ import org.ligi.passandroid.functions.isCollapsed
 import org.ligi.passandroid.ui.PassListActivity
 import org.ligi.trulesk.TruleskActivityRule
 
-@TargetApi(14)
 class ThePassListActivity {
 
     @get:Rule
@@ -42,16 +39,10 @@ class ThePassListActivity {
 
 
     @Test
-    fun testOpenVisibleOn19plus() {
+    fun testImportVisible() {
         onView(withId(R.id.fam)).perform(expand())
 
-        pressBack()
-
-        if (Build.VERSION.SDK_INT >= 19) {
-            onView(withId(R.id.fab_action_open_file)).check(matches(isDisplayed()))
-        } else {
-            onView(withId(R.id.fab_action_open_file)).check(matches(withEffectiveVisibility(Visibility.GONE)))
-        }
+        onView(withId(R.id.fab_action_import)).check(matches(isDisplayed()))
     }
 
 }

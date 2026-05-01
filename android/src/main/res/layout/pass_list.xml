@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface">
@@ -20,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/top_app_bar"
             app:navigationIconTint="@android:color/white"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/PassWallet.ToolbarPopup"
             app:titleTextAppearance="@style/PassWallet.ToolbarTitle"
             app:titleTextColor="@android:color/white" />
 
@@ -66,43 +65,50 @@
         android:textColor="?android:textColorPrimary"
         android:textSize="18sp" />
 
-    <net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
+    <LinearLayout
         android:id="@+id/fam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="right|bottom"
-        android:layout_marginRight="24dp"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        app:layout_behavior="org.ligi.passandroid.ui.MyShyFABBehavior"
-        fab:fab_addButtonColorNormal="@color/accent"
-        fab:fab_addButtonColorPressed="@color/secondary"
-        fab:fab_addButtonPlusIconColor="@android:color/white"
-        fab:fab_labelStyle="@style/menu_labels_style">
+        android:clipToPadding="false"
+        android:gravity="end"
+        android:orientation="vertical"
+        app:layout_behavior="org.ligi.passandroid.ui.MyShyFABBehavior">
 
-        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_action_open_file"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fab_action_import"
+            style="@style/PassWallet.FabMenuButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_file_folder_open_wrapped"
+            android:layout_height="52dp"
+            android:text="@string/import_pass"
             android:visibility="gone"
-            fab:fab_colorNormal="@color/secondary"
-            fab:fab_colorPressed="@color/primary"
-            fab:fab_size="mini"
-            fab:fab_title="@string/open_file" />
+            app:icon="@drawable/ic_file_folder_open"
+            app:iconGravity="textStart" />
 
-        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/fab_action_create_pass"
+            style="@style/PassWallet.FabMenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:text="@string/fab_choice_create_pass"
+            android:visibility="gone"
+            app:icon="@drawable/ic_editor_mode_edit"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_menu_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_editor_mode_edit_wrapped"
-            fab:fab_colorNormal="@color/secondary"
-            fab:fab_colorPressed="@color/primary"
-            fab:fab_size="mini"
-            fab:fab_title="@string/fab_choice_create_pass" />
+            android:layout_gravity="end"
+            android:layout_marginTop="4dp"
+            android:contentDescription="@string/fab_choice_create_pass"
+            android:src="@drawable/ic_add_24"
+            app:backgroundTint="@color/accent"
+            app:borderWidth="0dp"
+            app:tint="@android:color/white" />
 
-    </net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

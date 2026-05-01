@@ -3,7 +3,11 @@ package org.ligi.passandroid.ui
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import androidx.appcompat.app.AlertDialog
+import android.view.LayoutInflater
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.card.MaterialCardView
 import androidx.core.net.toUri
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.pass.Pass
@@ -22,20 +26,45 @@ fun Activity.showNavigateToLocationsDialog(pass: Pass, finishOnDone: Boolean) {
             done(this, finishOnDone)
         }
         locations.size > 1 -> {
-            val locationDescriptions = arrayOfNulls<String>(locations.size)
-
-            var i = 0
-            for (loc in locations) {
-                locationDescriptions[i++] = loc.getNameWithFallback(pass)
-            }
-            AlertDialog.Builder(this).setTitle(this.getString(R.string.choose_location))
-                    .setItems(locationDescriptions) { _, which ->
-                        startIntentForLocation(this, locations[which], pass)
-                        done(this, finishOnDone)
-                    }
-                    .show()
+            showLocationPickerSheet(this, pass, locations, finishOnDone)
         }
     }
+}
+
+private fun showLocationPickerSheet(
+    activity: Activity,
+    pass: Pass,
+    locations: List<PassLocation>,
+    finishOnDone: Boolean,
+) {
+    val inflater = LayoutInflater.from(activity)
+    val sheet = BottomSheetDialog(activity)
+    val sheetView = inflater.inflate(R.layout.location_pick_sheet, null)
+    val container = sheetView.findViewById<LinearLayout>(R.id.locationPickContainer)
+    val rowMargin = activity.resources.getDimensionPixelSize(R.dimen.rhythm)
+
+    locations.forEach { location ->
+        val row = inflater.inflate(R.layout.item_location_pick, container, false) as MaterialCardView
+        row.findViewById<TextView>(R.id.locationPickName).text = location.getNameWithFallback(pass)
+        row.findViewById<TextView>(R.id.locationPickCoordinates).text = location.getCommaSeparated()
+        row.setOnClickListener {
+            sheet.dismiss()
+            startIntentForLocation(activity, location, pass)
+            done(activity, finishOnDone)
+        }
+        container.addView(
+            row,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                topMargin = rowMargin
+            }
+        )
+    }
+
+    sheet.setContentView(sheetView)
+    sheet.show()
 }
 
 private fun done(activity: Activity, finishOnDone: Boolean) {

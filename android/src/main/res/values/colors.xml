@@ -9,9 +9,17 @@
     <color name="surface">#F7F9FC</color>
     <color name="surface_container">#FFFFFFFF</color>
     <color name="outline_variant">#D6DFEB</color>
+    <color name="edit_action_background">#EEF4FF</color>
+    <color name="edit_action_text">#183866</color>
+    <color name="edit_action_stroke">#C8D8EF</color>
     <color name="tab_text">#6B7280</color>
     <color name="tab_text_selected">#1F5FD1</color>
     <color name="ic_launcher_background">#18233A</color>
+    <color name="category_icon_neutral">#5F6B7A</color>
+    <color name="category_icon_neutral_detail">#EEF2F7</color>
+    <color name="danger">#BA1A1A</color>
+    <color name="danger_container">#FFDAD6</color>
+    <color name="danger_on_container">#93000A</color>
 
     <color name="card_view_background">#FFFFFFFF</color>
 

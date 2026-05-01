@@ -4,17 +4,25 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -30,7 +38,10 @@ import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.PlanarYUVLuminanceSource
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.Result
 import com.google.zxing.common.HybridBinarizer
+import com.google.android.material.button.MaterialButton
 import org.ligi.passandroid.R
 import java.util.EnumMap
 import java.util.concurrent.Executors
@@ -40,6 +51,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
     private var previewView: PreviewView? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var camera: Camera? = null
+    private var torchButton: MaterialButton? = null
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private var torchEnabled = false
     private var deliveredResult = false
@@ -58,6 +70,14 @@ class ScanBarcodeActivity : AppCompatActivity() {
             startCamera()
         } else {
             showPermissionDenied()
+        }
+    }
+
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            decodePickedImage(uri)
+        } else if (hasCameraPermission()) {
+            startCamera()
         }
     }
 
@@ -84,48 +104,133 @@ class ScanBarcodeActivity : AppCompatActivity() {
         }
         root.addView(previewView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         root.addView(ScannerOverlayView(this), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        root.addView(
+            createTopPanel(),
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+                gravity = Gravity.TOP
+                setMargins(18.dp, 18.dp + statusBarHeight(), 18.dp, 0)
+            },
+        )
 
         val buttons = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(24.dp, 0, 24.dp, 40.dp)
+            background = roundedDrawable(0xCC111820.toInt(), 34.dp.toFloat(), 0x33FFFFFF, 1.dp)
+            setPadding(10.dp, 10.dp, 10.dp, 10.dp)
         }
 
-        val flashButton = scannerButton(getString(R.string.scan_flash)) {
+        val flashAction = scannerButton(R.drawable.ic_flash_24, getString(R.string.scan_flash)) {
             toggleTorch()
         }
-        val switchButton = scannerButton(getString(R.string.scan_switch_camera)) {
-            switchCamera()
-        }
-        val cancelButton = scannerButton(getString(android.R.string.cancel)) {
-            setResult(Activity.RESULT_CANCELED)
-            finish()
-        }
-
-        buttons.addView(flashButton)
-        buttons.addView(switchButton)
-        buttons.addView(cancelButton)
+        torchButton = flashAction
+        buttons.addView(flashAction)
+        buttons.addView(
+            scannerButton(R.drawable.ic_image_24, getString(R.string.scan_read_image), 72) {
+                cameraProvider?.unbindAll()
+                imagePickerLauncher.launch("image/*")
+            },
+        )
+        buttons.addView(
+            scannerButton(R.drawable.ic_camera_rotate_24, getString(R.string.scan_rotate_camera)) {
+                switchCamera()
+            },
+        )
 
         root.addView(
             buttons,
-            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                setMargins(18.dp, 0, 18.dp, 28.dp)
             },
         )
 
         return root
     }
 
-    private fun scannerButton(text: String, onClick: () -> Unit): Button {
-        return Button(this).apply {
-            this.text = text
-            setTextColor(Color.BLACK)
+    private fun createTopPanel(): View {
+        val panel = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            background = roundedDrawable(0xAA111820.toInt(), 24.dp.toFloat(), 0x22FFFFFF, 1.dp)
+            setPadding(10.dp, 10.dp, 16.dp, 10.dp)
+        }
+
+        panel.addView(
+            ImageButton(this).apply {
+                contentDescription = getString(android.R.string.cancel)
+                setImageResource(R.drawable.ic_close_24)
+                setColorFilter(Color.WHITE)
+                background = roundedDrawable(0x33FFFFFF, 20.dp.toFloat())
+                scaleType = android.widget.ImageView.ScaleType.CENTER
+                setOnClickListener { finish() }
+            },
+            LinearLayout.LayoutParams(40.dp, 40.dp),
+        )
+
+        panel.addView(
+            LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(14.dp, 0, 0, 0)
+                addView(TextView(this@ScanBarcodeActivity).apply {
+                    text = getString(R.string.scan_title)
+                    setTextColor(Color.WHITE)
+                    textSize = 18f
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                })
+                addView(TextView(this@ScanBarcodeActivity).apply {
+                    text = getString(R.string.scan_hint)
+                    setTextColor(0xCCFFFFFF.toInt())
+                    textSize = 13f
+                })
+            },
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f),
+        )
+
+        return panel
+    }
+
+    private fun scannerButton(@DrawableRes iconRes: Int, text: String, sizeDp: Int = 62, onClick: () -> Unit): MaterialButton {
+        return MaterialButton(this).apply {
+            contentDescription = text
+            this.text = ""
+            minWidth = 0
+            minHeight = 0
+            minimumWidth = 0
+            minimumHeight = 0
+            gravity = Gravity.CENTER
+            icon = ContextCompat.getDrawable(this@ScanBarcodeActivity, iconRes)
+            iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
+            iconPadding = 0
+            iconTint = ColorStateList.valueOf(Color.WHITE)
+            backgroundTintList = ColorStateList.valueOf(0x22FFFFFF)
+            strokeColor = ColorStateList.valueOf(0x33FFFFFF)
+            strokeWidth = 1.dp
+            cornerRadius = sizeDp.dp / 2
+            insetTop = 0
+            insetBottom = 0
+            setPadding(0, 0, 0, 0)
             setOnClickListener { onClick() }
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+            layoutParams = LinearLayout.LayoutParams(sizeDp.dp, sizeDp.dp).apply {
                 marginStart = 6.dp
                 marginEnd = 6.dp
             }
         }
+    }
+
+    private fun roundedDrawable(color: Int, radius: Float, strokeColor: Int? = null, strokeWidth: Int = 0): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = radius
+            setColor(color)
+            if (strokeColor != null && strokeWidth > 0) {
+                setStroke(strokeWidth, strokeColor)
+            }
+        }
+    }
+
+    private fun statusBarHeight(): Int {
+        val id = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (id > 0) resources.getDimensionPixelSize(id) else 24.dp
     }
 
     private fun hasCameraPermission() = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -168,6 +273,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
         try {
             camera = provider.bindToLifecycle(this, selector, preview, analysis)
             camera?.cameraControl?.enableTorch(torchEnabled)
+            updateTorchButton()
         } catch (_: IllegalArgumentException) {
             lensFacing = CameraSelector.LENS_FACING_BACK
             torchEnabled = false
@@ -175,11 +281,78 @@ class ScanBarcodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun decode(image: ImageProxy): com.google.zxing.Result? {
+    private fun decode(image: ImageProxy): Result? {
         val source = image.toLuminanceSource()
         val bitmap = BinaryBitmap(HybridBinarizer(source))
         val invertedBitmap = BinaryBitmap(HybridBinarizer(source.invert()))
-        return listOf(bitmap, invertedBitmap).firstNotNullOfOrNull { candidate ->
+        return listOf(bitmap, invertedBitmap).firstNotNullOfOrNull { candidate -> decodeBinaryBitmap(candidate) }
+    }
+
+    private fun decodePickedImage(uri: Uri) {
+        cameraProvider?.unbindAll()
+        cameraExecutor.execute {
+            val result = runCatching { loadBitmap(uri)?.let(::decodeBitmap) }.getOrNull()
+            runOnUiThread {
+                if (result != null) {
+                    deliveredResult = true
+                    deliverResult(result.barcodeFormat.name, result.text)
+                } else {
+                    Toast.makeText(this, R.string.scan_image_failed, Toast.LENGTH_SHORT).show()
+                    if (hasCameraPermission()) startCamera()
+                }
+            }
+        }
+    }
+
+    private fun loadBitmap(uri: Uri): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+
+        val maxSize = 1800
+        var sampleSize = 1
+        while ((bounds.outWidth / sampleSize) > maxSize || (bounds.outHeight / sampleSize) > maxSize) {
+            sampleSize *= 2
+        }
+
+        return contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(
+                it,
+                null,
+                BitmapFactory.Options().apply { inSampleSize = sampleSize },
+            )
+        }
+    }
+
+    private fun decodeBitmap(bitmap: Bitmap): Result? {
+        return listOf(0f, 90f, 180f, 270f).firstNotNullOfOrNull { degrees ->
+            val candidate = if (degrees == 0f) bitmap else rotateBitmap(bitmap, degrees)
+            try {
+                candidate?.let(::decodeBitmapCandidate)
+            } finally {
+                if (candidate != null && candidate !== bitmap) {
+                    candidate.recycle()
+                }
+            }
+        }
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap? {
+        return runCatching {
+            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply { postRotate(degrees) }, true)
+        }.getOrNull()
+    }
+
+    private fun decodeBitmapCandidate(bitmap: Bitmap): Result? {
+        val pixels = IntArray(bitmap.width * bitmap.height)
+        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+        val source = RGBLuminanceSource(bitmap.width, bitmap.height, pixels)
+        val normal = BinaryBitmap(HybridBinarizer(source))
+        val inverted = BinaryBitmap(HybridBinarizer(source.invert()))
+        return listOf(normal, inverted).firstNotNullOfOrNull { candidate -> decodeBinaryBitmap(candidate) }
+    }
+
+    private fun decodeBinaryBitmap(candidate: BinaryBitmap): Result? {
+        return synchronized(zxingReader) {
             try {
                 zxingReader.decodeWithState(candidate).takeIf { it.text.isNotBlank() }
             } catch (_: NotFoundException) {
@@ -223,6 +396,17 @@ class ScanBarcodeActivity : AppCompatActivity() {
         if (!currentCamera.cameraInfo.hasFlashUnit()) return
         torchEnabled = !torchEnabled
         currentCamera.cameraControl.enableTorch(torchEnabled)
+        updateTorchButton()
+    }
+
+    private fun updateTorchButton() {
+        val activeColor = if (torchEnabled) 0xFFD8A657.toInt() else Color.WHITE
+        val backgroundColor = if (torchEnabled) 0x33D8A657 else 0x22FFFFFF
+        torchButton?.apply {
+            setTextColor(activeColor)
+            iconTint = ColorStateList.valueOf(activeColor)
+            backgroundTintList = ColorStateList.valueOf(backgroundColor)
+        }
     }
 
     private fun switchCamera() {
@@ -232,6 +416,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
         if (!provider.hasCamera(selector)) return
         lensFacing = nextLens
         torchEnabled = false
+        updateTorchButton()
         previewView?.let { bindCamera(provider, it) }
     }
 
@@ -272,15 +457,27 @@ class ScanBarcodeActivity : AppCompatActivity() {
 }
 
 private class ScannerOverlayView(context: android.content.Context) : View(context) {
-    private val shadePaint = Paint().apply { color = 0x99000000.toInt() }
+    private val density = resources.displayMetrics.density
+    private val shadePaint = Paint().apply { color = 0xA6000000.toInt() }
     private val clearPaint = Paint().apply {
         color = Color.TRANSPARENT
         xfermode = android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR)
     }
-    private val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0x55FFFFFF
         style = Paint.Style.STROKE
-        strokeWidth = 2f * resources.displayMetrics.density
+        strokeWidth = 1.5f * density
+    }
+    private val cornerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0xFFD8A657.toInt()
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = 5f * density
+    }
+    private val scanPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0xCCD8A657.toInt()
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = 2f * density
     }
 
     init {
@@ -294,10 +491,23 @@ private class ScannerOverlayView(context: android.content.Context) : View(contex
         val top = (height - frameSize) / 2f
         val right = left + frameSize
         val bottom = top + frameSize
-        val radius = 24f * resources.displayMetrics.density
+        val radius = 28f * density
+        val corner = 42f * density
+        val scanY = top + frameSize * 0.58f
 
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), shadePaint)
         canvas.drawRoundRect(left, top, right, bottom, radius, radius, clearPaint)
-        canvas.drawRoundRect(left, top, right, bottom, radius, radius, strokePaint)
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, borderPaint)
+
+        canvas.drawLine(left, top + corner, left, top + radius, cornerPaint)
+        canvas.drawLine(left + radius, top, left + corner, top, cornerPaint)
+        canvas.drawLine(right - corner, top, right - radius, top, cornerPaint)
+        canvas.drawLine(right, top + radius, right, top + corner, cornerPaint)
+        canvas.drawLine(left, bottom - corner, left, bottom - radius, cornerPaint)
+        canvas.drawLine(left + radius, bottom, left + corner, bottom, cornerPaint)
+        canvas.drawLine(right - corner, bottom, right - radius, bottom, cornerPaint)
+        canvas.drawLine(right, bottom - corner, right, bottom - radius, cornerPaint)
+
+        canvas.drawLine(left + 24f * density, scanY, right - 24f * density, scanY, scanPaint)
     }
 }

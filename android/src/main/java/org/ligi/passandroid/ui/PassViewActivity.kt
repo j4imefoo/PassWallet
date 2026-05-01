@@ -75,6 +75,7 @@ class PassViewActivity : PassViewActivityBase() {
 
             val fragment =
                 when (pass.type) {
+                    PassType.EVENT,
                     PassType.PKBOARDING -> PassViewPKFragment()
                     else -> PassViewFragment()
                 }

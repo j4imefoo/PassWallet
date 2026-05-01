@@ -1,42 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="6dp">
 
     <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/delete_button"
-            android:contentDescription="@string/menu_delete"
-            tools:ignore="MissingPrefix"
-            app:srcCompat="@drawable/ic_action_delete"/>
+        android:id="@+id/delete_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/menu_delete"
+        android:tint="?android:textColorSecondary"
+        app:srcCompat="@drawable/ic_action_delete"
+        tools:ignore="MissingPrefix" />
 
     <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content" android:layout_height="wrap_content">
+        style="@style/PassWallet.EditTextInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/label_field_edit"
-                android:minWidth="64dp"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:hint="@string/edit_field_label_hint"
-        />
+            android:id="@+id/label_field_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_field_label_hint"
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences|textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content" android:layout_height="wrap_content">
+        style="@style/PassWallet.EditTextInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/value_field_edit"
-                android:minWidth="64dp"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:hint="@string/edit_field_value_hint"
-        />
+            android:id="@+id/value_field_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_field_value_hint"
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences|textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

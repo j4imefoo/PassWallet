@@ -1,12 +1,13 @@
 package org.ligi.passandroid.model.pass
 
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.squareup.moshi.JsonClass
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.ligi.passandroid.Tracker
-import org.ligi.passandroid.functions.generateBitmapDrawable
+import org.ligi.passandroid.functions.generateBarCodeBitmap
 import timber.log.Timber
 import java.util.Locale
 
@@ -16,20 +17,42 @@ class BarCode(val format: PassBarCodeFormat?, val message: String? = "") : KoinC
     val tracker: Tracker by inject ()
     var alternativeText: String? = null
 
-    fun getBitmap(resources: Resources): BitmapDrawable? {
+    @Transient
+    private var cachedBitmap: Bitmap? = null
+
+    @Transient
+    private var cachedBitmapWidthPx: Int? = null
+
+    @Transient
+    private var cachedBitmapHeightPx: Int? = null
+
+    fun getBitmap(resources: Resources, widthPx: Int? = null, heightPx: Int? = null): BitmapDrawable? {
         if (message == null) {
             // no message -> no barcode
             tracker.trackException("No Barcode in pass - strange", false)
             return null
         }
 
-        if (format == null) {
+        val barcodeFormat = if (format == null) {
             Timber.w("Barcode format is null - fallback to QR")
             tracker.trackException("Barcode format is null - fallback to QR", false)
-            return generateBitmapDrawable(resources, message, PassBarCodeFormat.QR_CODE)
+            PassBarCodeFormat.QR_CODE
+        } else {
+            format
         }
 
-        return generateBitmapDrawable(resources, message, format)
+        val bitmap = cachedBitmap
+            ?.takeIf { cachedBitmapWidthPx == widthPx && cachedBitmapHeightPx == heightPx }
+            ?: generateBarCodeBitmap(message, barcodeFormat, widthPx, heightPx)?.also {
+                cachedBitmap = it
+                cachedBitmapWidthPx = widthPx
+                cachedBitmapHeightPx = heightPx
+            } ?: return null
+
+        return BitmapDrawable(resources, bitmap).apply {
+            isFilterBitmap = false
+            setAntiAlias(false)
+        }
 
     }
 
@@ -37,16 +60,18 @@ class BarCode(val format: PassBarCodeFormat?, val message: String? = "") : KoinC
 
         fun getFormatFromString(format: String): PassBarCodeFormat {
             return when {
+                format.uppercase(Locale.ENGLISH).contains("AZTEC") -> PassBarCodeFormat.AZTEC
+                format.uppercase(Locale.ENGLISH).contains("CODABAR") -> PassBarCodeFormat.CODABAR
+                format.uppercase(Locale.ENGLISH).contains("93") -> PassBarCodeFormat.CODE_93
+                format.uppercase(Locale.ENGLISH).contains("128") -> PassBarCodeFormat.CODE_128
+                format.uppercase(Locale.ENGLISH).contains("39") -> PassBarCodeFormat.CODE_39
+                format.uppercase(Locale.ENGLISH).contains("DATA_MATRIX") -> PassBarCodeFormat.DATA_MATRIX
+                format.uppercase(Locale.ENGLISH).contains("EAN_8") -> PassBarCodeFormat.EAN_8
+                format.uppercase(Locale.ENGLISH).contains("EAN_13") -> PassBarCodeFormat.EAN_13
+                format.uppercase(Locale.ENGLISH).contains("ITF") -> PassBarCodeFormat.ITF
                 format.contains("417") -> PassBarCodeFormat.PDF_417
-                format.uppercase(Locale.ENGLISH).contains("AZTEC") -> return PassBarCodeFormat.AZTEC
-                format.uppercase(Locale.ENGLISH).contains("128") -> return PassBarCodeFormat.CODE_128
-                format.uppercase(Locale.ENGLISH).contains("39") -> return PassBarCodeFormat.CODE_39
-
-                 /*
-                 requested but not supported by xing (yet)   https://github.com/ligi/PassAndroid/issues/43
-                 format.toUpperCase(Locale.ENGLISH).contains("93")->return BarcodeFormat.CODE_93;
-                 */
-
+                format.uppercase(Locale.ENGLISH).contains("UPC_A") -> PassBarCodeFormat.UPC_A
+                format.uppercase(Locale.ENGLISH).contains("UPC_E") -> PassBarCodeFormat.UPC_E
                 else -> PassBarCodeFormat.QR_CODE
 
             }

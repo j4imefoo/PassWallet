@@ -1,14 +1,13 @@
 package org.ligi.passandroid.ui
 
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import org.ligi.passandroid.databinding.FullscreenImageBinding
+import org.ligi.passandroid.model.pass.BarCode
 import timber.log.Timber
-import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 
@@ -43,13 +42,14 @@ class FullscreenBarcodeActivity : PassViewActivityBase() {
             return
         }
 
-        val barcodeDrawable = barcode.getBitmap(resources) ?: run {
+        val barcodeSize = getBarcodeSizeForScreen(barcode)
+        val barcodeDrawable = barcode.getBitmap(resources, barcodeSize.first, barcodeSize.second) ?: run {
             Timber.w("FullscreenBarcodeActivity could not render barcode")
             finish()
             return
         }
         binding.fullscreenBarcode.setImageDrawable(barcodeDrawable)
-        sizeBarcodeForScreen(barcodeDrawable)
+        applyBarcodeSize(barcodeSize)
 
         if (barcode.alternativeText != null) {
             binding.alternativeBarcodeText.visibility = View.VISIBLE
@@ -63,23 +63,27 @@ class FullscreenBarcodeActivity : PassViewActivityBase() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean = false
 
-    private fun sizeBarcodeForScreen(barcodeDrawable: BitmapDrawable) {
+    private fun getBarcodeSizeForScreen(barcode: BarCode): Pair<Int, Int> {
         val metrics = resources.displayMetrics
         val outerPadding = (40 * metrics.density).toInt()
         val panelPadding = (36 * metrics.density).toInt()
-        val maxWidth = metrics.widthPixels - outerPadding - panelPadding
-        val maxHeight = metrics.heightPixels - outerPadding - panelPadding
-        val bitmap = barcodeDrawable.bitmap
+        val maxWidth = max(1, metrics.widthPixels - outerPadding - panelPadding)
+        val maxHeight = max(1, metrics.heightPixels - outerPadding - panelPadding)
+        val quadratic = barcode.format?.isQuadratic() ?: true
 
-        // Upscale only by whole pixels; downscale when needed so the right end is never clipped.
-        val fitScale = min(maxWidth.toFloat() / bitmap.width, maxHeight.toFloat() / bitmap.height)
-        val scale = if (fitScale >= 1f) floor(fitScale) else fitScale
-        val width = max(1, (bitmap.width * scale).toInt())
-        val height = max(1, (bitmap.height * scale).toInt())
+        return if (quadratic) {
+            val side = min(maxWidth, maxHeight)
+            side to side
+        } else {
+            val height = min(maxHeight, max(1, (maxWidth * 0.2f).toInt()))
+            maxWidth to height
+        }
+    }
 
+    private fun applyBarcodeSize(size: Pair<Int, Int>) {
         binding.fullscreenBarcode.layoutParams = binding.fullscreenBarcode.layoutParams.apply {
-            this.width = width
-            this.height = height
+            width = size.first
+            height = size.second
         }
     }
 }

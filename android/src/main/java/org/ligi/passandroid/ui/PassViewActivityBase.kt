@@ -9,7 +9,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewConfiguration
 import android.view.WindowManager
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -17,8 +16,9 @@ import androidx.core.graphics.scale
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import org.ligi.passandroid.R
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import org.ligi.passandroid.model.InputStreamWithSource
 import org.ligi.passandroid.model.PassBitmapDefinitions.BITMAP_ICON
 import org.ligi.passandroid.model.State
@@ -162,12 +162,19 @@ open class PassViewActivityBase : PassAndroidActivity() {
 
         override fun run() {
             val pass = currentPass
+            val dialogReady = CountDownLatch(1)
             runOnUiThread {
                 dlg = createProgressDialog(getString(R.string.downloading_new_pass_version))
                 dlg.show()
+                dialogReady.countDown()
             }
+            dialogReady.await()
 
-            val client = OkHttpClient()
+            val client = OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .build()
 
             val url = pass.webServiceURL + "/v1/passes/" + pass.passIdent + "/" + pass.serial
             val requestBuilder = Request.Builder().url(url)
@@ -175,22 +182,52 @@ open class PassViewActivityBase : PassAndroidActivity() {
 
             val request = requestBuilder.build()
 
-            val response: Response
             try {
-                response = client.newCall(request).execute()
-                val body = response.body()
-                if (body != null) {
-                    val inputStreamWithSource = InputStreamWithSource(url, body.byteStream())
-                    val spec = InputStreamUnzipControllerSpec(inputStreamWithSource, this@PassViewActivityBase, passStore,
-                            MyUnzipSuccessCallback(dlg),
-                            MyUnzipFailCallback(dlg))
-                    spec.overwrite = true
-                    UnzipPassController.processInputStream(spec)
+                client.newCall(request).execute().use { response ->
+                    when (val result = interpretPassUpdateResponse(response)) {
+                        is PassUpdateResult.Available -> {
+                            val inputStreamWithSource = InputStreamWithSource(url, result.body.byteStream())
+                            val spec = InputStreamUnzipControllerSpec(
+                                inputStreamWithSource,
+                                this@PassViewActivityBase,
+                                passStore,
+                                MyUnzipSuccessCallback(dlg),
+                                MyUnzipFailCallback(dlg),
+                            )
+                            spec.overwrite = true
+                            UnzipPassController.processInputStream(spec)
+                        }
+                        is PassUpdateResult.Unavailable -> showUpdateUnavailable(dlg, result.statusCode)
+                    }
                 }
             } catch (e: IOException) {
-                e.printStackTrace()
+                showUpdateNetworkError(dlg, e)
             }
 
+        }
+    }
+
+    private fun showUpdateUnavailable(dlg: Dialog, statusCode: Int) {
+        runOnUiThread {
+            if (!isFinishing) {
+                dlg.dismissSafely()
+                showImportErrorDialog(
+                    title = getString(R.string.update_unavailable_title),
+                    message = getString(R.string.update_unavailable_message, statusCode),
+                )
+            }
+        }
+    }
+
+    private fun showUpdateNetworkError(dlg: Dialog, error: IOException) {
+        runOnUiThread {
+            if (!isFinishing) {
+                dlg.dismissSafely()
+                showImportErrorDialog(
+                    title = getString(R.string.update_error_title),
+                    message = getString(R.string.update_error_network_message, error.localizedMessage ?: error.javaClass.simpleName),
+                )
+            }
         }
     }
 
@@ -200,9 +237,10 @@ open class PassViewActivityBase : PassAndroidActivity() {
             runOnUiThread {
                 if (!isFinishing) {
                     dlg.dismissSafely()
-                    AlertDialog.Builder(this@PassViewActivityBase).setMessage("Could not update pass :( $reason)")
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show()
+                    showImportErrorDialog(
+                        title = getString(R.string.update_error_title),
+                        message = getString(R.string.update_error_invalid_message, reason),
+                    )
                 }
             }
 

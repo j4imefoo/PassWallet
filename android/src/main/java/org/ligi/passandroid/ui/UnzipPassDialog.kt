@@ -2,7 +2,6 @@ package org.ligi.passandroid.ui
 
 import android.app.Activity
 import android.app.Dialog
-import androidx.appcompat.app.AlertDialog
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.InputStreamWithSource
 import org.ligi.passandroid.model.PassStore
@@ -13,10 +12,11 @@ import org.ligi.passandroid.ui.UnzipPassController.SuccessCallback
 object UnzipPassDialog {
 
     private fun displayError(activity: Activity, title: String, err: String) {
-        AlertDialog.Builder(activity).setTitle(title)
-                .setMessage(err)
-                .setPositiveButton(android.R.string.ok) { _, _ -> activity.finish() }
-                .show()
+        activity.showImportErrorDialog(
+            title = title,
+            message = err,
+            finishOnOk = true,
+        )
     }
 
 

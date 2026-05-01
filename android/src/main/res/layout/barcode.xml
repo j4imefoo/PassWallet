@@ -15,7 +15,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="14dp">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/barcode_img"

@@ -12,10 +12,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -36,7 +34,8 @@ class PassListActivity : PassAndroidActivity() {
 
     private lateinit var binding: PassListBinding
     private var tabLayoutMediator: TabLayoutMediator? = null
-    private val openFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    private var fabMenuExpanded = false
+    private val importPassLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let {
             startActivity(Intent(this, PassImportActivity::class.java).setData(it))
         }
@@ -45,9 +44,9 @@ class PassListActivity : PassAndroidActivity() {
     private val adapter by lazy { PassTopicFragmentPagerAdapter(passStore.classifier, this) }
 
 
-    internal fun onAddOpenFileClick() {
+    internal fun onImportPassClick() {
         try {
-            openFileLauncher.launch(arrayOf("*/*"))
+            importPassLauncher.launch(arrayOf("*/*"))
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.fam, "Unavailable", Snackbar.LENGTH_LONG).show()
         }
@@ -83,7 +82,7 @@ class PassListActivity : PassAndroidActivity() {
 
         onBackPressedDispatcher.addCallback(this) {
             when {
-                binding.fam.isExpanded -> binding.fam.collapse()
+                fabMenuExpanded -> setFabMenuExpanded(false)
                 else -> isEnabled = false
             }
 
@@ -114,7 +113,7 @@ class PassListActivity : PassAndroidActivity() {
         binding.fabActionCreatePass.setOnClickListener {
             val pass = createAndAddEmptyPass(passStore, resources)
 
-            binding.fam.collapse()
+            setFabMenuExpanded(false)
             startActivityFromClass(PassEditActivity::class.java)
 
             val newTitle = if (binding.tabLayout.selectedTabPosition < 0) {
@@ -126,10 +125,14 @@ class PassListActivity : PassAndroidActivity() {
             passStore.classifier.moveToTopic(pass, newTitle)
         }
 
-        binding.fabActionOpenFile.setOnClickListener {
-            onAddOpenFileClick()
+        binding.fabActionImport.setOnClickListener {
+            setFabMenuExpanded(false)
+            onImportPassClick()
         }
-        binding.fabActionOpenFile.visibility = VISIBLE
+        binding.fabMenuToggle.setOnClickListener {
+            setFabMenuExpanded(!fabMenuExpanded)
+        }
+        setFabMenuExpanded(false)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -165,19 +168,21 @@ class PassListActivity : PassAndroidActivity() {
         }
 
         R.id.menu_emptytrash -> {
-            AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.empty_trash_dialog_message))
-                    .setIcon(R.drawable.ic_alert_warning)
-                    .setTitle(getString(R.string.empty_trash_dialog_title))
-                    .setPositiveButton(R.string.emtytrash_label) { _, _ ->
-                        val passStoreProjection = PassStoreProjection(passStore,
-                                TopicNames.TRASH,
-                                null)
-
-                        for (pass in passStoreProjection.passList) {
-                            passStore.deletePassWithId(pass.id)
-                        }
-                    }.setNegativeButton(android.R.string.cancel, null).show()
+            val passStoreProjection = PassStoreProjection(
+                passStore,
+                TopicNames.TRASH,
+                null
+            )
+            val trashPasses = passStoreProjection.passList
+            showDestructiveConfirmationDialog(
+                titleRes = R.string.empty_trash_dialog_title,
+                message = getString(R.string.empty_trash_dialog_message, trashPasses.size),
+                confirmTextRes = R.string.emtytrash_label
+            ) {
+                for (pass in trashPasses) {
+                    passStore.deletePassWithId(pass.id)
+                }
+            }
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -205,6 +210,17 @@ class PassListActivity : PassAndroidActivity() {
         tabLayoutMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = adapter.getPageTitle(position)
         }.apply { attach() }
+    }
+
+    private fun setFabMenuExpanded(expanded: Boolean) {
+        fabMenuExpanded = expanded
+        val optionVisibility = if (expanded) VISIBLE else GONE
+        binding.fabActionImport.visibility = optionVisibility
+        binding.fabActionCreatePass.visibility = optionVisibility
+        binding.fabMenuToggle.setImageResource(if (expanded) R.drawable.ic_close_24 else R.drawable.ic_add_24)
+        binding.fabMenuToggle.backgroundTintList = getColorStateList(
+            if (expanded) R.color.secondary else R.color.accent,
+        )
     }
 
     private fun createEmptyText(): SpannableString {

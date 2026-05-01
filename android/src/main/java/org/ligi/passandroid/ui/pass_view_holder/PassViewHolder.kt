@@ -1,12 +1,14 @@
 package org.ligi.passandroid.ui.pass_view_holder
 
 import android.app.Activity
+import android.graphics.Color
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
 import android.view.View.*
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import org.ligi.passandroid.R
 import org.ligi.passandroid.functions.tryAddDateToCalendar
 import org.ligi.passandroid.model.PassBitmapDefinitions
@@ -14,6 +16,7 @@ import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassField
 import org.ligi.passandroid.ui.Visibility
+import org.ligi.passandroid.ui.rendering.PassRenderers
 import org.ligi.passandroid.ui.showNavigateToLocationsDialog
 import org.ligi.passandroid.ui.views.BaseCategoryIndicatorView
 import org.ligi.passandroid.ui.views.CategoryIndicatorViewWithIcon
@@ -42,7 +45,7 @@ abstract class PassViewHolder(val view: CardView) : RecyclerView.ViewHolder(view
         }
     }
 
-    protected fun refresh(pass: Pass, passStore: PassStore) {
+    protected open fun refresh(pass: Pass, passStore: PassStore) {
         val dateOrExtraText = getDateOrExtraText(pass)
 
         val noButtons = dateOrExtraText == null && pass.locations.isEmpty()
@@ -61,11 +64,25 @@ abstract class PassViewHolder(val view: CardView) : RecyclerView.ViewHolder(view
         categoryView.setImageByCategory(pass.type)
 
         categoryView.setAccentColor(pass.accentColor)
-
-        view.findViewById<TextView>(R.id.passTitle).text = pass.description
+        applyPassColors(pass)
+        val renderer = PassRenderers.forPass(pass)
+        view.findViewById<TextView>(R.id.passTitle).text = renderer.listTitle(pass)
     }
 
-    fun getExtraString(pass: Pass) = pass.fields.firstOrNull()?.let { getExtraStringForField(it) }
+    protected fun getDisplaySubtitle(pass: Pass): String? {
+        return PassRenderers.forPass(pass).listMeta(pass)
+    }
+
+    private fun applyPassColors(pass: Pass) {
+        val foregroundColor = if (ColorUtils.calculateLuminance(pass.accentColor) > 0.55) Color.BLACK else Color.WHITE
+        val secondaryColor = ColorUtils.setAlphaComponent(foregroundColor, 210)
+        view.setCardBackgroundColor(pass.accentColor)
+        view.findViewById<TextView>(R.id.passTitle).setTextColor(foregroundColor)
+        view.findViewById<TextView>(R.id.date).setTextColor(secondaryColor)
+        view.findViewById<View>(R.id.actionsSeparator).setBackgroundColor(ColorUtils.setAlphaComponent(foregroundColor, 70))
+    }
+
+    fun getExtraString(pass: Pass) = pass.fields.firstOrNull { !it.hide }?.let { getExtraStringForField(it) }
 
 
     private fun getExtraStringForField(passField: PassField): String {

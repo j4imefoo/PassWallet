@@ -1,8 +1,6 @@
 package org.ligi.passandroid
 
 import android.Manifest
-import android.os.Build
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -60,26 +58,6 @@ class ThePreferenceActivity {
                 resources.getString(R.string.sort_order_date_type) -> PassByTypeFirstAndTimeSecondComparator::class.java
                 resources.getString(R.string.sort_order_date_temporaldistance) -> PassTemporalDistanceComparator::class.java
                 else -> throw RuntimeException("unexpected sort order")
-            })
-        }
-    }
-
-    @Test
-    fun weCanSetAllNightModes() {
-
-        val resources = rule.activity.resources
-        val sortOrders = resources.getStringArray(R.array.night_modes)
-
-        sortOrders.filterNot { Build.VERSION.SDK_INT >= 21 && it == resources.getString(R.string.night_mode_auto) }.forEach { sortOrder ->
-
-            onView(withText(R.string.preference_daynight_title)).perform(click())
-            onView(withText(sortOrder)).perform(click())
-
-            assertThat(androidSettings.getNightMode()).isEqualTo(when (sortOrder) {
-                resources.getString(R.string.night_mode_day) -> AppCompatDelegate.MODE_NIGHT_NO
-                resources.getString(R.string.night_mode_night) -> AppCompatDelegate.MODE_NIGHT_YES
-                resources.getString(R.string.night_mode_auto) -> AppCompatDelegate.MODE_NIGHT_AUTO
-                else -> throw RuntimeException("unexpected night-mode")
             })
         }
     }

@@ -8,13 +8,14 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.passandroid.R
 import org.ligi.passandroid.databinding.EditBinding
+import org.ligi.passandroid.databinding.PassAppearanceSheetBinding
 import org.ligi.passandroid.model.PassBitmapDefinitions
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.BarCode
@@ -72,13 +73,7 @@ class PassEditActivity : AppCompatActivity() {
         )
 
         binding.categoryView.setOnClickListener {
-            AlertDialog.Builder(this).setItems(R.array.category_edit_options) { _, i ->
-                when (i) {
-                    0 -> showCategoryPickDialog(this@PassEditActivity, currentPass, refreshCallback)
-                    1 -> showColorPickDialog(this@PassEditActivity, currentPass, refreshCallback)
-                    2 -> pickWithPermissionCheck(PassBitmapDefinitions.BITMAP_ICON)
-                }
-            }.show()
+            showAppearanceSheet()
         }
         binding.passTitle.doAfterEdit {
             currentPass.description = "$it"
@@ -105,6 +100,27 @@ class PassEditActivity : AppCompatActivity() {
                     BarCode(PassBarCodeFormat.QR_CODE, ""),
                     ::launchBarcodeScan)
         }
+    }
+
+    private fun showAppearanceSheet() {
+        val sheet = BottomSheetDialog(this)
+        val sheetBinding = PassAppearanceSheetBinding.inflate(layoutInflater)
+        sheet.setContentView(sheetBinding.root)
+
+        sheetBinding.selectCategory.setOnClickListener {
+            sheet.dismiss()
+            showCategoryPickDialog(this@PassEditActivity, currentPass, passStore, refreshCallback)
+        }
+        sheetBinding.selectColor.setOnClickListener {
+            sheet.dismiss()
+            showColorPickDialog(this@PassEditActivity, currentPass, refreshCallback)
+        }
+        sheetBinding.selectIcon.setOnClickListener {
+            sheet.dismiss()
+            pickWithPermissionCheck(PassBitmapDefinitions.BITMAP_ICON)
+        }
+
+        sheet.show()
     }
 
     private fun pickWithPermissionCheck(@Pass.PassBitmap imageName: String) {

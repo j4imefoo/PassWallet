@@ -2,7 +2,6 @@ package org.ligi.passandroid.model
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import androidx.appcompat.app.AppCompatDelegate.*
 import org.ligi.passandroid.R
 import org.ligi.passandroid.R.string.preference_key_autolight
 import org.ligi.passandroid.model.comparator.PassSortOrder
@@ -27,14 +26,5 @@ class AndroidSettings(val context: Context) : Settings {
     override fun getStateDir() = File(context.filesDir, "state")
 
     override fun isAutomaticLightEnabled() = sharedPreferences.getBoolean(context.getString(preference_key_autolight), true)
-
-    override fun getNightMode(): Int {
-        return when (sharedPreferences.getString(context.getString(R.string.preference_key_nightmode), "auto")) {
-            "day" -> MODE_NIGHT_NO
-            "night" -> MODE_NIGHT_YES
-            "auto" -> MODE_NIGHT_FOLLOW_SYSTEM
-            else -> MODE_NIGHT_FOLLOW_SYSTEM
-        }
-    }
 
 }

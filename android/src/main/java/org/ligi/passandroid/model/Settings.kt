@@ -14,6 +14,4 @@ interface Settings {
     fun getStateDir(): File
 
     fun isAutomaticLightEnabled(): Boolean
-
-    fun getNightMode(): Int
 }

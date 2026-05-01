@@ -3,7 +3,9 @@ package org.ligi.passandroid
 import android.Manifest
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,6 +16,7 @@ import com.linkedin.android.testbutler.TestButler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
+import org.hamcrest.Matchers.equalTo
 import org.junit.runner.RunWith
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.PassBarCodeFormat
@@ -81,7 +84,8 @@ class TheBarCodeEditing {
         for (passBarCodeFormat in PassBarCodeFormat.values()) {
             onView(withId(R.id.barcode_img)).perform(scrollTo(), click())
 
-            onView(withText(passBarCodeFormat.name)).perform(scrollTo(), click())
+            onView(withId(R.id.barcodeFormatInput)).perform(scrollTo(), click())
+            onData(equalTo(passBarCodeFormat.displayName())).inRoot(isPlatformPopup()).perform(click())
             onView(withId(R.id.messageInput)).perform(clearText(), replaceText(validMessageFor(passBarCodeFormat)))
             closeSoftKeyboard()
 
@@ -131,9 +135,15 @@ class TheBarCodeEditing {
     }
 
     private fun validMessageFor(format: PassBarCodeFormat) = when (format) {
+        PassBarCodeFormat.CODABAR -> "A123456A"
+        PassBarCodeFormat.CODE_93 -> "PASSANDROID123"
         PassBarCodeFormat.EAN_8 -> "55123457"
         PassBarCodeFormat.EAN_13 -> "6416016588755"
         PassBarCodeFormat.ITF -> "123456"
+        PassBarCodeFormat.UPC_A -> "042100005264"
+        PassBarCodeFormat.UPC_E -> "04252614"
         else -> "PASSANDROID-12345"
     }
+
+    private fun PassBarCodeFormat.displayName() = name.replace('_', ' ')
 }

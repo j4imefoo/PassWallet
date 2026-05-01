@@ -48,7 +48,7 @@ open class App : Application() {
         AndroidThreeTen.init(this)
         initTraceDroid()
 
-        AppCompatDelegate.setDefaultNightMode(settings.getNightMode())
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
 

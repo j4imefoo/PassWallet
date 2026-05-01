@@ -9,8 +9,16 @@
     <color name="surface">#0F141A</color>
     <color name="surface_container">#1A2028</color>
     <color name="outline_variant">#26303B</color>
+    <color name="edit_action_background">#223041</color>
+    <color name="edit_action_text">#F5F7FA</color>
+    <color name="edit_action_stroke">#33465C</color>
     <color name="tab_text">#9CA3AF</color>
     <color name="tab_text_selected">#FFFFFF</color>
+    <color name="category_icon_neutral">#D2DAE5</color>
+    <color name="category_icon_neutral_detail">#5F6B7A</color>
+    <color name="danger">#FFB4AB</color>
+    <color name="danger_container">#4A1514</color>
+    <color name="danger_on_container">#FFDAD6</color>
     <color name="card_view_background">#1A2028</color>
     <color name="icon_green">#D4E157</color>
 </resources>

@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
-import org.ligi.kaxtui.alert
 import org.ligi.passandroid.R
 import org.ligi.passandroid.Tracker
 import org.ligi.passandroid.databinding.ActivityImportBinding
@@ -50,8 +49,7 @@ class PassImportActivity : AppCompatActivity() {
                     binding.progressContainer.visibility = GONE
 
                     if (fromURI == null) {
-                        finish()
-                        //TODO show some error here?!
+                        showImportFailed(getString(R.string.import_error_file_message))
                     } else {
 
                         if (isFinishing) {
@@ -86,6 +84,10 @@ class PassImportActivity : AppCompatActivity() {
                     }
                 } else {
                     tracker.trackException("Error in import", e, false)
+                    withContext(Dispatchers.Main) {
+                        binding.progressContainer.visibility = GONE
+                        showImportFailed(getString(R.string.import_error_generic_message, e.localizedMessage ?: e.javaClass.simpleName))
+                    }
                 }
             }
         }
@@ -108,6 +110,18 @@ class PassImportActivity : AppCompatActivity() {
 
     private fun onExternalStorageDenied() {
         binding.progressContainer.visibility = GONE
-        alert(R.string.error_no_permission_msg, R.string.error_no_permission_title, onOK = { finish() })
+        showImportErrorDialog(
+            title = getString(R.string.error_no_permission_title),
+            message = getString(R.string.error_no_permission_msg),
+            finishOnOk = true,
+        )
+    }
+
+    private fun showImportFailed(message: String) {
+        showImportErrorDialog(
+            title = getString(R.string.invalid_passbook_title),
+            message = message,
+            finishOnOk = true,
+        )
     }
 }

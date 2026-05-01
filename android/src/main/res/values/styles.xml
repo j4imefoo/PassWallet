@@ -8,8 +8,8 @@
 
     <style name="AppBaseTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/secondary</item>
+        <item name="colorPrimary">@color/top_app_bar</item>
+        <item name="colorPrimaryDark">@color/status_bar</item>
         <item name="colorAccent">@color/accent</item>
         <item name="color">@color/secondary</item>
         <item name="actionModeBackground">@color/secondary</item>
@@ -26,20 +26,151 @@
         <item name="android:textColorSecondary">?android:textColorSecondary</item>
     </style>
 
-    <style name="menu_labels_style">
-        <item name="android:background">@color/secondary</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">4dp</item>
-    </style>
-
     <style name="PassWallet.ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="PassWallet.ToolbarPopup" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:popupBackground">@drawable/bg_toolbar_popup</item>
+        <item name="popupMenuStyle">@style/PassWallet.ToolbarPopupMenu</item>
+        <item name="android:textColorPrimary">@color/edit_action_text</item>
+        <item name="android:textColorSecondary">@color/tab_text</item>
+        <item name="textAppearanceLargePopupMenu">@style/PassWallet.ToolbarPopupItem</item>
+        <item name="textAppearanceSmallPopupMenu">@style/PassWallet.ToolbarPopupItem</item>
+    </style>
+
+    <style name="PassWallet.ToolbarPopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/bg_toolbar_popup</item>
+        <item name="android:dropDownVerticalOffset">8dp</item>
+    </style>
+
+    <style name="PassWallet.ToolbarPopupItem" parent="TextAppearance.AppCompat.Widget.PopupMenu.Large">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/edit_action_text</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="PassWallet.TabText" parent="TextAppearance.Design.Tab">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="PassWallet.FabMenuButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">22dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="backgroundTint">@color/secondary</item>
+        <item name="cornerRadius">26dp</item>
+        <item name="iconPadding">12dp</item>
+        <item name="iconTint">@android:color/white</item>
+        <item name="rippleColor">@color/accent</item>
+    </style>
+
+    <style name="PassWallet.EditActionButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_marginStart">18dp</item>
+        <item name="android:layout_marginEnd">18dp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/edit_action_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="backgroundTint">@color/edit_action_background</item>
+        <item name="cornerRadius">18dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">12dp</item>
+        <item name="iconTint">@color/edit_action_text</item>
+        <item name="rippleColor">@color/accent</item>
+        <item name="strokeColor">@color/edit_action_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="PassWallet.EditTextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxStrokeColor">@color/edit_action_stroke</item>
+        <item name="hintTextColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="PassWallet.DialogTextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/edit_action_text</item>
+        <item name="rippleColor">@color/accent</item>
+    </style>
+
+    <style name="PassWallet.DialogFilledButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/secondary</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="rippleColor">@color/accent</item>
+    </style>
+
+    <style name="PassWallet.DialogDangerButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/danger</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="rippleColor">@color/danger_container</item>
+    </style>
+
+    <style name="PassWallet.AppearanceSheetAction" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:gravity">center_vertical|start</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/edit_action_text</item>
+        <item name="android:textSize">16sp</item>
+        <item name="backgroundTint">@color/edit_action_background</item>
+        <item name="cornerRadius">18dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">14dp</item>
+        <item name="iconTint">@color/edit_action_text</item>
+        <item name="rippleColor">@color/accent</item>
+        <item name="strokeColor">@color/edit_action_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="PassWallet.CardActionButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">42dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/edit_action_text</item>
+        <item name="android:textSize">14sp</item>
+        <item name="backgroundTint">@color/edit_action_background</item>
+        <item name="cornerRadius">21dp</item>
+        <item name="rippleColor">@color/accent</item>
+        <item name="strokeColor">@color/edit_action_stroke</item>
+        <item name="strokeWidth">1dp</item>
     </style>
 </resources>

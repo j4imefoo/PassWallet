@@ -3,7 +3,6 @@ package org.ligi.passandroid.ui
 import android.app.Activity
 import android.view.View
 import android.view.View.*
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import org.ligi.kaxt.getSmallestSide
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.pass.BarCode
+import kotlin.math.max
 import kotlin.math.min
 
 internal class BarcodeUIController(private val rootView: View, private val barCode: BarCode?, activity: Activity, private val passViewHelper: PassViewHelper) {
@@ -30,12 +30,13 @@ internal class BarcodeUIController(private val rootView: View, private val barCo
         if (barCode != null) {
             val smallestSide = activity.windowManager.getSmallestSide()
 
-            val bitmapDrawable = barCode.getBitmap(activity.resources)
+            val barcodeSize = getBarCodeSize(smallestSide)
+            val bitmapDrawable = barCode.getBitmap(activity.resources, barcodeSize.first, barcodeSize.second)
             if (bitmapDrawable != null) {
                 barcodeImage.setImageDrawable(bitmapDrawable)
                 barcodeImage.visibility = VISIBLE
                 barcodePanel.visibility = VISIBLE
-                setBarCodeSize(smallestSide)
+                setBarCodeSize(barcodeSize)
             } else {
                 barcodeImage.visibility = GONE
                 barcodePanel.visibility = GONE
@@ -55,14 +56,19 @@ internal class BarcodeUIController(private val rootView: View, private val barCo
         }
     }
 
-    private fun setBarCodeSize(smallestSide: Int) {
-        val quadratic = barCode!!.format!!.isQuadratic()
-        val maxBarcodeWidth = passViewHelper.windowWidth - passViewHelper.fingerSize * 2
+    private fun getBarCodeSize(smallestSide: Int): Pair<Int, Int> {
+        val quadratic = barCode!!.format?.isQuadratic() ?: true
+        val maxBarcodeWidth = (passViewHelper.windowWidth - passViewHelper.fingerSize * 2).coerceAtLeast(1)
         val width = if (quadratic) {
-            min((smallestSide * 0.72f).toInt(), maxBarcodeWidth)
+            min((smallestSide * 0.66f).toInt(), maxBarcodeWidth)
         } else {
             maxBarcodeWidth
         }
-        barcodeImage.layoutParams = FrameLayout.LayoutParams(width, if (quadratic) width else ViewGroup.LayoutParams.WRAP_CONTENT)
+        val height = if (quadratic) width else max(passViewHelper.fingerSize, (width * 0.2f).toInt())
+        return width to height
+    }
+
+    private fun setBarCodeSize(size: Pair<Int, Int>) {
+        barcodeImage.layoutParams = FrameLayout.LayoutParams(size.first, size.second, android.view.Gravity.CENTER)
     }
 }

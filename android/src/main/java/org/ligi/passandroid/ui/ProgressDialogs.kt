@@ -2,37 +2,32 @@ package org.ligi.passandroid.ui
 
 import android.app.Activity
 import android.app.Dialog
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import kotlin.math.roundToInt
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.ligi.passandroid.R
 
 fun Activity.createProgressDialog(
     message: CharSequence,
     @StringRes titleRes: Int? = null,
 ): AlertDialog {
-    val padding = (24 * resources.displayMetrics.density).roundToInt()
-    val spacing = (16 * resources.displayMetrics.density).roundToInt()
-
-    val content = LinearLayout(this).apply {
-        orientation = LinearLayout.HORIZONTAL
-        setPadding(padding, padding, padding, padding)
-        addView(ProgressBar(context))
-        addView(TextView(context).apply {
-            text = message
-            setPadding(spacing, 0, 0, 0)
-        })
+    val content = layoutInflater.inflate(R.layout.dialog_progress, null).apply {
+        findViewById<TextView>(R.id.progress_title).text = titleRes?.let { getString(it) } ?: getString(R.string.progress_dialog_title)
+        findViewById<TextView>(R.id.progress_message).text = message
     }
 
-    return AlertDialog.Builder(this).apply {
-        if (titleRes != null) {
-            setTitle(titleRes)
+    return MaterialAlertDialogBuilder(this)
+        .setView(content)
+        .setCancelable(false)
+        .create()
+        .apply {
+            setOnShowListener {
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
         }
-        setView(content)
-        setCancelable(false)
-    }.create()
 }
 
 fun Dialog.dismissSafely() {

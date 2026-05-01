@@ -1,30 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/progress_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="24dp"
+        app:cardBackgroundColor="@color/surface_container"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="2dp"
+        app:strokeColor="@color/outline_variant"
+        app:strokeWidth="1dp">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/progress_container"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:padding="28dp">
 
-        <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center" />
+            <FrameLayout
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/bg_import_status_icon">
 
-        <TextView
-                android:layout_width="wrap_content"
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/edit_action_text" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/import_status_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/progress"
-                android:layout_centerHorizontal="true"
-                android:text="@string/please_wait"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</FrameLayout>
+                android:layout_marginTop="22dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="@string/import_status_title"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/import_status_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp"
+                android:text="@string/import_status_message"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

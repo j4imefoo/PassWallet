@@ -4,50 +4,43 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.ligi.passandroid.R
-import org.ligi.passandroid.functions.getCategoryDefaultBG
+import org.ligi.passandroid.databinding.CategoryPickSheetBinding
+import org.ligi.passandroid.databinding.ItemCategoryPickBinding
 import org.ligi.passandroid.functions.getHumanCategoryString
+import org.ligi.passandroid.model.PassBitmapDefinitions
+import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassType
-import org.ligi.passandroid.ui.views.BaseCategoryIndicatorView
 
 private val passTypes = arrayOf(PassType.BOARDING, PassType.EVENT, PassType.GENERIC, PassType.LOYALTY, PassType.VOUCHER, PassType.COUPON)
 
-fun showCategoryPickDialog(context: Context, pass: Pass, refreshCallback: () -> Unit) {
+fun showCategoryPickDialog(context: Context, pass: Pass, passStore: PassStore, refreshCallback: () -> Unit) {
+    val dialog = BottomSheetDialog(context)
+    val binding = CategoryPickSheetBinding.inflate(LayoutInflater.from(context))
+    dialog.setContentView(binding.root)
 
-    val adapter = object : BaseAdapter() {
+    val iconBitmap = pass.getBitmap(passStore, PassBitmapDefinitions.BITMAP_ICON)
+        ?: pass.getBitmap(passStore, PassBitmapDefinitions.BITMAP_LOGO)
 
-        override fun getCount() = passTypes.size
-
-        override fun getItem(position: Int) = passTypes[position]
-
-        override fun getItemId(position: Int) = position.toLong()
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val inflater = LayoutInflater.from(context)
-            val inflate = inflater.inflate(R.layout.item_nav_pass_category, parent, false)
-
-            val categoryIndicatorView = inflate.findViewById(R.id.categoryView) as BaseCategoryIndicatorView
-
-            val type = getItem(position)
-            categoryIndicatorView.setImageByCategory(type)
-            categoryIndicatorView.setAccentColor(getCategoryDefaultBG(type))
-            val tv = inflate.findViewById(R.id.navCategoryLabel) as TextView
-            tv.setText(getHumanCategoryString(type))
-
-            return inflate
+    passTypes.forEach { type ->
+        val row = ItemCategoryPickBinding.inflate(LayoutInflater.from(context), binding.categoryOptions, false)
+        row.categoryView.setAccentColor(pass.accentColor)
+        row.categoryView.setImageByCategory(type)
+        iconBitmap?.let { row.categoryView.setIcon(it) }
+        row.navCategoryLabel.setText(getHumanCategoryString(type))
+        row.categorySelectedCheck.visibility = if (pass.type == type) View.VISIBLE else View.GONE
+        row.root.setOnClickListener {
+            pass.type = type
+            refreshCallback.invoke()
+            dialog.dismiss()
         }
+        binding.categoryOptions.addView(
+            row.root,
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
+        )
     }
 
-    val builder = AlertDialog.Builder(context)
-    builder.setAdapter(adapter) { _, position ->
-        pass.type = passTypes[position]
-        refreshCallback.invoke()
-    }
-    builder.setTitle(R.string.select_category_dialog_title)
-    builder.setNegativeButton(android.R.string.cancel, null)
-    builder.show()
+    dialog.show()
 }

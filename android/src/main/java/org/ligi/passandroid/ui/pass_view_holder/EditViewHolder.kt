@@ -1,24 +1,26 @@
 package org.ligi.passandroid.ui.pass_view_holder
 
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import android.view.View.VISIBLE
-import android.widget.DatePicker
 import android.widget.TextView
-import android.widget.TimePicker
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassImpl
 import org.ligi.passandroid.ui.Visibility
+import org.ligi.passandroid.ui.edit.dialogs.showLocationEditDialog
 import org.ligi.passandroid.ui.views.TimeAndNavBar
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 
-class EditViewHolder(view: CardView) : VerbosePassViewHolder(view), TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+class EditViewHolder(view: CardView) : VerbosePassViewHolder(view) {
 
     private lateinit var time: ZonedDateTime
     private lateinit var pass: PassImpl
@@ -46,11 +48,13 @@ class EditViewHolder(view: CardView) : VerbosePassViewHolder(view), TimePickerDi
         timeAndNavBar.findViewById<TextView>(R.id.locationButton) .text = view.context.getString(R.string.edit_location)
 
         timeAndNavBar.findViewById<TextView>(R.id.timeButton) .setOnClickListener {
-            DatePickerDialog(view.context, this, time.year, time.month.value - 1, time.dayOfMonth).show()
+            showDatePicker(activity)
         }
 
         timeAndNavBar.findViewById<TextView>(R.id.locationButton) .setOnClickListener {
-            AlertDialog.Builder(view.context).setMessage("Not yet available").setPositiveButton(android.R.string.ok, null).show()
+            showLocationEditDialog(activity, this.pass) {
+                refresh(this.pass, passStore)
+            }
         }
 
     }
@@ -60,22 +64,43 @@ class EditViewHolder(view: CardView) : VerbosePassViewHolder(view), TimePickerDi
         return VISIBLE
     }
 
-    override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+    private fun showDatePicker(activity: Activity) {
+        val fragmentActivity = activity as? FragmentActivity ?: return
+        val picker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(R.string.edit_time_date_title)
+            .setSelection(time.toUtcDateSelection())
+            .build()
 
-        time = time.withYear(year).withMonth(monthOfYear + 1).withDayOfMonth(dayOfMonth)
+        picker.addOnPositiveButtonClickListener { selection ->
+            val selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneOffset.UTC).toLocalDate()
+            time = time
+                .withYear(selectedDate.year)
+                .withMonth(selectedDate.monthValue)
+                .withDayOfMonth(selectedDate.dayOfMonth)
+            pass.calendarTimespan = PassImpl.TimeSpan(time, null, null)
+            showTimePicker(fragmentActivity)
+        }
 
-        pass.calendarTimespan = PassImpl.TimeSpan(time, null, null)
-
-        TimePickerDialog(itemView.context, this, time.hour, time.minute, true).show()
+        picker.show(fragmentActivity.supportFragmentManager, "pass_date_picker")
     }
 
+    private fun showTimePicker(activity: FragmentActivity) {
+        val picker = MaterialTimePicker.Builder()
+            .setTitleText(R.string.edit_time_time_title)
+            .setTimeFormat(TimeFormat.CLOCK_24H)
+            .setHour(time.hour)
+            .setMinute(time.minute)
+            .build()
 
-    override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+        picker.addOnPositiveButtonClickListener {
+            time = time.withHour(picker.hour).withMinute(picker.minute)
+            pass.calendarTimespan = PassImpl.TimeSpan(time, null, null)
+            refresh(pass, passStore)
+        }
 
-        time = time.withHour(hourOfDay).withMinute(minute)
-
-        pass.calendarTimespan = PassImpl.TimeSpan(time, null, null)
-
-        refresh(pass, passStore)
+        picker.show(activity.supportFragmentManager, "pass_time_picker")
     }
+
+    private fun ZonedDateTime.toUtcDateSelection(): Long =
+        toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
 }

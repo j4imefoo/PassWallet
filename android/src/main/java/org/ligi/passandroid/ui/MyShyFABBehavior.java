@@ -8,11 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
-import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import org.ligi.passandroid.R;
 
 @SuppressWarnings("WeakerAccess")
-public class MyShyFABBehavior extends CoordinatorLayout.Behavior<FloatingActionsMenu> {
+public class MyShyFABBehavior extends CoordinatorLayout.Behavior<View> {
 
     public MyShyFABBehavior() {}
 
@@ -22,14 +21,14 @@ public class MyShyFABBehavior extends CoordinatorLayout.Behavior<FloatingActions
 
     @Override
     public boolean layoutDependsOn(@NonNull CoordinatorLayout parent,
-                                   @NonNull FloatingActionsMenu child,
+                                   @NonNull View child,
                                    @NonNull View dependency) {
         return isSnackbarLayout(dependency) || dependency instanceof AppBarLayout;
     }
 
     @Override
     public boolean onDependentViewChanged(@NonNull CoordinatorLayout parent,
-                                          @NonNull FloatingActionsMenu child,
+                                          @NonNull View child,
                                           @NonNull View dependency) {
         if (isSnackbarLayout(dependency)) {
             updateFabTranslationForSnackbar(child, dependency);
@@ -37,12 +36,8 @@ public class MyShyFABBehavior extends CoordinatorLayout.Behavior<FloatingActions
         if (dependency instanceof AppBarLayout) {
             final CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
             final int fabBottomMargin = lp.bottomMargin;
-            final int distanceToScroll;
-            if (child.isExpanded()) {
-                distanceToScroll = child.getHeight() + fabBottomMargin;
-            } else {
-                distanceToScroll = (int) (child.getContext().getResources().getDimension(R.dimen.fab_size_normal) + 2 * fabBottomMargin);
-            }
+            final int collapsedFabHeight = (int) (56 * child.getContext().getResources().getDisplayMetrics().density);
+            final int distanceToScroll = Math.max(child.getHeight(), collapsedFabHeight) + fabBottomMargin;
             final float ratio = dependency.getY() / getToolbarHeight(dependency.getContext());
 
             child.setTranslationY(-distanceToScroll * ratio);
@@ -52,13 +47,13 @@ public class MyShyFABBehavior extends CoordinatorLayout.Behavior<FloatingActions
 
     @Override
     public void onDependentViewRemoved(@NonNull final CoordinatorLayout parent,
-                                       @NonNull final FloatingActionsMenu child,
+                                       @NonNull final View child,
                                        @NonNull final View dependency) {
         super.onDependentViewRemoved(parent, child, dependency);
         onDependentViewChanged(parent,child,dependency);
     }
 
-    private void updateFabTranslationForSnackbar(FloatingActionsMenu child, View dependency) {
+    private void updateFabTranslationForSnackbar(View child, View dependency) {
         final float translationY = dependency.getTranslationY() - dependency.getHeight();
         child.setTranslationY(Math.min(0, translationY));
     }
