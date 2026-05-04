@@ -1,7 +1,6 @@
 package org.ligi.passandroid.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -35,8 +34,6 @@ class PassAdapter(
         viewHolder.apply(pass, passStore, passListActivity)
 
         val root = viewHolder.view
-        root.findViewById<View>(R.id.actionsSeparator).visibility = View.GONE
-        root.findViewById<View>(R.id.timeAndNavBar).visibility = View.GONE
 
         root.setOnClickListener {
             passStore.currentPass = pass

@@ -11,7 +11,7 @@ Also this app is Free-Software - Free not only as in "Free Beer" - but more as i
 How does it work?
 ==============
 
-There are so called pkpass files - you can open them with this app - e.g. when you receive them via email or get an Download-option. The most important content is the BarCode ( QR , AZTEC & PDF417which authorizes you most of the time - but it also has other interesting content like a description - often a time ( that you now can add to your calendar )  - often also locations ( to give you directions ) - just try It out!
+There are so called pkpass files - you can open them with this app - e.g. when you receive them via email or get an Download-option. The most important content is the BarCode (QR, AZTEC & PDF417) which authorizes you most of the time - but it also has other useful content like a description, dates and locations - just try it out!
 The app is offline usable once you downloaded the pass!
 
 History
@@ -21,7 +21,7 @@ I stumbled upon Passbook files when i received my ticket for the 29c3 - I liked 
 One year later - just before the 30C3 - I came to work a bit on this app again - for 2 reasons:
  - a friend of mine is very into this whole BTLE thing and location beacon / context aware thing could be interesting for Passbook - but nothing ready yet
  - I got a mail from a Luis Torrecilla - a very nice designer who did a great redesign
-This all was leading to PassAndroid - a completely new version - with a new look and new functions ( sorting and adding to calendar alongside pull to refresh a navigation drawer and contextual ActionBar menu )
+This all was leading to PassAndroid - a completely new version - with a new look, sorting, pull to refresh, categories and contextual ActionBar menu.
 
 Passes that work
 =============

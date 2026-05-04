@@ -3,6 +3,7 @@ package org.ligi.passandroid.ui.rendering
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassField
 import org.ligi.passandroid.model.pass.PassType
+import org.ligi.passandroid.model.pass.PassVisualType
 
 interface PassRenderer {
     fun listTitle(pass: Pass): String?
@@ -13,9 +14,14 @@ interface PassRenderer {
 }
 
 object PassRenderers {
-    fun forPass(pass: Pass): PassRenderer = when (pass.type) {
-        PassType.EVENT -> EventTicketRenderer
-        else -> GenericPassRenderer
+    fun forPass(pass: Pass): PassRenderer {
+        if (pass.visualType == PassVisualType.CREDENTIAL) return CredentialPassRenderer
+
+        return when (pass.type) {
+            PassType.EVENT -> EventTicketRenderer
+            PassType.BOARDING, PassType.PKBOARDING -> BoardingPassRenderer
+            else -> GenericPassRenderer
+        }
     }
 }
 
@@ -35,6 +41,33 @@ object GenericPassRenderer : PassRenderer {
 
     override fun showOnDetailFront(field: PassField): Boolean {
         return !field.hide && field.hint != null && !isGeneratedTypeField(field)
+    }
+}
+
+object CredentialPassRenderer : PassRenderer {
+    override fun listTitle(pass: Pass): String? {
+        return pass.frontFieldMatching("nombre", "name", "titular", "holder")?.value.cleanPassText()
+            ?: pass.frontField("secondaryFields")?.value.cleanPassText()
+            ?: pass.description
+    }
+
+    override fun listMeta(pass: Pass): String? {
+        val credentialId = pass.frontFieldMatching("colegiado", "colegiada", "member", "membership")
+            ?: pass.frontFieldMatching("nif", "dni", "d.n.i", "id")
+        return credentialId?.let { joinLabelValueWithKeyFallback(it) }
+            ?: pass.creator
+            ?: pass.description
+    }
+
+    override fun detailLabel(field: PassField): String? {
+        return field.label.cleanPassText() ?: field.key.toDisplayKey()
+    }
+
+    override fun detailValue(field: PassField): String? = field.value.cleanPassText()
+
+    override fun showOnDetailFront(field: PassField): Boolean {
+        if (field.hide || field.hint == null || isGeneratedTypeField(field)) return false
+        return field.hint in listOf("headerFields", "primaryFields", "secondaryFields", "auxiliaryFields")
     }
 }
 
@@ -73,8 +106,52 @@ object EventTicketRenderer : PassRenderer {
     }
 }
 
+object BoardingPassRenderer : PassRenderer {
+    override fun listTitle(pass: Pass): String? {
+        val route = pass.frontFields("primaryFields")
+            .mapNotNull { it.value.cleanPassText() }
+            .take(2)
+            .joinToString(" → ")
+        return route.ifBlank {
+            pass.frontField("primaryFields")?.value.cleanPassText()
+                ?: pass.description
+        }
+    }
+
+    override fun listMeta(pass: Pass): String? {
+        val travelMeta = pass.fields
+            .asSequence()
+            .filter { !it.hide && it.hint in listOf("headerFields", "secondaryFields", "auxiliaryFields") }
+            .filter { it.looksLikeTravelTimeOrCode() }
+            .mapNotNull { joinLabelValue(it) }
+            .take(2)
+            .joinToString(" · ")
+
+        return travelMeta.ifBlank {
+            pass.frontField("headerFields")?.let { joinLabelValue(it) }
+                ?: pass.creator
+                ?: pass.description
+        }
+    }
+
+    override fun detailLabel(field: PassField): String? = field.label.cleanPassText()
+    override fun detailValue(field: PassField): String? = field.value.cleanPassText()
+
+    override fun showOnDetailFront(field: PassField): Boolean {
+        if (field.hide || field.hint == null || isGeneratedTypeField(field)) return false
+        return when (field.hint) {
+            "headerFields", "primaryFields", "secondaryFields", "auxiliaryFields" -> true
+            else -> false
+        }
+    }
+}
+
 private fun Pass.frontField(hint: String): PassField? {
     return fields.firstOrNull { !it.hide && it.hint == hint && !it.value.isNullOrBlank() }
+}
+
+private fun Pass.frontFields(hint: String): List<PassField> {
+    return fields.filter { !it.hide && it.hint == hint && !it.value.isNullOrBlank() }
 }
 
 private fun joinLabelValue(field: PassField): String? {
@@ -85,6 +162,59 @@ private fun joinLabelValue(field: PassField): String? {
         value.isNullOrBlank() -> label
         else -> "$label: $value"
     }
+}
+
+private fun joinLabelValueWithKeyFallback(field: PassField): String? {
+    val label = field.label.cleanPassText() ?: field.key.toDisplayKey()
+    val value = field.value.cleanPassText()
+    return when {
+        label.isNullOrBlank() -> value
+        value.isNullOrBlank() -> label
+        else -> "$label: $value"
+    }
+}
+
+private fun Pass.frontFieldMatching(vararg needles: String): PassField? {
+    val normalizedNeedles = needles.map { it.normalizedForMatching() }
+    return fields.firstOrNull { field ->
+        !field.hide && !field.value.isNullOrBlank() &&
+            listOfNotNull(field.key, field.label)
+                .joinToString(" ")
+                .normalizedForMatching()
+                .let { text -> normalizedNeedles.any { text.contains(it) } }
+    }
+}
+
+private fun String?.toDisplayKey(): String? {
+    val clean = cleanPassText() ?: return null
+    return clean
+        .replace('_', ' ')
+        .replace('-', ' ')
+        .split(Regex("\\s+"))
+        .filter { it.isNotBlank() }
+        .joinToString(" ") { word -> word.replaceFirstChar { char -> char.uppercase() } }
+}
+
+private fun String.normalizedForMatching(): String {
+    return lowercase()
+        .replace('á', 'a')
+        .replace('é', 'e')
+        .replace('í', 'i')
+        .replace('ó', 'o')
+        .replace('ú', 'u')
+        .replace('ü', 'u')
+        .replace('ñ', 'n')
+        .replace(Regex("\\s+"), " ")
+        .trim()
+}
+
+private fun PassField.looksLikeTravelTimeOrCode(): Boolean {
+    val text = listOfNotNull(key, label).joinToString(" ").lowercase()
+    return listOf(
+        "date", "time", "valid", "departure", "arrival", "boarding", "gate", "seat", "code",
+        "fecha", "hora", "salida", "llegada", "embarque", "puerta", "asiento", "codigo", "código",
+        "datum", "zeit", "gültig", "gueltig"
+    ).any { text.contains(it) }
 }
 
 private fun isGeneratedTypeField(field: PassField): Boolean {

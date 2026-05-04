@@ -26,6 +26,17 @@ import java.util.*
 
 object AppleStylePassReader {
 
+    fun readBoardingTransitType(passFile: File): BoardingTransitType {
+        val file = File(passFile, "pass.json")
+        return try {
+            val plainJsonString = AppleStylePassTranslation.readFileAsStringGuessEncoding(file)
+            readJSONSafely(plainJsonString)?.let(::readBoardingTransitType) ?: BoardingTransitType.GENERIC
+        } catch (e: Exception) {
+            Timber.i("could not read boarding transit type: $e")
+            BoardingTransitType.GENERIC
+        }
+    }
+
     fun read(passFile: File, language: String, context: Context, tracker: Tracker): Pass? {
 
         val translation = AppleStylePassTranslation()
@@ -178,6 +189,9 @@ object AppleStylePassReader {
         try {
             if (type != null) {
                 val typeJSON = passJSON.getJSONObject(type)
+                if (pass.type == PassType.PKBOARDING || pass.type == PassType.BOARDING) {
+                    pass.boardingTransitType = readBoardingTransitType(passJSON)
+                }
                 val fieldList: ArrayList<PassField> = ArrayList()
 
                 addFields(fieldList, typeJSON, "primaryFields", translation)
@@ -201,6 +215,7 @@ object AppleStylePassReader {
         }
 
         ApplePassbookQuirkCorrector(tracker).correctQuirks(pass)
+        pass.visualType = PassVisualClassifier.classify(pass)
 
         return pass
     }
@@ -272,6 +287,11 @@ object AppleStylePassReader {
 
         }
         return null
+    }
+
+    private fun readBoardingTransitType(json: JSONObject): BoardingTransitType {
+        val boardingJson = json.optJSONObject("boardingPass") ?: return BoardingTransitType.GENERIC
+        return BoardingTransitType.fromPassKitName(readJsonSafeAsOptional(boardingJson, "transitType"))
     }
 
     private fun readJsonSafe(json: JSONObject, key: String, callback: JsonStringReadCallback) {

@@ -115,10 +115,40 @@
                     android:layout_marginEnd="8dp"
                     android:background="@color/outline_variant" />
 
-                <org.ligi.passandroid.ui.views.TimeAndNavBar
-                    android:id="@+id/timeAndNavBar"
+                <LinearLayout
+                    android:id="@+id/editActionBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/editLocationButton"
+                        style="@style/PassWallet.CardActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/edit_location"
+                        app:icon="@drawable/ic_card_location_20" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/editTimeButton"
+                        style="@style/PassWallet.CardActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/edit_time"
+                        app:icon="@drawable/ic_card_date_20" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/passExtrasContainer"

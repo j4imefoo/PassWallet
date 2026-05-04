@@ -14,8 +14,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.ligi.passandroid.BuildConfig
 import org.ligi.passandroid.Tracker
+import org.ligi.passandroid.model.pass.BoardingTransitType
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassImpl
+import org.ligi.passandroid.model.pass.PassType
+import org.ligi.passandroid.model.pass.PassVisualClassifier
 import org.ligi.passandroid.reader.AppleStylePassReader
 import org.ligi.passandroid.reader.PassReader
 import java.io.File
@@ -106,6 +109,12 @@ class AndroidFileSystemPassStore(
         }
 
         if (result != null) {
+            if (backfillBoardingTransitType(pathForID, result)) {
+                dirty = true
+            }
+            if (backfillVisualType(result)) {
+                dirty = true
+            }
             if (dirty) {
                 save(result)
             }
@@ -114,6 +123,25 @@ class AndroidFileSystemPassStore(
         }
 
         return result
+    }
+
+    private fun backfillBoardingTransitType(pathForID: File, pass: Pass): Boolean {
+        if (pass.type != PassType.PKBOARDING && pass.type != PassType.BOARDING) return false
+        if (pass.boardingTransitType != BoardingTransitType.GENERIC) return false
+
+        val parsedTransitType = AppleStylePassReader.readBoardingTransitType(pathForID)
+        if (parsedTransitType == BoardingTransitType.GENERIC) return false
+
+        pass.boardingTransitType = parsedTransitType
+        return true
+    }
+
+    private fun backfillVisualType(pass: Pass): Boolean {
+        val classifiedVisualType = PassVisualClassifier.classify(pass)
+        if (pass.visualType == classifiedVisualType) return false
+
+        pass.visualType = classifiedVisualType
+        return true
     }
 
     override fun getPassbookForId(id: String): Pass? {

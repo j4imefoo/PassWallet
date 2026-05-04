@@ -9,7 +9,6 @@ import org.koin.core.component.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
 import org.ligi.passandroid.Tracker
-import org.ligi.passandroid.maps.PassbookMapsFacade
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.Settings
 import org.ligi.passandroid.model.pass.Pass
@@ -37,11 +36,6 @@ class PassMenuOptions(val activity: Activity, val pass: Pass) : KoinComponent {
                     activity.finish()
                 }
 
-                return true
-            }
-
-            R.id.menu_map -> {
-                PassbookMapsFacade.startFullscreenMap(activity)
                 return true
             }
 

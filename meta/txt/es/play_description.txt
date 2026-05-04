@@ -11,7 +11,7 @@ Además esta aplicación es Software Libre - Libre no solo como "Cerveza gratis"
 ¿Cómo funciona?
 ==============
 
-Existen los archivos llamados pkpass - se pueden abrir con esta aplicación - por ejemplo, cuando los reciba por correo electrónico o mediante un enlace de descarga. El contenido más importante es el código de barras (QR, AZTEC Y PDF417 que le autoriza la mayor parte del tiempo - pero también tiene otros contenidos interesantes, como una descripción - a menudo una fecha (que ahora puede añadir a su calendario) - a menudo también lugares (para darle instrucciones) - ¡sólo pruébelo!
+Existen los archivos llamados pkpass - se pueden abrir con esta aplicación - por ejemplo, cuando los reciba por correo electrónico o mediante un enlace de descarga. El contenido más importante es el código de barras (QR, AZTEC Y PDF417 que le autoriza la mayor parte del tiempo - pero también tiene otros contenidos útiles como una descripción, fechas y lugares - ¡sólo pruébelo!
 ¡Esta aplicación se puede usar sin conexión una vez haya descargado su pase!
 
 Historia
@@ -21,7 +21,7 @@ Me tropecé con archivos passbook cuando recibí mi pase para el 29C3 - Me gust�
 Un año después - justo antes que 30C3 - Empecé a trabajar de nuevo un poco más en esta aplicación - por 2 razones
  - un amigo mío está muy metido en todo este asunto del BTLE y la localización contexto, cosa que podría ser interesante para Passbook - pero todavía no hay nada listo
  - Me llegó un email de Luís Torrecilla - un estupendo diseñador que hico un gran rediseño
-Todo esto estaba llevando a PassAndroid - una versión completamente nueva - con un nuevo aspecto y nuevas funciones (clasificación y añadir al calendario junto a tirón para refrescar, un cajón de navegación y el menú contextual "Barra de acciones")
+Todo esto estaba llevando a PassAndroid - una versión completamente nueva - con un nuevo aspecto, clasificación, actualización con gesto de refrescar, categorías y el menú contextual "Barra de acciones".
 
 Pases que funcionan
 =============

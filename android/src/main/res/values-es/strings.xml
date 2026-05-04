@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="menu_map">Mostrar en mapa</string>
     <string name="menu_delete">Eliminar</string>
     <string name="menu_move_to_trash">Mover a papelera</string>
     <string name="menu_share">Compartir</string>
@@ -8,15 +7,11 @@
     <string name="menu_edit">Editar</string>
     <string name="menu_light">Brillo</string>
     <string name="delete">Eliminar</string>
-    <string name="choose_location">Elegir ubicación</string>
-    <string name="choose_location_subtitle">Elige a dónde quieres navegar.</string>
     <string name="boarding_pass">Tarjeta de embarque</string>
     <string name="category_event">Evento</string>
     <string name="category_coupon">Cupón</string>
     <string name="category_storecard">Tarjeta</string>
     <string name="category_generic">Genérico</string>
-    <string name="pass_directions">Navegar</string>
-    <string name="pass_to_calendar">al calendario</string>
     <string name="invalid_passbook_title">Pase no válido</string>
     <string name="preparing_pass">Preparando pase</string>
     <string name="please_wait">Importando el pase, espera un momento</string>
@@ -24,6 +19,7 @@
     <string name="passbook_share_chooser_title">¿Cómo quieres enviar el pase?</string>
     <string name="more">MÁS</string>
     <string name="less">MENOS</string>
+    <string name="boarding_transit_icon">Tipo de transporte</string>
     <string name="fab_choice_create_pass">Crear pase</string>
     <string name="empty_text_title">Tus pases aparecerán aquí</string>
     <string name="empty_text_body">Importa un pase desde un archivo. Todo lo que importes estará disponible sin conexión.</string>
@@ -41,10 +37,7 @@
     <string name="update_error_network_message">PassWallet no ha podido descargar la última versión: %s</string>
     <string name="update_error_invalid_message">El pase descargado no se ha podido importar: %s</string>
     <string name="action_update">actualizar</string>
-    <string name="no_calendar_app_found">No se encontró una app de calendario</string>
     <string name="pass_updated">Pase actualizado</string>
-    <string name="expiration_date_to_calendar_warning_message">Vas a añadir la fecha de caducidad al calendario. Si crees que hay una fecha mejor en este pase, envíanoslo para poder detectarla correctamente.</string>
-    <string name="expiration_date_to_calendar_warning_title">Añadir caducidad</string>
     <string name="topic_trash">Papelera</string>
     <string name="topic_new">Nuevo</string>
     <string name="move_to_new_topic">Mover a categoría</string>

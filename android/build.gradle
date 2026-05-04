@@ -5,7 +5,7 @@ apply plugin: 'de.mobilej.unmock'
 
 def signingPropertiesFile = new File(System.getProperty("user.home"), ".config/passandroid/signing.properties")
 def signingProperties = new Properties()
-def appVersionName = "26.5.1"
+def appVersionName = "26.5.4"
 if (signingPropertiesFile.exists()) {
     signingPropertiesFile.withInputStream { signingProperties.load(it) }
 }
@@ -19,13 +19,27 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        versionCode = 202605010
+        versionCode = 202605040
         versionName = appVersionName
         minSdk = 23
         targetSdk = 36
         applicationId = "org.baumweg.passwallet"
         testInstrumentationRunner = "org.ligi.passandroid.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
+    }
+
+    flavorDimensions += "channel"
+
+    productFlavors {
+        production {
+            dimension "channel"
+        }
+        dev {
+            dimension "channel"
+            applicationIdSuffix ".dev"
+            versionCode 202605017
+            versionNameSuffix "-dev7"
+        }
     }
 
     packaging {

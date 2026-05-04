@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">"PassWallet"</string>
-    <string name="menu_map">Show on map</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_move_to_trash">Move to trash</string>
     <string name="menu_share">Share</string>
@@ -10,15 +9,11 @@
     <string name="menu_light">Brightness</string>
     <string name="barcode">"barcode"</string>
     <string name="delete">Delete</string>
-    <string name="choose_location">"Choose Location"</string>
-    <string name="choose_location_subtitle">Choose where to navigate.</string>
     <string name="boarding_pass">"Boarding Pass"</string>
     <string name="category_event">"Event"</string>
     <string name="category_coupon">"Coupon"</string>
     <string name="category_storecard">"Store Card"</string>
     <string name="category_generic">"generic"</string>
-    <string name="pass_directions">"Navigate"</string>
-    <string name="pass_to_calendar">"to Calendar"</string>
     <string name="invalid_passbook_title">Invalid Passbook</string>
     <string name="preparing_pass">Preparing Pass</string>
     <string name="please_wait">Importing the pass - please wait a bit</string>
@@ -26,6 +21,7 @@
     <string name="passbook_share_chooser_title">How to send Pass?</string>
     <string name="more">MORE</string>
     <string name="less">LESS</string>
+    <string name="boarding_transit_icon">Transit type</string>
     <string name="fab_choice_create_pass">Create pass</string>
     <string name="empty_text_title">Your travel passes live here</string>
     <string name="empty_text_body">Import a pass from a file. Everything you import stays available offline.</string>
@@ -43,10 +39,7 @@
     <string name="update_error_network_message">PassWallet could not download the latest version: %s</string>
     <string name="update_error_invalid_message">The downloaded pass could not be imported: %s</string>
     <string name="action_update">update</string>
-    <string name="no_calendar_app_found">No Calendar-App found</string>
     <string name="pass_updated">Pass Updated</string>
-    <string name="expiration_date_to_calendar_warning_message">You are about to add the expiration-date to the calendar - If you think there is a better date in this pass - please send it to me - PassWallet needs to know where this</string>
-    <string name="expiration_date_to_calendar_warning_title">Add Expiration-Date</string>
     <string name="topic_trash">Trash</string>
     <string name="topic_new">New</string>
     <string name="move_to_new_topic">Move to topic</string>

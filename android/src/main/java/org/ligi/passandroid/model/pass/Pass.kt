@@ -16,6 +16,10 @@ interface Pass {
 
     var type: PassType
 
+    var boardingTransitType: BoardingTransitType
+
+    var visualType: PassVisualType
+
     val fields: List<PassField>
 
     val locations: List<PassLocation>

@@ -14,10 +14,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.ligi.kaxt.disableRotation
 import org.ligi.passandroid.R
-import org.ligi.passandroid.maps.PassbookMapsFacade
 import org.ligi.passandroid.model.PassStoreProjection
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassType
+import org.ligi.passandroid.model.pass.PassVisualClassifier
+import org.ligi.passandroid.model.pass.PassVisualType
 
 class PassViewActivity : PassViewActivityBase() {
     private lateinit var pagerAdapter: CollectionPagerAdapter
@@ -72,12 +73,21 @@ class PassViewActivity : PassViewActivityBase() {
         override fun createFragment(i: Int): Fragment {
 
             val pass = getPass(i)
+            val visualType = PassVisualClassifier.classify(pass)
+            if (visualType == PassVisualType.CREDENTIAL) {
+                pass.visualType = PassVisualType.CREDENTIAL
+            }
 
             val fragment =
-                when (pass.type) {
-                    PassType.EVENT,
-                    PassType.PKBOARDING -> PassViewPKFragment()
-                    else -> PassViewFragment()
+                if (pass.visualType == PassVisualType.CREDENTIAL) {
+                    PassViewPKFragment()
+                } else {
+                    when (pass.type) {
+                        PassType.EVENT,
+                        PassType.BOARDING,
+                        PassType.PKBOARDING -> PassViewPKFragment()
+                        else -> PassViewFragment()
+                    }
                 }
 
             fragment.arguments = bundleOf(EXTRA_KEY_UUID to pass.id)
@@ -107,14 +117,12 @@ class PassViewActivity : PassViewActivityBase() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_map).isVisible = currentPass.locations.isNotEmpty() && PassbookMapsFacade.hasSupport()
         menu.findItem(R.id.menu_update).isVisible = mightPassBeAbleToUpdate(currentPass)
         menu.findItem(R.id.install_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.map_item, menu)
         menuInflater.inflate(R.menu.update, menu)
         menuInflater.inflate(R.menu.shortcut, menu)
         return super.onCreateOptionsMenu(menu)

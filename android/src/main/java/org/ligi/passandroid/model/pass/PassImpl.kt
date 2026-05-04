@@ -23,6 +23,10 @@ class PassImpl(override val id: String) : Pass {
 
     override var type: PassType = PassType.EVENT
 
+    override var boardingTransitType: BoardingTransitType = BoardingTransitType.GENERIC
+
+    override var visualType: PassVisualType = PassVisualType.DEFAULT
+
     override var barCode: BarCode? = null
 
     @field:[HexColor]

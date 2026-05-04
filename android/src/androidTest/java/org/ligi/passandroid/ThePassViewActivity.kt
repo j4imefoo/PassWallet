@@ -5,7 +5,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import org.hamcrest.core.IsNot.not
 import org.junit.Before
 import org.junit.Rule
@@ -16,8 +17,7 @@ import org.ligi.passandroid.model.pass.PassImpl
 import org.ligi.passandroid.model.pass.PassLocation
 import org.ligi.passandroid.ui.PassViewActivity
 import org.ligi.trulesk.TruleskActivityRule
-import org.threeten.bp.ZonedDateTime
-import java.util.*
+import java.util.ArrayList
 
 @TargetApi(14)
 class ThePassViewActivity {
@@ -33,75 +33,32 @@ class ThePassViewActivity {
     }
 
     @Test
-    fun testThatDescriptionIsThere() {
+    fun testPassDetailCardIsThere() {
         rule.launchActivity(null)
 
-        onView(withText(getActPass().description)).check(matches(isDisplayed()))
+        onView(withId(R.id.pass_card)).check(matches(isDisplayed()))
+        onView(withId(R.id.passExtrasContainer)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun testDateIsGoneWhenPassbookHasNoDate() {
-        getActPass().validTimespans = ArrayList()
+    fun testListHeaderIsNotRenderedInPassDetail() {
         rule.launchActivity(null)
 
-        onView(withId(R.id.date)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.pass_top)).check(doesNotExist())
+        onView(withId(R.id.categoryView)).check(doesNotExist())
+        onView(withId(R.id.date)).check(doesNotExist())
+        onView(withId(R.id.passTitle)).check(doesNotExist())
     }
 
     @Test
     fun testEverythingWorksWhenWeHaveSomeLocation() {
-        val timeSpen = ArrayList<PassLocation>()
-        timeSpen.add(PassLocation())
-        getActPass().locations = timeSpen
+        val locations = ArrayList<PassLocation>()
+        locations.add(PassLocation())
+        getActPass().locations = locations
         rule.launchActivity(null)
 
-        onView(withId(R.id.date)).check(matches(not(isDisplayed())))
-    }
-
-
-    @Test
-    fun testDateIsThereWhenPassbookHasDate() {
-        getActPass().calendarTimespan = PassImpl.TimeSpan(ZonedDateTime.now(), null, null)
-        rule.launchActivity(null)
-
-        onView(withId(R.id.date)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun testLinkToCalendarIsThereWhenPassbookHasDate() {
-        getActPass().calendarTimespan = PassImpl.TimeSpan(ZonedDateTime.now(), null, null)
-        rule.launchActivity(null)
-
-        onView(withText(R.string.pass_to_calendar)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun testClickOnCalendarWithExpirationDateGivesWarning() {
-        val validTimespans = ArrayList<PassImpl.TimeSpan>()
-        validTimespans.add(PassImpl.TimeSpan(null, ZonedDateTime.now().minusHours(12), null))
-        getActPass().validTimespans = validTimespans
-        getActPass().calendarTimespan = null
-        rule.launchActivity(null)
-
-        onView(withText(R.string.pass_to_calendar)).perform(click())
-
-        onView(withText(R.string.expiration_date_to_calendar_warning_message)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun testThatTheDialogCanBeDismissed() {
-        testClickOnCalendarWithExpirationDateGivesWarning()
-
-        onView(withText(android.R.string.cancel)).perform(click())
-
-        onView(withText(R.string.expiration_date_to_calendar_warning_message)).check(doesNotExist())
-    }
-
-    @Test
-    fun testLinkToCalendarIsNotThereWhenPassbookHasNoDate() {
-        getActPass().validTimespans = ArrayList()
-        rule.launchActivity(null)
-
-        onView(withText(R.string.pass_to_calendar)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.pass_card)).check(matches(isDisplayed()))
+        onView(withId(R.id.pass_top)).check(doesNotExist())
     }
 
     @Test
@@ -130,5 +87,4 @@ class ThePassViewActivity {
         onView(withId(R.id.zoomIn)).check(matches(not(isDisplayed())))
         onView(withId(R.id.zoomIn)).check(matches(not(isDisplayed())))
     }
-
 }

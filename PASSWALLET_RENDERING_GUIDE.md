@@ -48,7 +48,7 @@ Debe mostrar:
 
 No debe mostrar:
 
-- Botones `Navegar`, `Al calendario`, compartir, editar o actualizar.
+- Botones de compartir, editar o actualizar.
 - QR/código de barras grande.
 - Campos técnicos generados por la app.
 - Back fields.
@@ -64,7 +64,7 @@ Regla visual:
 
 ## Vista detalle
 
-La vista detalle debe permitir enseñar el pase en una puerta, caja, cine, aeropuerto o control sin pelearse con la pantalla.
+La vista detalle debe permitir enseñar el pase en una puerta, caja, cine, aeropuerto o control sin pelearse con la pantalla. El detalle no reutiliza la cabecera compacta de lista (`pass_top`): esa cabecera duplica fecha, título e icono y solo pertenece a la lista global.
 
 Debe mostrar en el primer pantallazo:
 
@@ -140,6 +140,37 @@ No repetir en portada:
 - Fecha si ya aparece en header.
 - Número de entradas si ya aparece en secondary.
 
+## Credentials / carnets
+
+Tipo PassKit frecuente: `eventTicket` o `generic`, pero el tipo visual debe ser `CREDENTIAL` cuando el pase parezca carnet, acreditación o tarjeta identificativa.
+
+Detectar por señales combinadas, no por una sola palabra:
+
+- `passTypeIdentifier`, `description` u organización con `carnet`, `credential`, `identity`, `colegial`, `membership`.
+- Campos de identidad como `colegiado`, `dni`, `nif`, `member number`.
+- Campo de titular como `nombre`, `name`, `titular`, `holder`.
+
+### Lista
+
+Prioridad:
+
+1. Nombre/titular.
+2. Número de colegiado, socio o identificador.
+3. Organización solo como fallback.
+
+### Detalle
+
+Primer pantallazo:
+
+- `strip.png` como marca/cabecera institucional si existe.
+- `logo.png` como foto del titular cuando el pase la use así.
+- Número de colegiado o socio visible y etiquetado aunque el `headerField` no traiga `label`.
+- Nombre grande.
+- DNI/NIF o identificador secundario compacto.
+- QR/código completo y tocable.
+
+No tratar estos pases como eventos aunque vengan dentro de `eventTicket`: PassKit usa tipos técnicos muy pobres para muchos carnets reales.
+
 ## Event tickets
 
 Tipo: `eventTicket`.
@@ -210,7 +241,7 @@ Prioridad:
 
 Primer pantallazo:
 
-- Origen -> destino como protagonista.
+- Origen -> destino como protagonista, con icono semántico de transporte entre ambos cuando el `.pkpass` trae `boardingPass.transitType` (`PKTransitTypeAir`, `Train`, `Bus`, `Boat`; flecha genérica si falta).
 - Hora, puerta, asiento, grupo/zona.
 - Barcode completo.
 - Nombre pasajero si existe.
@@ -288,8 +319,6 @@ Detalle:
 - Compartir.
 - Editar.
 - Actualizar.
-- Calendario si hay fecha.
-- Navegar si hay ubicación.
 - Eliminar/mover a papelera.
 
 Las acciones destructivas siempre con confirmación clara.

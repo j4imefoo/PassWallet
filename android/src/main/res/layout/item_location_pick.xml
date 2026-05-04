@@ -27,7 +27,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:contentDescription="@null"
-            android:src="@drawable/ic_maps_place"
+            android:src="@drawable/ic_location_place"
             app:tint="@color/edit_action_text" />
 
         <LinearLayout

@@ -65,7 +65,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
             android:text="@string/search_location"
-            app:icon="@drawable/ic_maps_place" />
+            app:icon="@drawable/ic_location_place" />
 
         <ProgressBar
             android:id="@+id/locationSearchProgress"

@@ -2,9 +2,8 @@ package org.ligi.passandroid.ui.pass_view_holder
 
 import android.app.Activity
 import androidx.cardview.widget.CardView
-import android.view.View.VISIBLE
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -12,9 +11,7 @@ import org.ligi.passandroid.R
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassImpl
-import org.ligi.passandroid.ui.Visibility
 import org.ligi.passandroid.ui.edit.dialogs.showLocationEditDialog
-import org.ligi.passandroid.ui.views.TimeAndNavBar
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
@@ -39,29 +36,20 @@ class EditViewHolder(view: CardView) : VerbosePassViewHolder(view) {
             val roundedTime = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES)
             roundedTime.plusMinutes(30L - (roundedTime.minute % 30))
         }
+
+        setupEditActions(activity)
     }
 
-    override fun setupButtons(activity: Activity, pass: Pass) {
-
-        val timeAndNavBar = view.findViewById<TimeAndNavBar>(R.id.timeAndNavBar)
-        timeAndNavBar.findViewById<TextView>(R.id.timeButton) .text = view.context.getString(R.string.edit_time)
-        timeAndNavBar.findViewById<TextView>(R.id.locationButton) .text = view.context.getString(R.string.edit_location)
-
-        timeAndNavBar.findViewById<TextView>(R.id.timeButton) .setOnClickListener {
+    private fun setupEditActions(activity: Activity) {
+        view.findViewById<MaterialButton>(R.id.editTimeButton).setOnClickListener {
             showDatePicker(activity)
         }
 
-        timeAndNavBar.findViewById<TextView>(R.id.locationButton) .setOnClickListener {
-            showLocationEditDialog(activity, this.pass) {
-                refresh(this.pass, passStore)
+        view.findViewById<MaterialButton>(R.id.editLocationButton).setOnClickListener {
+            showLocationEditDialog(activity, pass) {
+                refresh(pass, passStore)
             }
         }
-
-    }
-
-    @Visibility
-    override fun getVisibilityForGlobalAndLocal(global: Boolean, local: Boolean): Int {
-        return VISIBLE
     }
 
     private fun showDatePicker(activity: Activity) {

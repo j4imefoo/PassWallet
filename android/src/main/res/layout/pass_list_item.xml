@@ -70,23 +70,6 @@
         </LinearLayout>
 
 
-        <View
-            android:id="@+id/actionsSeparator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:background="@color/outline_variant"
-            android:padding="7dp" />
-
-        <org.ligi.passandroid.ui.views.TimeAndNavBar
-            android:id="@+id/timeAndNavBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
         <LinearLayout
             android:id="@+id/passExtrasContainer"
             android:layout_width="match_parent"

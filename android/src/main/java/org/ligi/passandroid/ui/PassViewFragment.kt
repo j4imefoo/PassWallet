@@ -14,11 +14,9 @@ import androidx.core.text.util.LinkifyCompat
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
 import org.ligi.passandroid.R
-import org.ligi.passandroid.databinding.ActivityPassViewPageBinding
 import org.ligi.passandroid.model.PassBitmapDefinitions
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
-import org.ligi.passandroid.ui.pass_view_holder.VerbosePassViewHolder
 
 private const val LINKIFY_MASK = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
 
@@ -27,10 +25,6 @@ class PassViewFragment : Fragment() {
     private val passViewHelper by lazy { PassViewHelper(requireActivity()) }
     internal val passStore: PassStore by inject()
     lateinit var pass: Pass
-
-    private var _binding: ActivityPassViewPageBinding? = null
-    private val binding get() = _binding!!
-
 
     private fun processImage(view: ImageView, name: String, pass: Pass) {
         val bitmap = pass.getBitmap(passStore, name)
@@ -106,9 +100,6 @@ class PassViewFragment : Fragment() {
         }
 
         LinkifyCompat.addLinks(back_fields, LINKIFY_MASK)
-
-        val passViewHolder = VerbosePassViewHolder(root.findViewById(R.id.pass_card))
-        passViewHolder.apply(pass, passStore, requireActivity())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
