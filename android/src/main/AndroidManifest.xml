@@ -69,38 +69,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.espass"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.espass"
-                    android:scheme="https" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.pkpass"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.pkpass"
-                    android:scheme="https" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.pkpasses"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.pkpasses"
-                    android:scheme="https" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.pdf"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\.pdf"
-                    android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="*" />
+                <data android:pathPattern="/.*\.espass" />
+                <data android:pathPattern="/.*\.pkpass" />
+                <data android:pathPattern="/.*\.pkpasses" />
+                <data android:pathPattern="/.*\.pdf" />
             </intent-filter>
 
             <intent-filter>
