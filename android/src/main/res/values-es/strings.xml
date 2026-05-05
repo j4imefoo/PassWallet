@@ -32,6 +32,7 @@
     <string name="import_status_title">Importando pase</string>
     <string name="import_status_message">Comprobando el archivo y preparándolo para PassWallet.</string>
     <string name="import_error_file_message">PassWallet no ha podido leer este archivo. Comprueba que sea un pase o una copia válidos e inténtalo de nuevo.</string>
+    <string name="import_error_backup_message">Este archivo es una copia de seguridad de PassWallet. Abre Ajustes → Copia de seguridad → Importar copia para restaurarla.</string>
     <string name="import_error_generic_message">La importación ha fallado: %s</string>
     <string name="update_error_title">No se pudo actualizar</string>
     <string name="update_unavailable_title">No hay actualización disponible</string>

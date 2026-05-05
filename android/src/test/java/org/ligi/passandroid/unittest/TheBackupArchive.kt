@@ -100,6 +100,32 @@ class TheBackupArchive {
         assertImportRejected(archive, targetRoot)
     }
 
+    @Test
+    fun recognizesPassWalletBackupManifest() {
+        val archive = ByteArrayOutputStream()
+        BackupArchive.exportBackup(
+            passesDir = temporaryFolder.newFolder("summary-passes"),
+            stateDir = temporaryFolder.newFolder("summary-state"),
+            preferences = emptyMap(),
+            appVersionName = "26.5.5",
+            appVersionCode = 202605050,
+            outputStream = archive,
+        )
+
+        val summary = BackupArchive.readSummary(ByteArrayInputStream(archive.toByteArray()))
+
+        assertThat(summary?.app).isEqualTo("PassWallet")
+        assertThat(summary?.appVersionName).isEqualTo("26.5.5")
+        assertThat(BackupArchive.looksLikePassWalletBackup(ByteArrayInputStream(archive.toByteArray()))).isTrue()
+    }
+
+    @Test
+    fun doesNotTreatPkpassManifestAsBackup() {
+        val archive = zipOf("manifest.json" to "{\"pass.json\":\"abc123\"}", "pass.json" to "{}")
+
+        assertThat(BackupArchive.looksLikePassWalletBackup(ByteArrayInputStream(archive))).isFalse()
+    }
+
     private fun assertImportRejected(archive: ByteArray, targetRoot: File) {
         try {
             BackupArchive.importBackup(

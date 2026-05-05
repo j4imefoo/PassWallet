@@ -22,6 +22,56 @@ object BackupArchive {
     private const val MAX_BACKUP_ENTRIES = 1_024
     private const val MAX_PREFERENCES_BYTES = 256L * 1024L
 
+    data class Summary(
+        val format: Int,
+        val app: String,
+        val packageName: String?,
+        val appVersionName: String?,
+        val appVersionCode: Int?,
+        val createdAt: String?,
+    )
+
+    fun readSummary(inputStream: InputStream): Summary? {
+        ZipInputStream(BufferedInputStream(inputStream)).use { zip ->
+            var entryCount = 0
+            while (true) {
+                val entry = zip.nextEntry ?: break
+                entryCount++
+                if (entryCount > MAX_BACKUP_ENTRIES) {
+                    throw IllegalArgumentException("Backup contains too many files")
+                }
+                if (!entry.isDirectory && entry.name == MANIFEST_ENTRY) {
+                    val manifestJson = zip.readEntryTextWithLimit(MAX_PREFERENCES_BYTES)
+                    return parseManifest(manifestJson)
+                }
+                zip.closeEntry()
+            }
+        }
+        return null
+    }
+
+    fun looksLikePassWalletBackup(inputStream: InputStream): Boolean {
+        return try {
+            readSummary(inputStream)?.app == "PassWallet"
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun parseManifest(json: String): Summary? {
+        val values = decodePreferences(json)
+        val app = values["app"] as? String ?: return null
+        val format = values["format"] as? Int ?: return null
+        return Summary(
+            format = format,
+            app = app,
+            packageName = values["package"] as? String,
+            appVersionName = values["appVersionName"] as? String,
+            appVersionCode = values["appVersionCode"] as? Int,
+            createdAt = values["createdAt"] as? String,
+        )
+    }
+
     fun exportBackup(
         passesDir: File,
         stateDir: File,

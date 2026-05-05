@@ -3,7 +3,6 @@ package org.ligi.passandroid.functions
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import androidx.annotation.VisibleForTesting
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
@@ -29,7 +28,6 @@ fun generateBitmapDrawable(
     }
 }
 
-@VisibleForTesting
 fun generateBarCodeBitmap(data: String, type: PassBarCodeFormat, widthPx: Int? = null, heightPx: Int? = null): Bitmap? {
 
     if (data.isEmpty()) {
@@ -67,7 +65,6 @@ fun generateBarCodeBitmap(data: String, type: PassBarCodeFormat, widthPx: Int? =
 
 }
 
-@VisibleForTesting
 fun getBitMatrix(data: String, type: PassBarCodeFormat, widthPx: Int? = null, heightPx: Int? = null): BitMatrix {
     val (defaultWidth, defaultHeight) = when (type) {
         PassBarCodeFormat.AZTEC,

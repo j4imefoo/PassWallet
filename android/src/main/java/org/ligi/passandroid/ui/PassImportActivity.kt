@@ -14,6 +14,7 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
 import org.ligi.passandroid.Tracker
+import org.ligi.passandroid.backup.BackupArchive
 import org.ligi.passandroid.databinding.ActivityImportBinding
 import org.ligi.passandroid.functions.fromURI
 import org.ligi.passandroid.model.PassStore
@@ -58,6 +59,8 @@ class PassImportActivity : AppCompatActivity() {
 
                     if (fromURI == null) {
                         showImportFailed(getString(R.string.import_error_file_message))
+                    } else if (isPassWalletBackup(uri)) {
+                        showImportFailed(getString(R.string.import_error_backup_message))
                     } else {
 
                         if (isFinishing) {
@@ -103,6 +106,12 @@ class PassImportActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun isPassWalletBackup(uri: Uri): Boolean {
+        return contentResolver.openInputStream(uri)?.use { input ->
+            BackupArchive.looksLikePassWalletBackup(input)
+        } ?: false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

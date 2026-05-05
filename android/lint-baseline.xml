@@ -16,42 +16,6 @@
     <issue id="AppLinkWarning" message="This intent filter has the format of an Android App Link but is missing the `autoVerify` attribute; add `android:autoVerify=&quot;true&quot;` to ensure your domain will be validated and enable App Link-related Lint warnings. If you do not want clicked URLs to bring the user to your app, remove the `android.intent.category.BROWSABLE` category, or set `android:autoVerify=&quot;false&quot;` to make it clear this is not intended to be an Android App Link." errorLine1="            &lt;intent-filter&gt;" errorLine2="             ~~~~~~~~~~~~~">
         <location file="src/main/AndroidManifest.xml" line="56" column="14" />
     </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="62" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="66" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="70" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="74" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="78" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="82" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="148" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="152" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="156" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="160" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="164" column="17" />
-    </issue>
-    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
-        <location file="src/main/AndroidManifest.xml" line="168" column="17" />
-    </issue>
     <issue id="GradleDependency" message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.10.0" errorLine1="    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location file="build.gradle" line="97" column="20" />
     </issue>

@@ -33,6 +33,7 @@
     <string name="import_status_title">Importing pass</string>
     <string name="import_status_message">Checking the file and preparing it for PassWallet.</string>
     <string name="import_error_file_message">PassWallet could not read this file. Check that it is a valid pass or backup and try again.</string>
+    <string name="import_error_backup_message">This file is a PassWallet backup. Open Settings → Backup → Import Backup to restore it.</string>
     <string name="import_error_generic_message">The import failed: %s</string>
     <string name="update_error_title">Update failed</string>
     <string name="update_unavailable_title">No update available</string>

@@ -127,15 +127,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
     androidTestImplementation 'com.squareup.assertj:assertj-android:1.2.0'
     androidTestImplementation "org.mockito:mockito-core:$mockito_version"
-    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.28.4'
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.28.6'
     androidTestImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     androidTestImplementation "org.threeten:threetenbp:$threetenbp_version"
     androidTestImplementation 'com.android.support:multidex:1.0.3'
 
 
     implementation 'com.github.ligi:ExtraCompats:1.0'
-    implementation 'net.lingala.zip4j:zip4j:2.11.5'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.6'
+    implementation 'net.lingala.zip4j:zip4j:2.11.6'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
 
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
@@ -161,10 +161,10 @@ dependencies {
     implementation 'com.larswerkman:HoloColorPicker:1.5'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation 'com.squareup.okio:okio:3.6.0'
+    implementation 'com.squareup.okio:okio:3.17.0'
 
-    implementation 'com.squareup.moshi:moshi:1.15.0'
-    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
+    implementation 'com.squareup.moshi:moshi:1.15.2'
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.15.2"
 
     implementation "com.chibatching.kotpref:kotpref:$kotpref_version"
     implementation "com.chibatching.kotpref:initializer:$kotpref_version"

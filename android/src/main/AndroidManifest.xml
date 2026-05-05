@@ -175,38 +175,13 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.espass"
-                    android:scheme="content" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.espass"
-                    android:scheme="file" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.pkpass"
-                    android:scheme="content" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.pkpass"
-                    android:scheme="file" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.pkpasses"
-                    android:scheme="content" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.pkpasses"
-                    android:scheme="file" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.pdf"
-                    android:scheme="content" />
-                <data
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\.pdf"
-                    android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:pathPattern="/.*\.espass" />
+                <data android:pathPattern="/.*\.pkpass" />
+                <data android:pathPattern="/.*\.pkpasses" />
+                <data android:pathPattern="/.*\.pdf" />
             </intent-filter>
 
             <intent-filter>
