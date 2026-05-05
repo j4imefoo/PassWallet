@@ -137,7 +137,11 @@ class PassListActivity : PassAndroidActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 passStore.updateChannel.collect {
-                    refresh()
+                    binding.viewPager.post {
+                        if (!isFinishing && !isDestroyed) {
+                            refresh()
+                        }
+                    }
                 }
             }
         }

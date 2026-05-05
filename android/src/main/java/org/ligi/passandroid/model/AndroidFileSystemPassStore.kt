@@ -119,7 +119,6 @@ class AndroidFileSystemPassStore(
                 save(result)
             }
             passMap[id] = result
-            notifyChange()
         }
 
         return result

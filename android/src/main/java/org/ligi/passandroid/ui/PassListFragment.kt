@@ -56,7 +56,7 @@ class PassListFragment : Fragment() {
     }
 
     private fun refreshPassList() {
-        passStoreProjection.refresh()
+        passStoreProjection.refresh(settings.getSortOrder())
         adapter.notifyDataSetChanged()
     }
 

@@ -26,10 +26,13 @@ fun createAndAddEmptyPass(passStore: PassStore, resources: Resources, type: Pass
     passStore.currentPass = pass
     passStore.save(pass)
 
-    val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+    val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher_foreground)
+        ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
     try {
-        bitmap.compress(Bitmap.CompressFormat.PNG, 90, FileOutputStream(File(passStore.getPathForID(pass.id), PassBitmapDefinitions.BITMAP_ICON + ".png")))
+        FileOutputStream(File(passStore.getPathForID(pass.id), PassBitmapDefinitions.BITMAP_ICON + ".png")).use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+        }
     } catch (ignored: FileNotFoundException) {
     }
 

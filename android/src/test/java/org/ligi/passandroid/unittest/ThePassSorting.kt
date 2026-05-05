@@ -1,13 +1,20 @@
 package org.ligi.passandroid.unittest
 
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.ligi.passandroid.model.PassClassifier
+import org.ligi.passandroid.model.PassStore
+import org.ligi.passandroid.model.PassStoreProjection
+import org.ligi.passandroid.model.PassStoreUpdateEvent
 import org.ligi.passandroid.model.comparator.PassSortOrder
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassImpl
 import org.ligi.passandroid.model.pass.PassType
 import org.threeten.bp.ZonedDateTime
+import java.io.File
 import java.util.*
 
 class ThePassSorting {
@@ -64,4 +71,36 @@ class ThePassSorting {
         assertThat(passList).containsExactly(pass1, pass3, pass4, pass2, pass5)
     }
 
+    @Test
+    fun testProjectionRefreshCanApplyChangedSortOrder() {
+        val passStore = ProjectionTestPassStore(passList.associateBy { it.id })
+        val projection = PassStoreProjection(passStore, ProjectionTestPassStore.TOPIC, PassSortOrder.DATE_ASC)
+
+        assertThat(projection.passList).containsExactly(pass1, pass3, pass2, pass5, pass4)
+
+        projection.refresh(PassSortOrder.DATE_DESC)
+
+        assertThat(projection.passList).containsExactly(pass4, pass5, pass2, pass3, pass1)
+    }
+
+    private class ProjectionTestPassStore(private val passesById: Map<String, Pass>) : PassStore {
+        override val updateChannel: SharedFlow<PassStoreUpdateEvent> = MutableSharedFlow()
+        override val passMap: Map<String, Pass> = passesById
+        override var currentPass: Pass? = null
+        override val classifier = PassClassifier(
+            passesById.keys.associateWith { TOPIC }.toMutableMap(),
+            this,
+        )
+
+        override fun save(pass: Pass) = Unit
+        override fun getPassbookForId(id: String): Pass? = passesById[id]
+        override fun deletePassWithId(id: String): Boolean = false
+        override fun getPathForID(id: String): File = File(id)
+        override fun notifyChange() = Unit
+        override fun syncPassStoreWithClassifier(defaultTopic: String) = Unit
+
+        companion object {
+            const val TOPIC = "topic"
+        }
+    }
 }

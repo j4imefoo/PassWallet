@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import org.ligi.kaxt.disableRotation
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.PassStoreProjection
+import org.ligi.passandroid.model.comparator.PassSortOrder
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassType
 import org.ligi.passandroid.model.pass.PassVisualClassifier
@@ -70,7 +71,7 @@ class PassViewActivity : PassViewActivityBase() {
     override fun refresh() {
         super.refresh()
 
-        pagerAdapter.refresh()
+        pagerAdapter.refresh(settings.getSortOrder())
     }
 
     inner class CollectionPagerAdapter(
@@ -113,8 +114,8 @@ class PassViewActivity : PassViewActivityBase() {
             return passStoreProjection.passList.indexOf(pass)
         }
 
-        fun refresh() {
-            passStoreProjection.refresh()
+        fun refresh(sortOrder: PassSortOrder) {
+            passStoreProjection.refresh(sortOrder)
         }
     }
 
