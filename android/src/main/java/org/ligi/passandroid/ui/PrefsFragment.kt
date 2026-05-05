@@ -1,11 +1,13 @@
 package org.ligi.passandroid.ui
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -46,8 +48,22 @@ class PrefsFragment : PreferenceFragmentCompat() {
 
         entries.zip(values).forEach { (entry, value) ->
             val row = ItemSortOrderBinding.inflate(LayoutInflater.from(context), binding.sortOrderOptions, false)
+            val isSelected = value == selectedValue
             row.sortOrderLabel.text = entry
-            row.sortOrderSelectedCheck.visibility = if (value == selectedValue) View.VISIBLE else View.GONE
+            row.sortOrderLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0,
+                0,
+                if (isSelected) R.drawable.ic_check_24 else 0,
+                0,
+            )
+            row.sortOrderLabel.compoundDrawableTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(context, R.color.edit_action_text),
+            )
+            row.sortOrderLabel.contentDescription = if (isSelected) {
+                "$entry, ${getString(R.string.selected)}"
+            } else {
+                entry
+            }
             row.root.setOnClickListener {
                 sortPreference.value = value
                 updateSortSummary(sortPreference)

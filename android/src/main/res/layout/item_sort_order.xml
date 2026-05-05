@@ -16,33 +16,17 @@
     app:strokeColor="@color/edit_action_stroke"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/sortOrderLabel"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:drawablePadding="12dp"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
         android:paddingStart="18dp"
-        android:paddingEnd="16dp">
-
-        <TextView
-            android:id="@+id/sortOrderLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/edit_action_text"
-            android:textSize="16sp"
-            tools:text="Fecha ascendente" />
-
-        <ImageView
-            android:id="@+id/sortOrderSelectedCheck"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="@string/selected"
-            android:src="@drawable/ic_check_24"
-            android:visibility="gone"
-            app:tint="@color/edit_action_text"
-            tools:visibility="visible" />
-
-    </LinearLayout>
+        android:paddingEnd="16dp"
+        android:textColor="@color/edit_action_text"
+        android:textSize="16sp"
+        tools:drawableEnd="@drawable/ic_check_24"
+        tools:text="Fecha ascendente" />
 </com.google.android.material.card.MaterialCardView>
