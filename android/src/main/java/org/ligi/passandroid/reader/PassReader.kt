@@ -1,6 +1,6 @@
 package org.ligi.passandroid.reader
 
-import android.graphics.Color
+import androidx.core.graphics.toColorInt
 import org.ligi.passandroid.functions.readJSONSafely
 import org.ligi.passandroid.model.PassDefinitions
 import org.ligi.passandroid.model.pass.BarCode
@@ -37,7 +37,7 @@ object PassReader {
 
             if (passJSON.has("ui")) {
                 val uiJSON = passJSON.getJSONObject("ui")
-                pass.accentColor = Color.parseColor(uiJSON.getString("bgColor"))
+                pass.accentColor = uiJSON.getString("bgColor").toColorInt()
             }
 
             if (passJSON.has("barcode")) {

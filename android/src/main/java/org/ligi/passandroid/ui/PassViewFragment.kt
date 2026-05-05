@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.parseAsHtml
 import androidx.core.text.util.LinkifyCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
 import org.ligi.passandroid.R
@@ -55,7 +56,7 @@ class PassViewFragment : Fragment() {
         val back_fields = root.findViewById<TextView>(R.id.back_fields)
         moreTextView.setOnClickListener {
 
-            if (back_fields.visibility == View.VISIBLE) {
+            if (back_fields.isVisible) {
                 back_fields.visibility = View.GONE
                 moreTextView.setText(if (isStoreCardLike) R.string.pass_details else R.string.more)
             } else {

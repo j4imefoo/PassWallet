@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.view.isVisible
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.passandroid.R
@@ -80,7 +81,7 @@ class BarcodeEditController(
 
     fun refresh() {
         val barcodeUIController = BarcodeUIController(rootView, getBarCode(), context, PassViewHelper(context))
-        val isBarcodeShown = barcodeUIController.getBarcodeView().visibility == View.VISIBLE
+        val isBarcodeShown = barcodeUIController.getBarcodeView().isVisible
 
         val message = messageInput.text?.toString().orEmpty()
         if (message.isBlank() || isBarcodeShown) {

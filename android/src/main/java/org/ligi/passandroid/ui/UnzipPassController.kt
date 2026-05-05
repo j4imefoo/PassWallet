@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
+import androidx.core.graphics.createBitmap
 import okio.buffer
 import okio.source
 import org.json.JSONObject
@@ -145,14 +146,14 @@ object UnzipPassController : KoinComponent {
                         val ratio = page.height.toFloat() / page.width
 
                         val widthPixels = resources.displayMetrics.widthPixels
-                        val createBitmap = Bitmap.createBitmap(widthPixels, (widthPixels * ratio).toInt(), Bitmap.Config.ARGB_8888)
-                        page.render(createBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                        val pdfBitmap = createBitmap(widthPixels, (widthPixels * ratio).toInt())
+                        page.render(pdfBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
                         val imagePass = createPassForPDFImport(resources)
                         val pathForID = spec.passStore.getPathForID(imagePass.id)
                         pathForID.mkdirs()
 
-                        createBitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(File(pathForID, "strip.png")))
+                        pdfBitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(File(pathForID, "strip.png")))
 
                         spec.passStore.save(imagePass)
                         spec.passStore.classifier.moveToTopic(imagePass, TopicNames.NEW)

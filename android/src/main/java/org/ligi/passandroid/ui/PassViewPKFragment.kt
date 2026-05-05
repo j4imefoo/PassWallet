@@ -18,6 +18,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.parseAsHtml
 import androidx.core.text.util.LinkifyCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
 import org.ligi.passandroid.R
@@ -65,7 +66,7 @@ class PassViewPKFragment : Fragment() {
         val moreTextView = root.findViewById<TextView>(R.id.moreTextView)
 
         moreTextView.setOnClickListener {
-            if (backFields.visibility == View.VISIBLE) {
+            if (backFields.isVisible) {
                 backFields.visibility = View.GONE
                 moreTextView.setText(if (pass.type == PassType.LOYALTY) R.string.pass_details else R.string.more)
             } else {

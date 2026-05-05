@@ -3,6 +3,8 @@ package org.ligi.passandroid.functions
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
@@ -22,7 +24,7 @@ fun generateBitmapDrawable(
 ): BitmapDrawable? {
     val bitmap = generateBarCodeBitmap(data, type, widthPx, heightPx) ?: return null
 
-    return BitmapDrawable(resources, bitmap).apply {
+    return bitmap.toDrawable(resources).apply {
         isFilterBitmap = false
         setAntiAlias(false)
     }
@@ -39,7 +41,7 @@ fun generateBarCodeBitmap(data: String, type: PassBarCodeFormat, widthPx: Int? =
 
         val width = matrix.width
         val height = matrix.height
-        val barcodeImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val barcodeImage = createBitmap(width, height)
         val pixels = IntArray(width * height)
 
         for (y in 0 until height) {
