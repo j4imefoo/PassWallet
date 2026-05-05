@@ -1,6 +1,7 @@
 package org.ligi.passandroid.ui
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.text.util.Linkify
@@ -40,13 +41,18 @@ class PassViewPKFragment : Fragment() {
     lateinit var pass: Pass
 
     private fun processImage(view: ImageView, name: String, pass: Pass) {
-        val bitmap = pass.getBitmap(passStore, name)
+        processBitmapImage(view, name, pass.getBitmap(passStore, name))
+    }
+
+    private fun processBitmapImage(view: ImageView, name: String, bitmap: Bitmap?) {
         if (bitmap != null && bitmap.width > 300) {
             view.setOnClickListener {
                 val intent = Intent(view.context, TouchImageActivity::class.java)
                 intent.putExtra("IMAGE", name)
                 startActivity(intent)
             }
+        } else {
+            view.setOnClickListener(null)
         }
         passViewHelper.setBitmapSafe(view, bitmap)
     }
@@ -61,7 +67,7 @@ class PassViewPKFragment : Fragment() {
         moreTextView.setOnClickListener {
             if (backFields.visibility == View.VISIBLE) {
                 backFields.visibility = View.GONE
-                moreTextView.setText(R.string.more)
+                moreTextView.setText(if (pass.type == PassType.LOYALTY) R.string.pass_details else R.string.more)
             } else {
                 backFields.visibility = View.VISIBLE
                 moreTextView.setText(R.string.less)
@@ -84,6 +90,7 @@ class PassViewPKFragment : Fragment() {
         val foregroundColor = readableForegroundFor(pass.accentColor)
         val labelColor = ColorUtils.setAlphaComponent(foregroundColor, 210)
         val isCredential = ensureCredentialVisualType()
+        val isStoreCard = pass.type == PassType.LOYALTY
         val renderer = PassRenderers.forPass(pass)
         val frontValueColor = if (isCredential) CREDENTIAL_PURPLE else foregroundColor
         val frontLabelColor = if (isCredential) CREDENTIAL_PURPLE else labelColor
@@ -100,12 +107,17 @@ class PassViewPKFragment : Fragment() {
         BarcodeUIController(requireView(), pass.barCode, requireActivity(), passViewHelper)
         BoardingTransitIcon.ensureTransitType(pass, passStore)
 
-        processImage(root.findViewById(R.id.logo_img_view), PassBitmapDefinitions.BITMAP_LOGO, pass)
+        val explicitLogoBitmap = pass.getBitmap(passStore, PassBitmapDefinitions.BITMAP_LOGO)
+        val logoBitmap = explicitLogoBitmap ?: pass.takeIconAsDetailLogoIfManualSimplePass()
+        val logoBitmapName = if (explicitLogoBitmap == null && logoBitmap != null) PassBitmapDefinitions.BITMAP_ICON else PassBitmapDefinitions.BITMAP_LOGO
+        processBitmapImage(root.findViewById(R.id.logo_img_view), logoBitmapName, logoBitmap)
         processImage(root.findViewById(R.id.footer_img_view), PassBitmapDefinitions.BITMAP_FOOTER, pass)
         processImage(root.findViewById(R.id.thumbnail_img_view), PassBitmapDefinitions.BITMAP_THUMBNAIL, pass)
         processImage(root.findViewById(R.id.strip_img_view), PassBitmapDefinitions.BITMAP_STRIP, pass)
         if (isCredential) {
             applyCredentialLayout(root)
+        } else if (isStoreCard) {
+            applyStoreCardLayout(root)
         }
 
         val backStrBuilder = StringBuilder()
@@ -121,7 +133,9 @@ class PassViewPKFragment : Fragment() {
             } else if (hint != null && renderer.showOnDetailFront(field)) {
                 val v = requireActivity().layoutInflater.inflate(R.layout.vertical_field_item, root.findViewById(R.id.header_field_container), false)
                 val key = v?.findViewById<TextView>(R.id.key)
-                key?.text = renderer.detailLabel(field)
+                val renderedLabel = renderer.detailLabel(field)
+                key?.text = renderedLabel
+                key?.visibility = if (renderedLabel.isNullOrBlank()) View.GONE else View.VISIBLE
                 key?.setTextColor(frontLabelColor)
                 val value = v?.findViewById<TextView>(R.id.value)
                 value?.text = renderer.detailValue(field)
@@ -151,8 +165,25 @@ class PassViewPKFragment : Fragment() {
                     value?.textSize = 17f
                 }
 
+                if (isStoreCard && hint == "primaryFields") {
+                    value?.textSize = 20f
+                    value?.gravity = Gravity.LEFT
+                    key?.gravity = Gravity.LEFT
+                }
+
+                if (isStoreCard && hint == "secondaryFields") {
+                    key?.textSize = 11f
+                    value?.textSize = 18f
+                    value?.gravity = Gravity.LEFT
+                    key?.gravity = Gravity.LEFT
+                }
+
                 if (hint == "primaryFields") {
-                    value?.textSize = if (pass.type == PassType.EVENT) 28f else 32f
+                    value?.textSize = when {
+                        pass.type == PassType.EVENT -> 28f
+                        isStoreCard -> 20f
+                        else -> 32f
+                    }
                     key?.textSize = 13f
                     val params = RelativeLayout.LayoutParams(
                         if (pass.type == PassType.EVENT) RelativeLayout.LayoutParams.MATCH_PARENT else RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -190,6 +221,7 @@ class PassViewPKFragment : Fragment() {
         if (backStrBuilder.isNotEmpty()) {
             backFields.text = "$backStrBuilder".parseAsHtml()
             moreTextView.visibility = View.VISIBLE
+            moreTextView.setText(if (isStoreCard) R.string.pass_details else R.string.more)
         } else {
             moreTextView.visibility = View.GONE
         }
@@ -261,6 +293,40 @@ class PassViewPKFragment : Fragment() {
         root.findViewById<View>(R.id.barcode_panel).setPadding(0, 0, 0, 0)
     }
 
+    private fun applyStoreCardLayout(root: View) {
+        val logoView = root.findViewById<ImageView>(R.id.logo_img_view)
+        logoView.scaleType = ImageView.ScaleType.FIT_CENTER
+        logoView.setPadding(0, dp(6), dp(6), dp(2))
+        logoView.layoutParams = RelativeLayout.LayoutParams(dp(124), dp(56)).apply {
+            addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            addRule(RelativeLayout.ALIGN_PARENT_START)
+            addRule(RelativeLayout.ALIGN_PARENT_TOP)
+        }
+
+        val headerContainer = root.findViewById<LinearLayout>(R.id.header_field_container)
+        headerContainer.gravity = Gravity.RIGHT
+        headerContainer.setPadding(dp(8), dp(6), 0, 0)
+
+        root.findViewById<ImageView>(R.id.thumbnail_img_view).visibility = View.GONE
+        root.findViewById<ImageView>(R.id.strip_img_view).visibility = View.GONE
+        root.findViewById<ImageView>(R.id.footer_img_view).visibility = View.GONE
+
+        root.findViewById<RelativeLayout>(R.id.primary_field_container).setPadding(0, dp(10), 0, dp(8))
+        root.findViewById<LinearLayout>(R.id.secondary_field_container).setPadding(0, 0, 0, dp(4))
+        root.findViewById<LinearLayout>(R.id.auxiliary_field_container).setPadding(0, 0, 0, dp(2))
+    }
+
+    private fun Pass.takeIconAsDetailLogoIfManualSimplePass(): Bitmap? {
+        if (app != "passandroid") return null
+        if (getBitmap(passStore, PassBitmapDefinitions.BITMAP_LOGO) != null) return null
+        if (getBitmap(passStore, PassBitmapDefinitions.BITMAP_STRIP) != null) return null
+        if (getBitmap(passStore, PassBitmapDefinitions.BITMAP_THUMBNAIL) != null) return null
+        if (getBitmap(passStore, PassBitmapDefinitions.BITMAP_FOOTER) != null) return null
+        if (barCode == null) return null
+        if (fields.count { !it.hide } > 2) return null
+        return getBitmap(passStore, PassBitmapDefinitions.BITMAP_ICON)
+    }
+
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
     }
@@ -276,7 +342,6 @@ class PassViewPKFragment : Fragment() {
         root.findViewById<TextView>(R.id.moreTextView).setTextColor(textColor)
         root.findViewById<TextView>(R.id.back_fields).setTextColor(textColor)
         root.findViewById<TextView>(R.id.barcode_alt_text).setTextColor(textColor)
-        root.findViewById<TextView>(R.id.credential_plus)?.setTextColor(textColor)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -286,10 +351,10 @@ class PassViewPKFragment : Fragment() {
         arguments?.takeIf { it.containsKey(PassViewActivityBase.EXTRA_KEY_UUID) }?.apply {
             val uuid = getString(PassViewActivityBase.EXTRA_KEY_UUID)
             pass = if (uuid != null) {
-                passStore.getPassbookForId(uuid) ?: passStore.currentPass!!
+                passStore.getPassbookForId(uuid) ?: passStore.currentPass
             } else {
-                passStore.currentPass!!
-            }
+                passStore.currentPass
+            } ?: return rootView
         }
         return rootView
     }

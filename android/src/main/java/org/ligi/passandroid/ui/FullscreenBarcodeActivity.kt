@@ -17,6 +17,9 @@ class FullscreenBarcodeActivity : PassViewActivityBase() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!hasCurrentPass()) {
+            return
+        }
         supportActionBar?.hide()
         binding = FullscreenImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -33,6 +36,9 @@ class FullscreenBarcodeActivity : PassViewActivityBase() {
 
     override fun onResume() {
         super.onResume()
+        if (!hasCurrentPass()) {
+            return
+        }
         supportActionBar?.hide()
 
         val barcode = currentPass.barCode

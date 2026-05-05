@@ -18,8 +18,8 @@
         android:layout_gravity="center_vertical"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/menu_delete"
-        android:tint="?android:textColorSecondary"
         app:srcCompat="@drawable/ic_action_delete"
+        app:tint="?android:textColorSecondary"
         tools:ignore="MissingPrefix" />
 
     <com.google.android.material.textfield.TextInputLayout

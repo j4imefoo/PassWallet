@@ -32,6 +32,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.DecodeHintType
@@ -104,11 +107,12 @@ class ScanBarcodeActivity : AppCompatActivity() {
         }
         root.addView(previewView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         root.addView(ScannerOverlayView(this), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        val topPanel = createTopPanel()
         root.addView(
-            createTopPanel(),
+            topPanel,
             FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.TOP
-                setMargins(18.dp, 18.dp + statusBarHeight(), 18.dp, 0)
+                setMargins(18.dp, 18.dp, 18.dp, 0)
             },
         )
 
@@ -143,6 +147,18 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 setMargins(18.dp, 0, 18.dp, 28.dp)
             },
         )
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            topPanel.updateLayoutParams<FrameLayout.LayoutParams> {
+                topMargin = 18.dp + systemBars.top
+            }
+            buttons.updateLayoutParams<FrameLayout.LayoutParams> {
+                bottomMargin = 28.dp + systemBars.bottom
+            }
+            insets
+        }
+        ViewCompat.requestApplyInsets(root)
 
         return root
     }
@@ -226,11 +242,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 setStroke(strokeWidth, strokeColor)
             }
         }
-    }
-
-    private fun statusBarHeight(): Int {
-        val id = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (id > 0) resources.getDimensionPixelSize(id) else 24.dp
     }
 
     private fun hasCameraPermission() = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED

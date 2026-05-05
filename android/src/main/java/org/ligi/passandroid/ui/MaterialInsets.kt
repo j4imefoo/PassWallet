@@ -1,6 +1,7 @@
 package org.ligi.passandroid.ui
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +18,7 @@ fun AppCompatActivity.applyMaterialInsets(
     appBar: View? = null,
     content: View? = null,
     floatingView: View? = null,
+    statusBarSpacer: View? = null,
 ) {
     val statusBarScrim = ContextCompat.getColor(this, R.color.status_bar)
     val navigationBarScrim = ContextCompat.getColor(this, R.color.surface_container)
@@ -28,6 +30,8 @@ fun AppCompatActivity.applyMaterialInsets(
     val appBarTop = appBar?.paddingTop ?: 0
     val appBarLeft = appBar?.paddingLeft ?: 0
     val appBarRight = appBar?.paddingRight ?: 0
+
+    val statusBarSpacerHeight = statusBarSpacer?.layoutParams?.height ?: 0
 
     val contentBottom = content?.paddingBottom ?: 0
     val contentLeft = content?.paddingLeft ?: 0
@@ -41,9 +45,13 @@ fun AppCompatActivity.applyMaterialInsets(
 
         appBar?.updatePadding(
             left = appBarLeft + systemBars.left,
-            top = appBarTop + systemBars.top,
+            top = appBarTop + if (statusBarSpacer == null) systemBars.top else 0,
             right = appBarRight + systemBars.right,
         )
+
+        statusBarSpacer?.updateLayoutParams<ViewGroup.LayoutParams> {
+            height = statusBarSpacerHeight + systemBars.top
+        }
 
         content?.updatePadding(
             left = contentLeft + systemBars.left,

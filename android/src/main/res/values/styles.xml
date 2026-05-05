@@ -173,4 +173,22 @@
         <item name="strokeColor">@color/edit_action_stroke</item>
         <item name="strokeWidth">1dp</item>
     </style>
+
+    <style name="PassWallet.TransparentBottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="bottomSheetStyle">@style/PassWallet.TransparentBottomSheet</item>
+    </style>
+
+    <style name="PassWallet.TransparentBottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="shapeAppearanceOverlay">@style/PassWallet.TransparentBottomSheetShape</item>
+    </style>
+
+    <style name="PassWallet.TransparentBottomSheetShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+    </style>
 </resources>

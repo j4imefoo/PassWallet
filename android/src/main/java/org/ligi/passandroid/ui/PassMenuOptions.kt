@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
 import org.ligi.passandroid.Tracker
 import org.ligi.passandroid.model.PassStore
@@ -46,9 +45,12 @@ class PassMenuOptions(val activity: Activity, val pass: Pass) : KoinComponent {
             }
 
             R.id.menu_edit -> {
-                tracker.trackEvent("ui_action", "share", "shared", null)
+                tracker.trackEvent("ui_action", "edit", "edit", null)
                 passStore.currentPass = pass
-                activity.startActivityFromClass(PassEditActivity::class.java)
+                activity.startActivity(
+                    Intent(activity, PassEditActivity::class.java)
+                        .putExtra(PassViewActivityBase.EXTRA_KEY_UUID, pass.id)
+                )
                 return true
             }
 

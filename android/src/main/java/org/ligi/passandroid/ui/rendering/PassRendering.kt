@@ -20,6 +20,7 @@ object PassRenderers {
         return when (pass.type) {
             PassType.EVENT -> EventTicketRenderer
             PassType.BOARDING, PassType.PKBOARDING -> BoardingPassRenderer
+            PassType.LOYALTY -> StoreCardRenderer
             else -> GenericPassRenderer
         }
     }
@@ -41,6 +42,37 @@ object GenericPassRenderer : PassRenderer {
 
     override fun showOnDetailFront(field: PassField): Boolean {
         return !field.hide && field.hint != null && !isGeneratedTypeField(field)
+    }
+}
+
+object StoreCardRenderer : PassRenderer {
+    override fun listTitle(pass: Pass): String? {
+        return pass.frontField("primaryFields")?.let { field ->
+            field.value.cleanPassText() ?: field.label.cleanPassText()
+        } ?: pass.description
+    }
+
+    override fun listMeta(pass: Pass): String? {
+        return pass.frontField("secondaryFields")?.let { joinLabelValue(it) }
+            ?: pass.frontField("headerFields")?.value.cleanPassText()
+            ?: pass.creator
+    }
+
+    override fun detailLabel(field: PassField): String? {
+        if (field.hint == "primaryFields" && field.value.cleanPassText() == null) return null
+        return field.label.cleanPassText()
+    }
+
+    override fun detailValue(field: PassField): String? {
+        if (field.hint == "primaryFields" && field.value.cleanPassText() == null) {
+            return field.label.cleanPassText()
+        }
+        return field.value.cleanPassText()
+    }
+
+    override fun showOnDetailFront(field: PassField): Boolean {
+        if (field.hide || field.hint == null || isGeneratedTypeField(field)) return false
+        return field.hint in listOf("headerFields", "primaryFields", "secondaryFields", "auxiliaryFields")
     }
 }
 

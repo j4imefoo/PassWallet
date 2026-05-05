@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="card_longclick_elevation_half">4dp</dimen>
-
     <dimen name="finger">48dp</dimen>
     <dimen name="rhythm">8dp</dimen>
-    <dimen name="rhythm2">16dp</dimen>
     <dimen name="move_topic_row_height">52dp</dimen>
 </resources>

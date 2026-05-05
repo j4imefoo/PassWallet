@@ -58,6 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/surface_container"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -99,12 +100,29 @@
 
                     </LinearLayout>
 
-                    <org.ligi.passandroid.ui.views.CategoryIndicatorViewWithIcon
-                        android:id="@+id/categoryView"
-                        android:layout_width="48dp"
-                        android:layout_height="74dp"
+                    <FrameLayout
+                        android:layout_width="72dp"
+                        android:layout_height="96dp"
                         android:layout_gravity="center"
-                        android:layout_margin="12dp" />
+                        android:layout_margin="8dp">
+
+                        <org.ligi.passandroid.ui.views.CategoryIndicatorViewWithIcon
+                            android:id="@+id/categoryView"
+                            android:layout_width="48dp"
+                            android:layout_height="74dp"
+                            android:layout_gravity="center" />
+
+                        <ImageView
+                            android:id="@+id/categoryEditHint"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="bottom|end"
+                            android:background="@drawable/bg_edit_hint_badge"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_pass_edit_24"
+                            app:tint="@android:color/white"
+                            tools:ignore="ContentDescription" />
+                    </FrameLayout>
                 </LinearLayout>
 
                 <View
@@ -129,23 +147,22 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/editLocationButton"
                         style="@style/PassWallet.CardActionButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
                         android:text="@string/edit_location"
                         app:icon="@drawable/ic_card_location_20" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/editTimeButton"
                         style="@style/PassWallet.CardActionButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
                         android:text="@string/edit_time"
                         app:icon="@drawable/ic_card_date_20" />
                 </LinearLayout>

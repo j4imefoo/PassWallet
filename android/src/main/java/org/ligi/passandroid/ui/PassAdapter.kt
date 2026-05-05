@@ -1,5 +1,6 @@
 package org.ligi.passandroid.ui
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -7,7 +8,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.ligi.kaxt.startActivityFromClass
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.PassStoreProjection
@@ -37,7 +37,9 @@ class PassAdapter(
 
         root.setOnClickListener {
             passStore.currentPass = pass
-            passListActivity.startActivityFromClass(PassViewActivity::class.java)
+            val intent = Intent(passListActivity, PassViewActivity::class.java)
+                .putExtra(PassViewActivityBase.EXTRA_KEY_UUID, pass.id)
+            passListActivity.startActivity(intent)
         }
 
         root.setOnLongClickListener {

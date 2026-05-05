@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import okio.BufferedSink;
 import okio.Okio;
+import timber.log.Timber;
 
 public class FileBackedPassClassifier extends PassClassifier {
 
@@ -32,7 +33,7 @@ public class FileBackedPassClassifier extends PassClassifier {
             try {
                 return (Map<String, String>) getAdapter(moshi).fromJson(Okio.buffer(Okio.source(backed_file)));
             } catch (IOException e) {
-                e.printStackTrace();
+                Timber.w(e, "could not read classifier state");
             }
         }
 
@@ -52,7 +53,7 @@ public class FileBackedPassClassifier extends PassClassifier {
 
             return Okio.buffer(Okio.sink(backed_file));
         } catch (IOException e) {
-            e.printStackTrace();
+            Timber.w(e, "could not open classifier state for writing");
             return null;
         }
     }
@@ -70,7 +71,7 @@ public class FileBackedPassClassifier extends PassClassifier {
                     adapter.toJson(buffer, getTopicByIdMap());
                     buffer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Timber.w(e, "could not close classifier state writer");
                 }
             }
         }

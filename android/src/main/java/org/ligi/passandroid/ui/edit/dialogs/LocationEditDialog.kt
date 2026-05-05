@@ -59,10 +59,12 @@ fun showLocationEditDialog(
         searchProgress.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
+    fun formatCoordinate(value: Double): String = String.format(Locale.US, "%.6f", value)
+
     fun selectSearchResult(result: LocationSearchResult) {
         nameInput.setText(result.displayName)
-        latitudeInput.setText(result.latitude.toString())
-        longitudeInput.setText(result.longitude.toString())
+        latitudeInput.setText(formatCoordinate(result.latitude))
+        longitudeInput.setText(formatCoordinate(result.longitude))
         searchStatus.text = activity.getString(R.string.location_result_selected)
     }
 
@@ -190,8 +192,8 @@ fun showLocationEditDialog(
     nameInput.setText(existingLocation?.name.orEmpty())
     searchInput.setText(existingLocation?.name.orEmpty())
     existingLocation?.let {
-        latitudeInput.setText(it.lat.toString())
-        longitudeInput.setText(it.lon.toString())
+        latitudeInput.setText(formatCoordinate(it.lat))
+        longitudeInput.setText(formatCoordinate(it.lon))
     }
 
     searchButton.setOnClickListener { performLocationSearch() }

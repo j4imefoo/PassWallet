@@ -17,6 +17,10 @@ object BackupArchive {
     private const val MANIFEST_ENTRY = "manifest.json"
     private const val PREFERENCES_ENTRY = "preferences.json"
     private const val CLASSIFIER_STATE = "classifier_state.json"
+    private const val MAX_BACKUP_TOTAL_BYTES = 100L * 1024L * 1024L
+    private const val MAX_BACKUP_ENTRY_BYTES = 25L * 1024L * 1024L
+    private const val MAX_BACKUP_ENTRIES = 1_024
+    private const val MAX_PREFERENCES_BYTES = 256L * 1024L
 
     fun exportBackup(
         passesDir: File,
@@ -57,20 +61,31 @@ object BackupArchive {
         val preferences = mutableMapOf<String, Any>()
 
         ZipInputStream(BufferedInputStream(inputStream)).use { zip ->
+            var entryCount = 0
+            var totalBytes = 0L
             while (true) {
                 val entry = zip.nextEntry ?: break
+                entryCount++
+                if (entryCount > MAX_BACKUP_ENTRIES) {
+                    throw IllegalArgumentException("Backup contains too many files")
+                }
                 if (!entry.isDirectory) {
                     when {
                         entry.name.startsWith("passes/") -> {
                             val relative = entry.name.removePrefix("passes/")
-                            zip.copyEntryToSafeFile(passesDir, relative)
+                            totalBytes += zip.copyEntryToSafeFile(passesDir, relative, MAX_BACKUP_ENTRY_BYTES)
                         }
                         entry.name == "state/$CLASSIFIER_STATE" -> {
-                            zip.copyEntryToSafeFile(stateDir, CLASSIFIER_STATE)
+                            totalBytes += zip.copyEntryToSafeFile(stateDir, CLASSIFIER_STATE, MAX_BACKUP_ENTRY_BYTES)
                         }
                         entry.name == PREFERENCES_ENTRY -> {
-                            preferences.putAll(decodePreferences(zip.readBytes().toString(Charsets.UTF_8)))
+                            val preferencesJson = zip.readEntryTextWithLimit(MAX_PREFERENCES_BYTES)
+                            totalBytes += preferencesJson.toByteArray(Charsets.UTF_8).size
+                            preferences.putAll(decodePreferences(preferencesJson))
                         }
+                    }
+                    if (totalBytes > MAX_BACKUP_TOTAL_BYTES) {
+                        throw IllegalArgumentException("Backup is too large")
                     }
                 }
                 zip.closeEntry()
@@ -146,7 +161,8 @@ object BackupArchive {
         closeEntry()
     }
 
-    private fun ZipInputStream.copyEntryToSafeFile(baseDir: File, relativeName: String) {
+    private fun ZipInputStream.copyEntryToSafeFile(baseDir: File, relativeName: String, byteLimit: Long): Long {
+        require(relativeName.isNotBlank()) { "Unsafe empty backup entry" }
         val target = File(baseDir, relativeName)
         val canonicalBase = baseDir.canonicalFile
         val canonicalTarget = target.canonicalFile
@@ -154,7 +170,30 @@ object BackupArchive {
             throw IllegalArgumentException("Unsafe backup entry: $relativeName")
         }
         canonicalTarget.parentFile?.mkdirs()
-        canonicalTarget.outputStream().use { copyTo(it) }
+        canonicalTarget.outputStream().use { output ->
+            return copyEntryToWithLimit(output, byteLimit)
+        }
+    }
+
+    private fun ZipInputStream.readEntryTextWithLimit(byteLimit: Long): String {
+        val bytes = java.io.ByteArrayOutputStream()
+        copyEntryToWithLimit(bytes, byteLimit)
+        return bytes.toString(Charsets.UTF_8.name())
+    }
+
+    private fun ZipInputStream.copyEntryToWithLimit(output: OutputStream, byteLimit: Long): Long {
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        var copied = 0L
+        while (true) {
+            val read = read(buffer)
+            if (read == -1) break
+            copied += read
+            if (copied > byteLimit) {
+                throw IllegalArgumentException("Backup entry is too large")
+            }
+            output.write(buffer, 0, read)
+        }
+        return copied
     }
 
     private fun escapeJson(value: String): String = buildString {

@@ -40,8 +40,8 @@
             android:layout_height="24dp"
             android:contentDescription="@string/selected"
             android:src="@drawable/ic_check_24"
-            android:tint="@color/edit_action_text"
             android:visibility="gone"
+            app:tint="@color/edit_action_text"
             tools:visibility="visible" />
 
     </LinearLayout>

@@ -38,7 +38,7 @@ public class MessagingEndpoint {
     /**
      * Api Keys can be obtained from the google cloud console
      */
-    private static final String API_KEY = System.getProperty("gcm.api.key");
+    private static final String API_KEY = System.getenv("PASSWALLET_GCM_API_KEY");
 
     /**
      * Send to the first 10 devices (You can modify this to send to any number of devices or a specific device)
@@ -53,6 +53,10 @@ public class MessagingEndpoint {
         // crop longer messages
         if (message.length() > 1000) {
             message = message.substring(0, 1000) + "[...]";
+        }
+        if (API_KEY == null || API_KEY.trim().isEmpty()) {
+            log.warning("Not sending message because PASSWALLET_GCM_API_KEY is not configured");
+            return;
         }
         Sender sender = new Sender(API_KEY, Endpoint.GCM);
         Message msg = new Message.Builder().addData("message", message).build();

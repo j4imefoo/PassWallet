@@ -61,4 +61,12 @@
         android:text="@string/select_icon"
         app:icon="@drawable/ic_image_photo_camera" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/selectLogo"
+        style="@style/PassWallet.AppearanceSheetAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_logo"
+        app:icon="@drawable/ic_image_photo_camera" />
+
 </LinearLayout>

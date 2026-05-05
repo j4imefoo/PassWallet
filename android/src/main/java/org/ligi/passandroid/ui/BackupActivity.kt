@@ -8,7 +8,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
@@ -19,14 +18,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.edit
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.preference.PreferenceManager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.lifecycle.lifecycleScope
 import org.koin.android.ext.android.inject
 import org.ligi.passandroid.BuildConfig
 import org.ligi.passandroid.R
@@ -62,6 +64,7 @@ class BackupActivity : AppCompatActivity() {
             root = screen.root,
             appBar = screen.appBar,
             content = screen.content,
+            statusBarSpacer = screen.statusBarSpacer,
         )
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.backup_title)
@@ -76,14 +79,16 @@ class BackupActivity : AppCompatActivity() {
     }
 
     private data class BackupScreen(
-        val root: CoordinatorLayout,
-        val appBar: AppBarLayout,
+        val root: LinearLayout,
+        val appBar: LinearLayout,
+        val statusBarSpacer: View,
         val toolbar: MaterialToolbar,
         val content: View,
     )
 
     private fun createContentView(): BackupScreen {
-        val root = CoordinatorLayout(this).apply {
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
             setBackgroundResource(R.color.surface)
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -91,11 +96,20 @@ class BackupActivity : AppCompatActivity() {
             )
         }
 
-        val appBar = AppBarLayout(this).apply {
+        val appBar = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
             setBackgroundResource(R.color.top_app_bar)
-            layoutParams = CoordinatorLayout.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+        }
+
+        val statusBarSpacer = View(this).apply {
+            setBackgroundResource(R.color.top_app_bar)
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
             )
         }
 
@@ -104,11 +118,12 @@ class BackupActivity : AppCompatActivity() {
             setTitleTextColor(getColor(android.R.color.white))
             setNavigationIconTint(getColor(android.R.color.white))
             popupTheme = R.style.PassWallet_ToolbarPopup
-            layoutParams = AppBarLayout.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material),
             )
         }
+        appBar.addView(statusBarSpacer)
         appBar.addView(toolbar)
         root.addView(appBar)
 
@@ -141,7 +156,7 @@ class BackupActivity : AppCompatActivity() {
                     summary = getString(R.string.backup_import_summary),
                     buttonText = getString(R.string.backup_import_action),
                     buttonContentDescription = getString(R.string.backup_import_title),
-                    filled = false,
+                    filled = true,
                 ) { importBackupLauncher.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) },
                 LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -151,17 +166,16 @@ class BackupActivity : AppCompatActivity() {
         }
 
         val scroll = NestedScrollView(this).apply {
-            layoutParams = CoordinatorLayout.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-            ).apply {
-                behavior = AppBarLayout.ScrollingViewBehavior()
-            }
+                0,
+                1f,
+            )
             addView(content)
         }
         root.addView(scroll)
 
-        return BackupScreen(root, appBar, toolbar, scroll)
+        return BackupScreen(root, appBar, statusBarSpacer, toolbar, scroll)
     }
 
     private fun createActionCard(
@@ -235,12 +249,30 @@ class BackupActivity : AppCompatActivity() {
         filled: Boolean,
         onClick: () -> Unit,
     ): MaterialButton {
-        val style = if (filled) R.style.PassWallet_DialogFilledButton else R.style.PassWallet_EditActionButton
-        return MaterialButton(ContextThemeWrapper(this, style)).apply {
+        return MaterialButton(this).apply {
             text = textValue
             contentDescription = contentDescriptionValue
             gravity = Gravity.CENTER
             isAllCaps = false
+            minimumHeight = dp(52)
+            minWidth = 0
+            setPadding(dp(18), 0, dp(18), 0)
+            typeface = Typeface.DEFAULT_BOLD
+            textSize = 15f
+            cornerRadius = dp(18)
+            rippleColor = ColorStateList.valueOf(getColor(R.color.accent))
+
+            if (filled) {
+                setTextColor(getColor(android.R.color.white))
+                backgroundTintList = ColorStateList.valueOf(getColor(R.color.secondary))
+                strokeWidth = 0
+            } else {
+                setTextColor(getColor(R.color.edit_action_text))
+                backgroundTintList = ColorStateList.valueOf(getColor(R.color.edit_action_background))
+                strokeColor = ColorStateList.valueOf(getColor(R.color.edit_action_text))
+                strokeWidth = dp(1)
+            }
+
             setOnClickListener { onClick() }
         }
     }
@@ -254,55 +286,66 @@ class BackupActivity : AppCompatActivity() {
     }
 
     private fun exportBackup(uri: Uri) {
-        runCatching {
-            contentResolver.openOutputStream(uri)?.use { output ->
-                BackupArchive.exportBackup(
-                    passesDir = settings.getPassesDir(),
-                    stateDir = settings.getStateDir(),
-                    preferences = sharedPreferences.all,
-                    appVersionName = BuildConfig.VERSION_NAME,
-                    appVersionCode = BuildConfig.VERSION_CODE,
-                    outputStream = output,
-                )
-            } ?: error("Could not open output document")
-        }.onSuccess {
-            Toast.makeText(this, R.string.backup_export_success, Toast.LENGTH_LONG).show()
-        }.onFailure {
-            Toast.makeText(this, getString(R.string.backup_export_error, it.localizedMessage), Toast.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching {
+                    contentResolver.openOutputStream(uri)?.use { output ->
+                        BackupArchive.exportBackup(
+                            passesDir = settings.getPassesDir(),
+                            stateDir = settings.getStateDir(),
+                            preferences = sharedPreferences.all,
+                            appVersionName = BuildConfig.VERSION_NAME,
+                            appVersionCode = BuildConfig.VERSION_CODE,
+                            outputStream = output,
+                        )
+                    } ?: error("Could not open output document")
+                }
+            }
+            result.onSuccess {
+                Toast.makeText(this@BackupActivity, R.string.backup_export_success, Toast.LENGTH_LONG).show()
+            }.onFailure {
+                Toast.makeText(this@BackupActivity, getString(R.string.backup_export_error, it.localizedMessage), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
     private fun importBackup(uri: Uri) {
-        runCatching {
-            try {
-                contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            } catch (ignored: SecurityException) {
-                // Some providers grant one-shot access only. That is fine for an immediate restore.
+        try {
+            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        } catch (ignored: SecurityException) {
+            // Some providers grant one-shot access only. That is fine for an immediate restore.
+        }
+
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching {
+                    contentResolver.openInputStream(uri)?.use { input ->
+                        BackupArchive.importBackup(
+                            inputStream = input,
+                            passesDir = settings.getPassesDir(),
+                            stateDir = settings.getStateDir(),
+                            restorePreferences = ::restorePreferences,
+                        )
+                    } ?: error("Could not open input document")
+                }
             }
-            contentResolver.openInputStream(uri)?.use { input ->
-                BackupArchive.importBackup(
-                    inputStream = input,
-                    passesDir = settings.getPassesDir(),
-                    stateDir = settings.getStateDir(),
-                    restorePreferences = ::restorePreferences,
-                )
-            } ?: error("Could not open input document")
-        }.onSuccess {
-            (passStore.passMap as? MutableMap<*, *>)?.clear()
-            passStore.syncPassStoreWithClassifier(TopicNames.NEW)
-            passStore.notifyChange()
-            Toast.makeText(this, R.string.backup_import_success, Toast.LENGTH_LONG).show()
-            startActivity(Intent(this, PassListActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            })
-            finish()
-        }.onFailure {
-            Toast.makeText(this, getString(R.string.backup_import_error, it.localizedMessage), Toast.LENGTH_LONG).show()
+            result.onSuccess {
+                (passStore.passMap as? MutableMap<*, *>)?.clear()
+                passStore.syncPassStoreWithClassifier(TopicNames.NEW)
+                passStore.notifyChange()
+                Toast.makeText(this@BackupActivity, R.string.backup_import_success, Toast.LENGTH_LONG).show()
+                startActivity(Intent(this@BackupActivity, PassListActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
+                finish()
+            }.onFailure {
+                Toast.makeText(this@BackupActivity, getString(R.string.backup_import_error, it.localizedMessage), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
     private fun restorePreferences(preferences: Map<String, Any>) {
-        sharedPreferences.edit().apply {
+        sharedPreferences.edit {
             preferences.forEach { (key, value) ->
                 when (value) {
                     is Boolean -> putBoolean(key, value)
@@ -312,7 +355,7 @@ class BackupActivity : AppCompatActivity() {
                     is String -> putString(key, value)
                 }
             }
-        }.apply()
+        }
     }
 
     private fun defaultBackupFileName(): String {

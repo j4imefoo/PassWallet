@@ -27,6 +27,10 @@ class PassViewActivity : PassViewActivityBase() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (!hasCurrentPass()) {
+            return
+        }
+
         if (Build.VERSION.SDK_INT >= 27) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
@@ -48,7 +52,13 @@ class PassViewActivity : PassViewActivityBase() {
                 settings.getSortOrder()))
         viewPager = findViewById(R.id.pager)
         viewPager.adapter = pagerAdapter
-        viewPager.currentItem = pagerAdapter.getPos(currentPass)
+        val initialPosition = pagerAdapter.getPos(currentPass)
+        if (initialPosition < 0) {
+            tracker.trackException("pass ${currentPass.id} not present in pager projection", false)
+            finish()
+            return
+        }
+        viewPager.currentItem = initialPosition
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(pos: Int) {
                 currentPass = pagerAdapter.getPass(pos)
@@ -85,7 +95,8 @@ class PassViewActivity : PassViewActivityBase() {
                     when (pass.type) {
                         PassType.EVENT,
                         PassType.BOARDING,
-                        PassType.PKBOARDING -> PassViewPKFragment()
+                        PassType.PKBOARDING,
+                        PassType.LOYALTY -> PassViewPKFragment()
                         else -> PassViewFragment()
                     }
                 }

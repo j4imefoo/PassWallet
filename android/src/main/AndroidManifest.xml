@@ -9,9 +9,15 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
         android:name=".App"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/full_backup_content"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -232,7 +238,7 @@
 
         <activity
             android:name=".ui.PassViewActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.PassListActivity"
             android:theme="@style/AppThemeNoActionbar">
             <meta-data

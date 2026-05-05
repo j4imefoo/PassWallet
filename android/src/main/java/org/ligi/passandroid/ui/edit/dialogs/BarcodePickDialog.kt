@@ -1,9 +1,9 @@
 package org.ligi.passandroid.ui.edit.dialogs
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.ligi.kaxt.inflate
 import org.ligi.passandroid.R
@@ -34,7 +34,7 @@ fun showBarcodeEditDialog(
         dialog.dismiss()
     }
     dialog.setOnShowListener {
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
     }
     dialog.show()
 }

@@ -225,7 +225,7 @@ object AppleStylePassReader {
             try {
                 return translation.translate(jsonObject.getString(key))
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.w(e, "could not translate pass field")
             }
         }
         return null
@@ -310,7 +310,7 @@ object AppleStylePassReader {
             try {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(File(path, bitmapString + PassImpl.FILETYPE_IMAGES)))
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "could not persist pass bitmap")
             }
         }
     }

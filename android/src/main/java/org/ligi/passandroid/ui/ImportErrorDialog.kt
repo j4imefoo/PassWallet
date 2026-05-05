@@ -2,8 +2,8 @@ package org.ligi.passandroid.ui
 
 import android.app.Activity
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.ligi.passandroid.R
@@ -35,7 +35,7 @@ fun Activity.showImportErrorDialog(
     }
 
     dialog.setOnShowListener {
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
     }
     dialog.show()
 }

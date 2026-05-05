@@ -11,7 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Fail.fail;
 import static org.ligi.passandroid.ui.UnzipPassController.InputStreamUnzipControllerSpec;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -45,7 +46,7 @@ public class TheUnzipPassController  {
                                                                                            failCallback);
             UnzipPassController.INSTANCE.processInputStream(spec);
 
-            verify(successCallback, never()).call(any(String.class));
+            verify(successCallback, never()).call(anyList());
             verify(failCallback).fail(any(String.class));
 
         } catch (Exception e) {

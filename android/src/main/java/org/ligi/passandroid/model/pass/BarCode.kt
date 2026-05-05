@@ -3,6 +3,7 @@ package org.ligi.passandroid.model.pass
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import androidx.core.graphics.drawable.toDrawable
 import com.squareup.moshi.JsonClass
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -49,7 +50,7 @@ class BarCode(val format: PassBarCodeFormat?, val message: String? = "") : KoinC
                 cachedBitmapHeightPx = heightPx
             } ?: return null
 
-        return BitmapDrawable(resources, bitmap).apply {
+        return bitmap.toDrawable(resources).apply {
             isFilterBitmap = false
             setAntiAlias(false)
         }

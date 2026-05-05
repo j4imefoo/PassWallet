@@ -1,6 +1,7 @@
 package org.ligi.passandroid.unittest
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -8,7 +9,9 @@ import org.ligi.passandroid.backup.BackupArchive
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 class TheBackupArchive {
 
@@ -79,6 +82,50 @@ class TheBackupArchive {
         assertThat(File(targetRoot, "passes/pass-1/main.json").readText()).isEqualTo("pass-data")
         assertThat(File(targetRoot, "state/classifier_state.json").readText()).isEqualTo("state-data")
         assertThat(restoredPreferences).containsEntry("nightmode", "auto")
+    }
+
+    @Test
+    fun importRejectsUnsafeEntryPath() {
+        val archive = zipOf("passes/../escape.txt" to "bad")
+        val targetRoot = temporaryFolder.newFolder()
+
+        assertImportRejected(archive, targetRoot)
+    }
+
+    @Test
+    fun importRejectsOversizedPreferencesEntry() {
+        val archive = zipOf("preferences.json" to "{\"big\":\"${"x".repeat(300 * 1024)}\"}")
+        val targetRoot = temporaryFolder.newFolder()
+
+        assertImportRejected(archive, targetRoot)
+    }
+
+    private fun assertImportRejected(archive: ByteArray, targetRoot: File) {
+        try {
+            BackupArchive.importBackup(
+                inputStream = ByteArrayInputStream(archive),
+                passesDir = File(targetRoot, "passes"),
+                stateDir = File(targetRoot, "state"),
+                restorePreferences = {},
+            )
+            fail("Expected backup import to reject unsafe archive")
+        } catch (expected: IllegalArgumentException) {
+            if (expected.message.isNullOrBlank()) {
+                fail("Expected rejection to include an error message")
+            }
+        }
+    }
+
+    private fun zipOf(vararg entries: Pair<String, String>): ByteArray {
+        val output = ByteArrayOutputStream()
+        ZipOutputStream(output).use { zip ->
+            entries.forEach { (name, content) ->
+                zip.putNextEntry(ZipEntry(name))
+                zip.write(content.toByteArray(Charsets.UTF_8))
+                zip.closeEntry()
+            }
+        }
+        return output.toByteArray()
     }
 
     private fun zipEntries(bytes: ByteArray): Map<String, String> {

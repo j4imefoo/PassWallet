@@ -6,7 +6,7 @@
     <string name="menu_print">Imprimir</string>
     <string name="menu_edit">Editar</string>
     <string name="menu_light">Brillo</string>
-    <string name="delete">Eliminar</string>
+    <string name="barcode">Código de barras</string>
     <string name="boarding_pass">Tarjeta de embarque</string>
     <string name="category_event">Evento</string>
     <string name="category_coupon">Cupón</string>
@@ -19,8 +19,10 @@
     <string name="passbook_share_chooser_title">¿Cómo quieres enviar el pase?</string>
     <string name="more">MÁS</string>
     <string name="less">MENOS</string>
+    <string name="pass_details">DETALLES</string>
     <string name="boarding_transit_icon">Tipo de transporte</string>
     <string name="fab_choice_create_pass">Crear pase</string>
+    <string name="new_pass_default_title">Nuevo pase</string>
     <string name="empty_text_title">Tus pases aparecerán aquí</string>
     <string name="empty_text_body">Importa un pase desde un archivo. Todo lo que importes estará disponible sin conexión.</string>
     <string name="downloading_new_pass_version">descargando nueva versión del pase</string>
@@ -41,8 +43,8 @@
     <string name="topic_trash">Papelera</string>
     <string name="topic_new">Nuevo</string>
     <string name="move_to_new_topic">Mover a categoría</string>
-    <string name="categories_nav">%d categorías</string>
-    <string name="passes_nav">%d pases</string>
+    <string name="move_topic_subtitle">Elige dónde guardar este pase.</string>
+    <string name="move_topic_new_subtitle">Pon nombre a la nueva categoría de este pase.</string>
     <string name="emtytrash_label">Vaciar papelera</string>
     <string name="barcode_edit_hint_alternative_message">Mensaje alternativo</string>
     <string name="barcode_edit_scan">Escanear código</string>
@@ -57,11 +59,11 @@
     <string name="scan_rotate_camera">Rotar cámara</string>
     <string name="scan_image_failed">No se pudo leer ningún QR o código de barras en esta imagen.</string>
     <string name="camera_permission_required">Hace falta permiso de cámara para escanear códigos.</string>
-    <string name="categories_voucher">vale</string>
-    <string name="edit_time">editar fecha y hora</string>
+    <string name="categories_voucher">Vale</string>
+    <string name="edit_time">Fecha y hora</string>
     <string name="edit_time_date_title">Seleccionar fecha</string>
     <string name="edit_time_time_title">Seleccionar hora</string>
-    <string name="edit_location">editar ubicación</string>
+    <string name="edit_location">Ubicación</string>
     <string name="edit_location_dialog_title">Editar ubicación</string>
     <string name="edit_location_single_subtitle">Los pases personalizados mantienen una sola ubicación. Si eliges otra, sustituye a la actual.</string>
     <string name="location_search_hint">Buscar lugar o dirección</string>
@@ -85,22 +87,26 @@
     <string name="change_color_dialog_title">Seleccionar color</string>
     <string name="select_category_dialog_title">Seleccionar categoría</string>
     <string name="select_icon">Seleccionar icono</string>
+    <string name="select_logo">Seleccionar logo de tarjeta</string>
     <string name="pass_appearance_title">Personalizar pase</string>
-    <string name="pass_appearance_subtitle">Ajusta el tipo, color e icono del pase.</string>
+    <string name="pass_appearance_subtitle">Ajusta categoría, color, icono y logo del pase.</string>
     <string name="select_category_subtitle">Elige el tipo visual que mejor encaja con este pase.</string>
     <string name="select_color_subtitle">Escoge un color rápido o ajústalo manualmente.</string>
     <string name="color_presets">Colores rápidos</string>
     <string name="custom_color">Color personalizado</string>
-    <string name="add_footer_image">Añadir imagen inferior</string>
-    <string name="add_logo_image">Añadir logo</string>
-    <string name="add_header_image">Añadir imagen superior</string>
-    <string name="add_barcode">Añadir código de barras</string>
+    <string name="add_footer_image">Inferior</string>
+    <string name="add_logo_image">Logo tarjeta</string>
+    <string name="add_header_image">Superior</string>
+    <string name="add_barcode">Código</string>
     <string name="edit_barcode_dialog_title">Editar código de barras</string>
     <string name="pass_moved_to_trash">Pase movido a la papelera</string>
-    <string name="empty_trash_dialog_message">Se eliminarán definitivamente %1$d pases de la papelera. No podrás restaurarlos.</string>
+    <plurals name="empty_trash_dialog_message">
+        <item quantity="one">Se eliminará definitivamente %1$d pase de la papelera. No podrás restaurarlo.</item>
+        <item quantity="other">Se eliminarán definitivamente %1$d pases de la papelera. No podrás restaurarlos.</item>
+    </plurals>
     <string name="empty_trash_dialog_title">¿Vaciar papelera?</string>
     <string name="new_topic_input_hint">Nombre de la nueva categoría</string>
-    <string name="new_topic_suggestions">Sugerencias:</string>
+
     <string name="create_new_topic">Crear nueva categoría</string>
     <string name="cannot_be_empty">no puede estar vacío</string>
     <string name="pass_title_hint">Título del pase</string>
@@ -132,8 +138,7 @@
     <string name="preference_backup_title">Copia de seguridad</string>
     <string name="preference_backup_summary">Importa o exporta una copia de PassWallet</string>
     <string name="backup_title">Copia de seguridad</string>
-    <string name="backup_description">Exporta o importa todos los pases, categorías y preferencias.</string>
-    <string name="backup_restore_notice">La importación añade y reemplaza los datos incluidos en el ZIP. Guarda una copia nueva antes de restaurar.</string>
+
     <string name="backup_export_title">Exportar copia</string>
     <string name="backup_export_summary">Guarda todos los pases, categorías y preferencias en un archivo ZIP.</string>
     <string name="backup_export_action">Crear ZIP de copia</string>

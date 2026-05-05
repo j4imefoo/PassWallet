@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import timber.log.Timber;
 
 public class AppleStylePassTranslation extends HashMap<String, String> {
 
@@ -73,7 +74,7 @@ public class AppleStylePassTranslation extends HashMap<String, String> {
             }
             return new String(fileData);
         } catch (Throwable e) {
-            e.printStackTrace();
+            Timber.w(e, "could not read pass translation file");
             return null;
         }
     }

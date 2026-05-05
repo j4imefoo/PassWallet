@@ -75,15 +75,22 @@ class PassEditActivity : AppCompatActivity() {
         binding.categoryView.setOnClickListener {
             showAppearanceSheet()
         }
+        binding.categoryEditHint.setOnClickListener {
+            showAppearanceSheet()
+        }
         binding.passTitle.doAfterEdit {
             currentPass.description = "$it"
         }
 
-        val currentPass = passStore.currentPass
+        val passFromIntent = intent.getStringExtra(PassViewActivityBase.EXTRA_KEY_UUID)
+            ?.let { passStore.getPassbookForId(it) as? PassImpl }
+        val currentPass = passFromIntent ?: passStore.currentPass as? PassImpl
         if (currentPass != null) {
-            this.currentPass = currentPass as PassImpl
+            this.currentPass = currentPass
+            passStore.currentPass = currentPass
         } else {
             finish()
+            return
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -118,6 +125,10 @@ class PassEditActivity : AppCompatActivity() {
         sheetBinding.selectIcon.setOnClickListener {
             sheet.dismiss()
             pickWithPermissionCheck(PassBitmapDefinitions.BITMAP_ICON)
+        }
+        sheetBinding.selectLogo.setOnClickListener {
+            sheet.dismiss()
+            pickWithPermissionCheck(PassBitmapDefinitions.BITMAP_LOGO)
         }
 
         sheet.show()
@@ -170,13 +181,17 @@ class PassEditActivity : AppCompatActivity() {
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        refresh(currentPass)
+        if (::currentPass.isInitialized) {
+            refresh(currentPass)
+        }
     }
 
 
     override fun onPause() {
-        passStore.save(currentPass)
-        passStore.notifyChange()
+        if (::currentPass.isInitialized) {
+            passStore.save(currentPass)
+            passStore.notifyChange()
+        }
         super.onPause()
     }
 

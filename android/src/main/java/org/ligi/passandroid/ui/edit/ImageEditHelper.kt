@@ -6,6 +6,7 @@ import org.ligi.kaxt.loadImage
 import org.ligi.passandroid.model.PassStore
 import org.ligi.passandroid.model.pass.Pass
 import org.ligi.passandroid.model.pass.PassImpl
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
@@ -20,7 +21,7 @@ class ImageEditHelper(private val context: Activity, private val passStore: Pass
                 destinationFile.delete()
                 extractedFile.copyTo(destinationFile)
             } catch (e: IOException) {
-                e.printStackTrace()
+                Timber.w(e, "could not import pass image")
             }
         }
     }

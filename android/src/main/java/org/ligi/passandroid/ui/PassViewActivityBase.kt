@@ -54,7 +54,9 @@ open class PassViewActivityBase : PassAndroidActivity() {
 
     override fun onPause() {
         super.onPause()
-        State.lastSelectedPassUUID = currentPass.id
+        if (hasCurrentPass()) {
+            State.lastSelectedPassUUID = currentPass.id
+        }
     }
 
     override fun onResume() {
@@ -70,22 +72,24 @@ open class PassViewActivityBase : PassAndroidActivity() {
     private fun updateCurrentPass() {
         val uuid = intent.getStringExtra(EXTRA_KEY_UUID)
 
-        if (uuid != null) {
-            passStore.currentPass = passStore.getPassbookForId(uuid)
-        }
-
-        if (passStore.currentPass == null) {
-            passStore.currentPass = passStore.getPassbookForId(State.lastSelectedPassUUID)
-        }
-
-        if (passStore.currentPass == null) {
-            tracker.trackException("pass not present in $this", false)
+        if (uuid == null) {
+            tracker.trackException("pass view opened without uuid in $this", false)
             finish()
             return
         }
 
-        currentPass = passStore.currentPass!!
+        val pass = passStore.getPassbookForId(uuid)
+        if (pass == null) {
+            tracker.trackException("pass $uuid not present in $this", false)
+            finish()
+            return
+        }
+
+        passStore.currentPass = pass
+        currentPass = pass
     }
+
+    protected fun hasCurrentPass(): Boolean = ::currentPass.isInitialized
 
     protected fun configureActionBar() {
         supportActionBar?.setHomeButtonEnabled(true)
@@ -260,8 +264,15 @@ open class PassViewActivityBase : PassAndroidActivity() {
                     passStore.deletePassWithId(currentPass.id)
                 }
                 val newPass = passStore.getPassbookForId(uuid)
+                if (newPass == null) {
+                    showImportErrorDialog(
+                        title = getString(R.string.update_error_title),
+                        message = getString(R.string.update_error_invalid_message, "Updated pass was not saved"),
+                    )
+                    return@Runnable
+                }
                 passStore.currentPass = newPass
-                currentPass = passStore.currentPass!!
+                currentPass = newPass
                 refresh()
 
                 Snackbar.make(window.decorView, R.string.pass_updated, Snackbar.LENGTH_LONG).show()

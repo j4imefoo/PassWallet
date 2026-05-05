@@ -1,823 +1,124 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <issues format="6" by="lint 8.11.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.11.2)" variant="all" version="8.11.2">
-
-    <issue
-        id="CutPasteId"
-        message="The id `R.id.header_field_container` has already been looked up in this method; possible cut &amp; paste error?"
-        errorLine1="                val v = requireActivity().layoutInflater.inflate(R.layout.vertical_field_item, requireActivity().findViewById(R.id.header_field_container), false)"
-        errorLine2="                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassViewPKFragment.kt"
-            line="97"
-            column="96"/>
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassViewPKFragment.kt"
-            line="65"
-            column="31"
-            message="First usage here"/>
-    </issue>
-
-    <issue
-        id="PrivateApi"
-        message="Accessing internal APIs via reflection is not supported and may not work on all devices or in the future"
-        errorLine1="            val menuKeyField = ViewConfiguration::class.java.getDeclaredField(&quot;sHasPermanentMenuKey&quot;)"
-        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassViewActivityBase.kt"
-            line="45"
-            column="32"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `resizeableActivity` is only used in API level 24 and higher (current min is 23)"
-        errorLine1="        android:resizeableActivity=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="16"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="AppBundleLocaleChanges"
-        message="Found dynamic locale changes, but did not find corresponding Play Core library calls for downloading languages and splitting by language is not disabled in the `bundle` configuration"
-        errorLine1="            setLocale(Locale.ENGLISH)"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/HelpActivity.kt"
-            line="30"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="AppLinkUrlError"
-        message="At least one `host` must be specified"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="148"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="AppLinkWarning"
-        message="This intent filter has the format of an Android App Link but is missing the `autoVerify` attribute; add `android:autoVerify=&quot;true&quot;` to ensure your domain will be validated and enable App Link-related Lint warnings. If you do not want clicked URLs to bring the user to your app, remove the `android.intent.category.BROWSABLE` category, or set `android:autoVerify=&quot;false&quot;` to make it clear this is not intended to be an Android App Link."
-        errorLine1="            &lt;intent-filter>"
-        errorLine2="             ~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="56"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="62"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="66"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="70"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="74"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="78"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="82"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="148"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="152"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="156"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="160"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="164"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="IntentFilterUniqueDataAttributes"
-        message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion"
-        errorLine1="                &lt;data"
-        errorLine2="                ^">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="168"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="        List&lt;ResolveInfo> availableApps = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/edit/BarCodeIntentIntegrator.java"
-            line="344"
-            column="46"/>
-    </issue>
-
-    <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of Gradle than 8.13 is available: 8.14.4"
-        errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="$HOME/PassAndroid/gradle/wrapper/gradle-wrapper.properties"
-            line="3"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.10.0"
-        errorLine1="    implementation &apos;androidx.lifecycle:lifecycle-runtime-ktx:2.8.7&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="97"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.lifecycle:lifecycle-service than 2.8.7 is available: 2.10.0"
-        errorLine1="    implementation &apos;androidx.lifecycle:lifecycle-service:2.8.7&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="98"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.test:core than 1.5.0 is available: 1.7.0"
-        errorLine1="    androidTestImplementation &apos;androidx.test:core:1.5.0&apos;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="106"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
-        errorLine1="    androidTestImplementation &apos;androidx.test.ext:junit:1.2.1&apos;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="107"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.test.espresso:espresso-contrib than 3.6.1 is available: 3.7.0"
-        errorLine1="    androidTestImplementation &apos;androidx.test.espresso:espresso-contrib:3.6.1&apos;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="108"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.test.espresso:espresso-intents than 3.5.1 is available: 3.7.0"
-        errorLine1="    androidTestImplementation &apos;androidx.test.espresso:espresso-intents:3.5.1&apos;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="109"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.appcompat:appcompat than 1.7.0 is available: 1.7.1"
-        errorLine1="    implementation &apos;androidx.appcompat:appcompat:1.7.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="122"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.annotation:annotation than 1.9.1 is available: 1.10.0"
-        errorLine1="    implementation &apos;androidx.annotation:annotation:1.9.1&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="124"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.18.0"
-        errorLine1="    implementation &apos;androidx.core:core-ktx:1.16.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="127"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.fragment:fragment-ktx than 1.8.8 is available: 1.8.9"
-        errorLine1="    implementation &apos;androidx.fragment:fragment-ktx:1.8.8&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="128"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.webkit:webkit than 1.14.0 is available: 1.15.0"
-        errorLine1="    implementation &apos;androidx.webkit:webkit:1.14.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="129"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.google.android.material:material than 1.12.0 is available: 1.13.0"
-        errorLine1="    implementation &apos;com.google.android.material:material:1.12.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="130"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of io.insert-koin:koin-android than 3.4.2 is available: 4.2.1"
-        errorLine1="    implementation &quot;io.insert-koin:koin-android:3.4.2&quot;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="94"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.linkedin.dexmaker:dexmaker-mockito than 2.28.4 is available: 2.28.6"
-        errorLine1="    androidTestImplementation &apos;com.linkedin.dexmaker:dexmaker-mockito:2.28.4&apos;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="112"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of net.lingala.zip4j:zip4j than 2.11.5 is available: 2.11.6"
-        errorLine1="    implementation &apos;net.lingala.zip4j:zip4j:2.11.5&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="119"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.jakewharton.threetenabp:threetenabp than 1.4.6 is available: 1.4.9"
-        errorLine1="    implementation &apos;com.jakewharton.threetenabp:threetenabp:1.4.6&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="120"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.okhttp3:okhttp than 3.12.12 is available: 5.3.2"
-        errorLine1="    implementation &apos;com.squareup.okhttp3:okhttp:3.12.12&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="142"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.okio:okio than 3.6.0 is available: 3.17.0"
-        errorLine1="    implementation &apos;com.squareup.okio:okio:3.6.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="147"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.moshi:moshi than 1.15.0 is available: 1.15.2"
-        errorLine1="    implementation &apos;com.squareup.moshi:moshi:1.15.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="149"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.moshi:moshi-kotlin-codegen than 1.15.0 is available: 1.15.2"
-        errorLine1="    ksp &quot;com.squareup.moshi:moshi-kotlin-codegen:1.15.0&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="150"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.google.zxing:core than 3.3.0 is available: 3.5.4"
-        errorLine1="    implementation &apos;com.google.zxing:core:3.3.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="162"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="LogNotTimber"
-        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
-        errorLine1="                Log.i(&quot;PassAndroid&quot;, &quot;creating header with tag = &quot; + field.label + &quot; value = &quot; + field.value)"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassViewPKFragment.kt"
-            line="102"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="PluralsCandidate"
-        message="Formatting %d followed by words (&quot;Categories&quot;): This should probably be a plural rather than a string"
-        errorLine1="    &lt;string name=&quot;categories_nav&quot;>%d Categories&lt;/string>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="91"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="PluralsCandidate"
-        message="Formatting %d followed by words (&quot;Passes&quot;): This should probably be a plural rather than a string"
-        errorLine1="    &lt;string name=&quot;passes_nav&quot;>%d Passes&lt;/string>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="92"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="                    adapter.notifyDataSetChanged()"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassListFragment.kt"
-            line="69"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="        notifyDataSetChanged()"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassTopicFragmentPagerAdapter.kt"
-            line="23"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ViewHolder"
-        message="Unconditional layout inflation from view adapter: Should use View Holder pattern (use recycled view passed into this method as the second parameter) for smoother scrolling"
-        errorLine1="            val inflate = inflater.inflate(R.layout.item_nav_pass_category, parent, false)"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/edit/dialogs/CategoryPickDialog.kt"
-            line="31"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/surface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="    android:background=&quot;@color/surface&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_help.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/surface` with a theme that also paints a background (inferred theme is `@style/AppThemeNoActionbar`)"
-        errorLine1="    android:background=&quot;@color/surface&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pass_view_base.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@android:color/white` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="    android:background=&quot;@android:color/white&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fullscreen_image.xml"
-            line="8"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="              android:background=&quot;?attr/selectableItemBackground&quot;>"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_nav_pass_category.xml"
-            line="7"
-            column="15"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/primary` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="              android:background=&quot;@color/primary&quot;"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/navigation_drawer_header.xml"
-            line="6"
-            column="15"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/surface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="    android:background=&quot;@color/surface&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/preferences.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.dividing_color` appears to be unused"
-        errorLine1="    &lt;color name=&quot;dividing_color&quot;>#ff0099cc&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="3"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.icon_green` appears to be unused"
-        errorLine1="    &lt;color name=&quot;icon_green&quot;>#ffbfdf00&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="16"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="RedundantNamespace"
-        message="This namespace declaration is redundant"
-        errorLine1="    &lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/pkpass_view_extra_data.xml"
-            line="7"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="RedundantNamespace"
-        message="This namespace declaration is redundant"
-        errorLine1="    xmlns:tools=&quot;http://schemas.android.com/tools&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/pkpass_view_extra_data.xml"
-            line="8"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedNamespace"
-        message="Unused namespace declaration xmlns:android; already declared on the root element"
-        errorLine1="    &lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/pkpass_view_extra_data.xml"
-            line="7"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UnusedNamespace"
-        message="Unused namespace declaration xmlns:tools; already declared on the root element"
-        errorLine1="    xmlns:tools=&quot;http://schemas.android.com/tools&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/pkpass_view_extra_data.xml"
-            line="8"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="IconDipSize"
-        message="The image `ic_launcher.png` varies significantly in its density-independent (dip) size across the various density versions: drawable-hdpi/ic_launcher.png: 48x48 dp (72x72 px), drawable-ldpi/ic_launcher.png: 32x32 dp (24x24 px), drawable-mdpi/ic_launcher.png: 48x48 dp (48x48 px), drawable-xhdpi/ic_launcher.png: 48x48 dp (96x96 px), drawable-xxhdpi/ic_launcher.png: 48x48 dp (144x144 px), drawable-xxxhdpi/ic_launcher.png: 48x48 dp (192x192 px)">
-        <location
-            file="src/main/res/drawable-ldpi/ic_launcher.png"/>
-        <location
-            file="src/main/res/drawable-xxxhdpi/ic_launcher.png"/>
-        <location
-            file="src/main/res/drawable-xxhdpi/ic_launcher.png"/>
-        <location
-            file="src/main/res/drawable-xhdpi/ic_launcher.png"/>
-        <location
-            file="src/main/res/drawable-mdpi/ic_launcher.png"/>
-        <location
-            file="src/main/res/drawable-hdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_bg.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_bg.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_bp.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_bp.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_cp.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_cp.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_et.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_et.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_none.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_none.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_ps.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_ps.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/cat_sc.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/cat_sc.png"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Bitmap.toDrawable` instead?"
-        errorLine1="    return BitmapDrawable(resources, bitmap).apply {"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/functions/Barcode.kt"
-            line="18"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        val barcodeImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/functions/Barcode.kt"
-            line="41"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Bitmap.set` instead?"
-        errorLine1="                barcodeImage.setPixel(x, y, if (matrix.get(x, if (is1D) 0 else y)) 0 else 0xFFFFFF)"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/functions/Barcode.kt"
-            line="46"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension property `View.isVisible` instead?"
-        errorLine1="        val isBarcodeShown = barcodeUIController.getBarcodeView().visibility == View.VISIBLE"
-        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/edit/BarcodeEditController.kt"
-            line="89"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toColorInt` instead?"
-        errorLine1="    internal fun fromJson(rgb: String) = Color.parseColor(rgb)"
-        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/json_adapter/ColorAdapter.kt"
-            line="14"
-            column="42"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toColorInt` instead?"
-        errorLine1="                pass.accentColor = Color.parseColor(uiJSON.getString(&quot;bgColor&quot;))"
-        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/reader/PassReader.kt"
-            line="40"
-            column="36"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension property `View.isVisible` instead?"
-        errorLine1="            if (back_fields.visibility == View.VISIBLE) {"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassViewFragment.kt"
-            line="55"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension property `View.isVisible` instead?"
-        errorLine1="            if (backFields.visibility == View.VISIBLE) {"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/PassViewPKFragment.kt"
-            line="53"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="                        val createBitmap = Bitmap.createBitmap(widthPixels, (widthPixels * ratio).toInt(), Bitmap.Config.ARGB_8888)"
-        errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/ligi/passandroid/ui/UnzipPassController.kt"
-            line="127"
-            column="44"/>
-    </issue>
-
+    <issue id="CutPasteId" message="The id `R.id.header_field_container` has already been looked up in this method; possible cut &amp; paste error?" errorLine1="                val v = requireActivity().layoutInflater.inflate(R.layout.vertical_field_item, requireActivity().findViewById(R.id.header_field_container), false)" errorLine2="                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="src/main/java/org/ligi/passandroid/ui/PassViewPKFragment.kt" line="97" column="96" />
+        <location file="src/main/java/org/ligi/passandroid/ui/PassViewPKFragment.kt" line="65" column="31" message="First usage here" />
+    </issue>
+    <issue id="PrivateApi" message="Accessing internal APIs via reflection is not supported and may not work on all devices or in the future" errorLine1="            val menuKeyField = ViewConfiguration::class.java.getDeclaredField(&quot;sHasPermanentMenuKey&quot;)" errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="src/main/java/org/ligi/passandroid/ui/PassViewActivityBase.kt" line="45" column="32" />
+    </issue>
+    <issue id="UnusedAttribute" message="Attribute `resizeableActivity` is only used in API level 24 and higher (current min is 23)" errorLine1="        android:resizeableActivity=&quot;true&quot;" errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="src/main/AndroidManifest.xml" line="16" column="9" />
+    </issue>
+    <issue id="AppLinkUrlError" message="At least one `host` must be specified" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="148" column="17" />
+    </issue>
+    <issue id="AppLinkWarning" message="This intent filter has the format of an Android App Link but is missing the `autoVerify` attribute; add `android:autoVerify=&quot;true&quot;` to ensure your domain will be validated and enable App Link-related Lint warnings. If you do not want clicked URLs to bring the user to your app, remove the `android.intent.category.BROWSABLE` category, or set `android:autoVerify=&quot;false&quot;` to make it clear this is not intended to be an Android App Link." errorLine1="            &lt;intent-filter&gt;" errorLine2="             ~~~~~~~~~~~~~">
+        <location file="src/main/AndroidManifest.xml" line="56" column="14" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="62" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="66" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="70" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="74" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="78" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="82" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="148" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="152" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="156" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="160" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="164" column="17" />
+    </issue>
+    <issue id="IntentFilterUniqueDataAttributes" message="Consider splitting data tag into multiple tags with individual attributes to avoid confusion" errorLine1="                &lt;data" errorLine2="                ^">
+        <location file="src/main/AndroidManifest.xml" line="168" column="17" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.10.0" errorLine1="    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="97" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.lifecycle:lifecycle-service than 2.8.7 is available: 2.10.0" errorLine1="    implementation 'androidx.lifecycle:lifecycle-service:2.8.7'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="98" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.test:core than 1.5.0 is available: 1.7.0" errorLine1="    androidTestImplementation 'androidx.test:core:1.5.0'" errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="106" column="31" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0" errorLine1="    androidTestImplementation 'androidx.test.ext:junit:1.2.1'" errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="107" column="31" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.test.espresso:espresso-contrib than 3.6.1 is available: 3.7.0" errorLine1="    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'" errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="108" column="31" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.test.espresso:espresso-intents than 3.5.1 is available: 3.7.0" errorLine1="    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'" errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="109" column="31" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.appcompat:appcompat than 1.7.0 is available: 1.7.1" errorLine1="    implementation 'androidx.appcompat:appcompat:1.7.0'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="122" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.annotation:annotation than 1.9.1 is available: 1.10.0" errorLine1="    implementation 'androidx.annotation:annotation:1.9.1'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="124" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.18.0" errorLine1="    implementation 'androidx.core:core-ktx:1.16.0'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="127" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.fragment:fragment-ktx than 1.8.8 is available: 1.8.9" errorLine1="    implementation 'androidx.fragment:fragment-ktx:1.8.8'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="128" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.webkit:webkit than 1.14.0 is available: 1.15.0" errorLine1="    implementation 'androidx.webkit:webkit:1.14.0'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="129" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of com.google.android.material:material than 1.12.0 is available: 1.13.0" errorLine1="    implementation 'com.google.android.material:material:1.12.0'" errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="build.gradle" line="130" column="20" />
+    </issue>
+    <issue id="NotifyDataSetChanged" message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort." errorLine1="                    adapter.notifyDataSetChanged()" errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="src/main/java/org/ligi/passandroid/ui/PassListFragment.kt" line="69" column="21" />
+    </issue>
+    <issue id="NotifyDataSetChanged" message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort." errorLine1="        notifyDataSetChanged()" errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location file="src/main/java/org/ligi/passandroid/ui/PassTopicFragmentPagerAdapter.kt" line="23" column="9" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.color.dividing_color` appears to be unused" errorLine1="    &lt;color name=&quot;dividing_color&quot;&gt;#ff0099cc&lt;/color&gt;" errorLine2="           ~~~~~~~~~~~~~~~~~~~~~">
+        <location file="src/main/res/values/colors.xml" line="3" column="12" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.color.icon_green` appears to be unused" errorLine1="    &lt;color name=&quot;icon_green&quot;&gt;#ffbfdf00&lt;/color&gt;" errorLine2="           ~~~~~~~~~~~~~~~~~">
+        <location file="src/main/res/values/colors.xml" line="16" column="12" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_bg.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_bg.png" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_bp.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_bp.png" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_cp.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_cp.png" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_et.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_et.png" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_none.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_none.png" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_ps.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_ps.png" />
+    </issue>
+    <issue id="IconLocation" message="Found bitmap drawable `res/drawable/cat_sc.png` in densityless folder">
+        <location file="src/main/res/drawable/cat_sc.png" />
+    </issue>
 </issues>

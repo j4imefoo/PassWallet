@@ -176,7 +176,11 @@ class PassListActivity : PassAndroidActivity() {
             val trashPasses = passStoreProjection.passList
             showDestructiveConfirmationDialog(
                 titleRes = R.string.empty_trash_dialog_title,
-                message = getString(R.string.empty_trash_dialog_message, trashPasses.size),
+                message = resources.getQuantityString(
+                    R.plurals.empty_trash_dialog_message,
+                    trashPasses.size,
+                    trashPasses.size,
+                ),
                 confirmTextRes = R.string.emtytrash_label
             ) {
                 for (pass in trashPasses) {

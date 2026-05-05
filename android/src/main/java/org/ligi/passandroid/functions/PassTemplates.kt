@@ -17,10 +17,11 @@ import java.util.*
 
 const val APP = "passandroid"
 
-fun createAndAddEmptyPass(passStore: PassStore, resources: Resources): Pass {
+fun createAndAddEmptyPass(passStore: PassStore, resources: Resources, type: PassType = PassType.EVENT): Pass {
     val pass = createBasePass()
 
-    pass.description = "custom Pass"
+    pass.description = resources.getString(R.string.new_pass_default_title)
+    pass.type = type
 
     passStore.currentPass = pass
     passStore.save(pass)

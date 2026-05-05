@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">"PassWallet"</string>
+    <string name="app_name" translatable="false">"PassWallet"</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_move_to_trash">Move to trash</string>
     <string name="menu_share">Share</string>
     <string name="menu_print">Print</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_light">Brightness</string>
-    <string name="barcode">"barcode"</string>
-    <string name="delete">Delete</string>
+    <string name="barcode">Barcode</string>
     <string name="boarding_pass">"Boarding Pass"</string>
     <string name="category_event">"Event"</string>
     <string name="category_coupon">"Coupon"</string>
     <string name="category_storecard">"Store Card"</string>
-    <string name="category_generic">"generic"</string>
+    <string name="category_generic">"Generic"</string>
     <string name="invalid_passbook_title">Invalid Passbook</string>
     <string name="preparing_pass">Preparing Pass</string>
     <string name="please_wait">Importing the pass - please wait a bit</string>
@@ -21,8 +20,10 @@
     <string name="passbook_share_chooser_title">How to send Pass?</string>
     <string name="more">MORE</string>
     <string name="less">LESS</string>
+    <string name="pass_details">DETAILS</string>
     <string name="boarding_transit_icon">Transit type</string>
     <string name="fab_choice_create_pass">Create pass</string>
+    <string name="new_pass_default_title">Custom Pass</string>
     <string name="empty_text_title">Your travel passes live here</string>
     <string name="empty_text_body">Import a pass from a file. Everything you import stays available offline.</string>
     <string name="downloading_new_pass_version">downloading new pass version</string>
@@ -43,8 +44,8 @@
     <string name="topic_trash">Trash</string>
     <string name="topic_new">New</string>
     <string name="move_to_new_topic">Move to topic</string>
-    <string name="categories_nav">%d Categories</string>
-    <string name="passes_nav">%d Passes</string>
+    <string name="move_topic_subtitle">Choose where to save this pass.</string>
+    <string name="move_topic_new_subtitle">Name the new category for this pass.</string>
     <string name="emtytrash_label">Empty trash</string>
     <string name="barcode_edit_hint_alternative_message">Alternative message</string>
     <string name="barcode_edit_scan">Scan barcode</string>
@@ -59,11 +60,11 @@
     <string name="scan_rotate_camera">Rotate camera</string>
     <string name="scan_image_failed">Could not read a QR or barcode from this image.</string>
     <string name="camera_permission_required">Camera permission is required to scan barcodes.</string>
-    <string name="categories_voucher">voucher</string>
-    <string name="edit_time">edit date and time</string>
+    <string name="categories_voucher">Voucher</string>
+    <string name="edit_time">Date &amp; time</string>
     <string name="edit_time_date_title">Select date</string>
     <string name="edit_time_time_title">Select time</string>
-    <string name="edit_location">edit location</string>
+    <string name="edit_location">Location</string>
     <string name="edit_location_dialog_title">Edit location</string>
     <string name="edit_location_single_subtitle">Custom passes keep one location. Choosing another one replaces the current location.</string>
     <string name="location_search_hint">Search place or address</string>
@@ -87,22 +88,26 @@
     <string name="change_color_dialog_title">Select color</string>
     <string name="select_category_dialog_title">Select category</string>
     <string name="select_icon">Select icon</string>
+    <string name="select_logo">Select card logo</string>
     <string name="pass_appearance_title">Customize pass</string>
-    <string name="pass_appearance_subtitle">Adjust the pass type, color and icon.</string>
+    <string name="pass_appearance_subtitle">Adjust category, color, icon and card logo.</string>
     <string name="select_category_subtitle">Choose the visual type that best fits this pass.</string>
     <string name="select_color_subtitle">Pick a quick color or fine tune it manually.</string>
     <string name="color_presets">Quick colors</string>
     <string name="custom_color">Custom color</string>
-    <string name="add_footer_image">Add footer image</string>
-    <string name="add_logo_image">Add logo</string>
-    <string name="add_header_image">Add header image</string>
-    <string name="add_barcode">Add barcode</string>
+    <string name="add_footer_image">Footer</string>
+    <string name="add_logo_image">Card logo</string>
+    <string name="add_header_image">Header</string>
+    <string name="add_barcode">Barcode</string>
     <string name="edit_barcode_dialog_title">Edit barcode</string>
     <string name="pass_moved_to_trash">Pass moved to trash</string>
-    <string name="empty_trash_dialog_message">This will permanently delete %1$d passes from the trash. You cannot restore them.</string>
+    <plurals name="empty_trash_dialog_message">
+        <item quantity="one">This will permanently delete %1$d pass from the trash. You cannot restore it.</item>
+        <item quantity="other">This will permanently delete %1$d passes from the trash. You cannot restore them.</item>
+    </plurals>
     <string name="empty_trash_dialog_title">Empty trash?</string>
     <string name="new_topic_input_hint">Title for new topic</string>
-    <string name="new_topic_suggestions">Suggestions:</string>
+
     <string name="create_new_topic">Create new category</string>
     <string name="cannot_be_empty">cannot be empty</string>
     <string name="pass_title_hint">Pass title</string>
@@ -143,8 +148,7 @@
     <string name="preference_backup_title">Backup</string>
     <string name="preference_backup_summary">Import or export a PassWallet backup</string>
     <string name="backup_title">Backup</string>
-    <string name="backup_description">Export or import all passes, categories, and preferences.</string>
-    <string name="backup_restore_notice">Import adds and replaces the data included in the ZIP. Keep a fresh export before restoring.</string>
+
     <string name="backup_export_title">Export Backup</string>
     <string name="backup_export_summary">Save all passes, categories, and preferences to a ZIP file.</string>
     <string name="backup_export_action">Create ZIP backup</string>
