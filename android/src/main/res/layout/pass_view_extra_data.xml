@@ -89,7 +89,7 @@
         android:padding="14dp"
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_launcher" />
+        tools:src="@mipmap/ic_launcher" />
 
     <ImageView
         android:id="@+id/footer_img_view"
@@ -100,5 +100,5 @@
         android:padding="14dp"
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_launcher" />
+        tools:src="@mipmap/ic_launcher" />
 </LinearLayout>

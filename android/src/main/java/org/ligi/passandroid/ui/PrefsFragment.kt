@@ -12,6 +12,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.ligi.passandroid.R
 import org.ligi.passandroid.databinding.ItemSortOrderBinding
@@ -56,8 +57,9 @@ class PrefsFragment : PreferenceFragmentCompat() {
                 if (isSelected) R.drawable.ic_check_24 else 0,
                 0,
             )
-            row.sortOrderLabel.compoundDrawableTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(context, R.color.edit_action_text),
+            TextViewCompat.setCompoundDrawableTintList(
+                row.sortOrderLabel,
+                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.edit_action_text)),
             )
             row.sortOrderLabel.contentDescription = if (isSelected) {
                 "$entry, ${getString(R.string.selected)}"

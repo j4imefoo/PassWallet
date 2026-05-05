@@ -183,7 +183,7 @@
                         android:padding="8dp"
                         android:scaleType="fitCenter"
                         tools:ignore="ContentDescription"
-                        tools:src="@drawable/ic_launcher" />
+                        tools:src="@mipmap/ic_launcher" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/add_strip"
@@ -222,7 +222,7 @@
                         android:padding="8dp"
                         android:scaleType="fitCenter"
                         tools:ignore="ContentDescription"
-                        tools:src="@drawable/ic_launcher" />
+                        tools:src="@mipmap/ic_launcher" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/add_logo"
@@ -242,7 +242,7 @@
                         android:padding="8dp"
                         android:scaleType="fitCenter"
                         tools:ignore="ContentDescription"
-                        tools:src="@drawable/ic_launcher" />
+                        tools:src="@mipmap/ic_launcher" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/add_footer"

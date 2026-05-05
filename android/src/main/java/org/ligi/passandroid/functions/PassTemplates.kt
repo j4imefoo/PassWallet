@@ -26,7 +26,7 @@ fun createAndAddEmptyPass(passStore: PassStore, resources: Resources, type: Pass
     passStore.currentPass = pass
     passStore.save(pass)
 
-    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
+    val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
 
     try {
         bitmap.compress(Bitmap.CompressFormat.PNG, 90, FileOutputStream(File(passStore.getPathForID(pass.id), PassBitmapDefinitions.BITMAP_ICON + ".png")))

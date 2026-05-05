@@ -18,7 +18,7 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="8dp"
         android:id="@+id/iconImageView"
-        android:src="@drawable/ic_launcher"
+        android:src="@mipmap/ic_launcher"
         android:layout_width="32dp"
         android:layout_height="32dp"
         tools:ignore="ContentDescription" />

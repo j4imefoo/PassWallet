@@ -24,7 +24,7 @@
             android:paddingBottom="4dp"
             android:scaleType="fitCenter"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_launcher" />
+            tools:src="@mipmap/ic_launcher" />
 
         <LinearLayout
             android:id="@+id/header_field_container"
@@ -122,5 +122,5 @@
         android:padding="8dp"
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_launcher" />
+        tools:src="@mipmap/ic_launcher" />
 </LinearLayout>

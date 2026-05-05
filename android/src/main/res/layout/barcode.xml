@@ -25,7 +25,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/barcode"
             android:scaleType="fitCenter"
-            tools:src="@drawable/ic_launcher" />
+            tools:src="@mipmap/ic_launcher" />
     </FrameLayout>
 
     <TextView
